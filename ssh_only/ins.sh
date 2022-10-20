@@ -13,9 +13,6 @@ yellow() { echo -e "\\033[33;1m${*}\\033[0m"; }
 green() { echo -e "\\033[32;1m${*}\\033[0m"; }
 red() { echo -e "\\033[31;1m${*}\\033[0m"; }
 clear
-
-
-
 yellow "Add Domain for SSH ONLY"
 mkdir -p /etc/bhoikfostyahya
 touch /etc/bhoikfostyahya/domain
@@ -31,7 +28,7 @@ read -rp "Input ur domain : " -e pp
 
 
 # simple password minimal
-curl -sS https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/password | openssl aes-256-cbc -d -a -pass pass:scvps07gg -pbkdf2 > /etc/pam.d/common-password
+curl -sS https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/password | openssl aes-256-cbc -d -a -pass pass:scvps07gg -pbkdf2 > /etc/pam.d/common-password
 chmod +x /etc/pam.d/common-password
 
 # go to root
@@ -142,7 +139,7 @@ apt -y install nginx
 cd
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/nginx.conf"
+wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only//nginx.conf"
 mkdir -p /home/vps/public_html
 /etc/init.d/nginx restart
 cat >/etc/nginx/conf.d/xray.conf <<EOF
@@ -174,7 +171,7 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
 # install badvpn
 cd
-wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/newudpgw"
+wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/newudpgw"
 chmod +x /usr/bin/badvpn-udpgw
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500' /etc/rc.local
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7200 --max-clients 500' /etc/rc.local
@@ -313,40 +310,27 @@ netfilter-persistent reload
 
 # download script
 cd /usr/bin
-wget -O usernew "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/usernew.sh"
-wget -O hapus "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/hapus.sh"
-wget -O member "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/member.sh"
-wget -O renew "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/renew.sh"
-wget -O cek "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/cek.sh"
-wget -O speedtest "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/speedtest_cli.py"
-wget -O xp "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/xp.sh"
-wget -O menu "https://raw.githubusercontent.com/rullpqh/autoscript/main/commit/menu.sh"
-wget -O sshws "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/sshws.sh"
-wget -O trial "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/trial.sh"
-wget -O ssh-menu "https://raw.githubusercontent.com/rullpqh/autoscript/main/menu/ssh-menu.sh"
-wget -O cek-ws "https://raw.githubusercontent.com/rullpqh/autoscript/main/xray/cek-ws.sh"
-wget -O banner "https://raw.githubusercontent.com/rullpqh/autoscript/main/commit/banner.sh"
-wget -O trial-menu "https://raw.githubusercontent.com/rullpqh/autoscript/main/menu/trial-menu.sh"
-wget -O ceklim "https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/ceklim.sh"
+wget -O usernew "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/usernew.sh"
+wget -O hapus "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/hapus.sh"
+wget -O member "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/member.sh"
+wget -O renew "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/renew.sh"
+wget -O cek "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/cek.sh"
+wget -O speedtest "https://raw.githubusercontent.com/rullpqh/v2/main/speedtest_cli.py"
+wget -O xp "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only//xp.sh"
+wget -O menu "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/menu.sh"
+wget -O sshws "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/sshws.sh"
+wget -O trial "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/trial.sh"
+wget -O ceklim "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/ceklim.sh"
 chmod +x usernew
 chmod +x menu
 chmod +x hapus
 chmod +x member
 chmod +x renew
 chmod +x cek
-chmod +x add-host
 chmod +x speedtest
 chmod +x xp
-chmod +x asu
 chmod +x sshws
 chmod +x trial
-chmod +x ssh-menu
-chmod +x cek-ws
-chmod +x about
-chmod +x running
-chmod +x banner
-chmod +x trial-menu
-chmod +x info-menu
 chmod +x ceklim
 cd
 
@@ -429,6 +413,17 @@ rm -f /root/key.pem
 rm -f /root/cert.pem
 rm -f /root/ssh-vpn.sh
 rm -f /root/bbr.sh
-
-# finihsing
+cat> /root/.profile << END
+# ~/.profile: executed by Bourne-compatible login shells.
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+mesg n || true
 clear
+menu
+END
+chmod 644 /root/.profile
+# finihsing
+
