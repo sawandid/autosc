@@ -59,6 +59,8 @@ touch /etc/xray/domain
 DOMEN=yha-net.systems
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c2)
 domain=cloud-${sub}.yha-net.systems
+echo "${domain}" > /etc/xray/scdomain
+echo "${domain}" > /etc/xray/domain
 CF_ID=bhoikfostyahya@gmail.com
 CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
 set -euo pipefail
@@ -79,18 +81,14 @@ if [[ "${#RECORD}" -le 10 ]]; then
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" \
-     --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","ttl":120,"proxied":false}' | jq -r .result.id)
+     --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
 fi
 
 RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" \
-     --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","ttl":120,"proxied":false}')
-echo "Host : $domain"
-echo "${domain}" > /etc/xray/scdomain
-echo "${domain}" > /etc/xray/domain
-
+     --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
 }
 
 function domain_add() {
