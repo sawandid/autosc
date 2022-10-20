@@ -51,12 +51,12 @@ menu_sts
 chck_sshwb
 sshws
 echo -e "
-[\033[0;32m01\033[0m] • Create SSH & OpenVPN Account
-[\033[0;32m02\033[0m] • Renew SSH & OpenVPN Account 
-[\033[0;32m03\033[0m] • Delete SSH & OpenVPN Account
-[\033[0;32m04\033[0m] • Check User Login SSH & OpenVPN
-[\033[0;32m05\033[0m] • List of Member SSH & OpenVPN
-[\033[0;32m06\033[0m] • Delete User Expired SSH & OpenVPN
+[\033[0;32m01\033[0m] • Create SSH Account
+[\033[0;32m02\033[0m] • Renew SSH Account 
+[\033[0;32m03\033[0m] • Delete SSH Account
+[\033[0;32m04\033[0m] • Check User Login SSH
+[\033[0;32m05\033[0m] • List of Member SSH
+[\033[0;32m06\033[0m] • Delete User Expired SSH
 [\033[0;32m07\033[0m] • Displays Users Who Do Multi Login SSH
 [\033[0;32m08\033[0m] • Enable/Disable SSH Websocket $sts
 
