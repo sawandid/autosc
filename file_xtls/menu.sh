@@ -72,7 +72,7 @@ echo -e " [${GREEN}9${NC}] ${RED}• ${NC}Renew Trojan Account$NC"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m${NC}"
 echo -e " [${GREEN}10${NC}]${RED}• ${NC}Server Speedtest $NC"
 echo -e " [${GREEN}11${NC}]${RED}• ${NC}Reboot server $NC"
-  read -p "Select From Options [ 1 - 14 ] : " menu
+  read -p "Select From Options [ 1 - 11 ] : " menu
 case $menu in
 1)
 clear
