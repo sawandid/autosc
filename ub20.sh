@@ -528,6 +528,7 @@ clear
 
 
 function acme() {
+  domain="cat /etc/xray/domain"
   systemctl stop nginx
   curl -L https://get.acme.sh | bash
   website_dir="cd /var/www/html"
