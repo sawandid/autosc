@@ -32,7 +32,7 @@ Support configuration
  - XRAY  Vless None TLS    : 80
 
 ```
-source <(curl -sL https://raw.githubusercontent.com/rullpqh/v2/main/ub20.sh)
+source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 ```
 
 ### How to install/update (Xray pre-installed)
