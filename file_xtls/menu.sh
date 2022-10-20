@@ -80,7 +80,7 @@ add-ws
 ;;
 2)
 clear
-dell-ws
+del-ws
 ;;
 3)
 clear
@@ -92,7 +92,7 @@ add-vless
 ;;
 5)
 clear
-dell-vless
+del-vless
 ;;
 6)
 clear
@@ -104,7 +104,7 @@ add-tr
 ;;
 8)
 clear
-dell-tr
+del-tr
 ;;
 9)
 clear
