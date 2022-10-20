@@ -513,6 +513,12 @@ function nginx_install() {
     rm /etc/nginx/sites-available/default
 }
 
+function domain_cf() {
+    print_ok "enter the domain into the cloudflare dns"
+    source <(curl -sL https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/cf.sh)
+    judge "domain installed successfully"
+}
+
 function configure_nginx() {
 #nginx config
 cat >/etc/nginx/conf.d/xray.conf <<EOF
@@ -647,6 +653,17 @@ function install_sc() {
 
 }
 
+
+function install_sc_cf() {
+  domain_cf
+  dependency_install
+  nginx_install
+  install_xray
+  configure_nginx
+  acme
+  download_config
+
+}
 
   # Prevent the default bin directory of some system xray from missing
 red='\e[1;31m'
