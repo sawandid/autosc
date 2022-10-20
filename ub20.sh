@@ -99,13 +99,13 @@ function domain_add() {
 
 function dependency_install() {
   INS="apt install -y"  
-  ${INS} lsof tar
-  judge "installed successfully lsof tar"
+  apt update
+  judge "Update configuration"
 
   apt clean all && apt update
-  judge "Clean && Update configuration "
+  judge "Clean configuration "
 
-  ${INS} unzip
+  ${INS} curl
   judge "installed successfully unzip"
 
   ${INS} curl socat xz-utils wget apt-transport-https gnupg gnupg2 gnupg1 dnsutils lsb-release -y 
