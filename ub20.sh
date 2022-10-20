@@ -657,8 +657,8 @@ function install_sc_cf() {
   acme
   nginx_install
   install_xray
-  configure_nginx
   download_config
+  configure_nginx
 
 }
 
