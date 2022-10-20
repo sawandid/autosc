@@ -102,7 +102,7 @@ function dependency_install() {
   apt update
   judge "Update configuration"
 
-  apt clean all && apt update
+  apt clean all 
   judge "Clean configuration "
 
   ${INS} curl
