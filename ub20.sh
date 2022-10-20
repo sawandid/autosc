@@ -708,8 +708,8 @@ echo -e "$green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴  
 echo -e "[ ${red}INFO${NC} ] Autoscript xray vpn lite (multi port)"
 echo -e "[ ${red}INFO${NC} ] no licence script (free lifetime)"
 echo -e "[ ${red}INFO${NC} ] Make sure the internet is smooth when installing the script"
-echo -e "[ ${red}MANUAL_POINTING{NC} ] First connect your VPS IP to the Domain click Y/yes "
-echo -e "[ ${red}AUTO_POINTING${NC} ] do you not have a domain? please click N/not "
+echo -e "[ ${red}MANUAL_POINTING{NC} ] First connect your VPS IP to the Domain please click Y/yes"
+echo -e "[ ${red}AUTO_POINTING${NC} ] do you not have a domain, please click N/not"
   read -rp "CONTINUING TO INSTALL AUTOSCRIPT (y/n)? "  menu_num 
   case $menu_num in
   Y)
