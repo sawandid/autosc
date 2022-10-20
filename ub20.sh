@@ -38,10 +38,10 @@ function is_root() {
 
 judge() {
   if [[ 0 -eq $? ]]; then
-    print_ok "$1 Complete... "
+    print_ok "$1 Complete... | thx to ${Green}bhoikfostyahya${Font}"
     sleep 1
   else
-    print_error "$1 Fail... "
+    print_error "$1 Fail... | thx to ${Green}bhoikfostyahya${Font}"
     exit 1
   fi
 }
@@ -129,35 +129,36 @@ function dependency_install() {
 function download_config() {
 IMP="wget -q -O"
 local_date="/usr/bin/"
-${IMP} ${local_date}add-tr "https://raw.githubusercontent.com/rullpqh/lite/main/xray/add-tr.sh" && chmod +x ${local_date}add-tr
+myhost="https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/xp.sh/"
+${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
   judge "installed successfully add-tr"
-${IMP} ${local_date}add-vless "https://raw.githubusercontent.com/rullpqh/lite/main/xray/add-vless.sh" && chmod +x ${local_date}add-vless
+${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
   judge "installed successfully add-vless"
-${IMP} ${local_date}add-ws "https://raw.githubusercontent.com/rullpqh/lite/main/xray/add-ws.sh" && chmod +x ${local_date}add-ws
+${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
   judge "installed successfully add-ws"
-${IMP} ${local_date}cek-tr "https://raw.githubusercontent.com/rullpqh/lite/main/xray/cek-tr.sh" && chmod +x ${local_date}cek-tr
+${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
   judge "installed successfully cek-tr"
-${IMP} ${local_date}cek-vless "https://raw.githubusercontent.com/rullpqh/lite/main/xray/cek-vless.sh" && chmod +x ${local_date}cek-vless
+${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
   judge "installed successfully cek-vless"
-${IMP} ${local_date}cek-ws "https://raw.githubusercontent.com/rullpqh/lite/main/xray/cek-ws.sh" && chmod +x ${local_date}cek-ws
+${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
   judge "installed successfully cek-ws"
-${IMP} ${local_date}del-tr "https://raw.githubusercontent.com/rullpqh/lite/main/xray/del-tr.sh" && chmod +x ${local_date}del-tr
+${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
   judge "installed successfully del-tr"
-${IMP} ${local_date}del-vless "https://raw.githubusercontent.com/rullpqh/lite/main/xray/del-vless.sh" && chmod +x ${local_date}del-vless
+${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
   judge "installed successfully del-vless"
-${IMP} ${local_date}del-ws "https://raw.githubusercontent.com/rullpqh/lite/main/xray/del-ws.sh" && chmod +x ${local_date}del-ws
+${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
   judge "installed successfully del-ws"
-${IMP} ${local_date}renew-tr "https://raw.githubusercontent.com/rullpqh/lite/main/xray/renew-tr.sh" && chmod +x ${local_date}renew-tr
+${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
   judge "installed successfully renew-tr"
-${IMP} ${local_date}renew-vless "https://raw.githubusercontent.com/rullpqh/lite/main/xray/renew-vless.sh" && chmod +x ${local_date}renew-vless
+${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
   judge "installed successfully renew-vless"
-${IMP} ${local_date}renew-ws "https://raw.githubusercontent.com/rullpqh/lite/main/xray/renew-ws.sh" && chmod +x ${local_date}renew-ws
+${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
   judge "installed successfully renew-ws"
 ${IMP} ${local_date}menu "https://raw.githubusercontent.com/rullpqh/autoscript/main/menu.sh" && chmod +x ${local_date}menu
   judge "installed successfully menu"
-${IMP} ${local_date}xp "https://raw.githubusercontent.com/rullpqh/lite/main/xray/xp.sh" && chmod +x ${local_date}xp
+${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
   judge "installed successfully xp"
-${IMP} ${local_date}speedtest "https://raw.githubusercontent.com/rullpqh/lite/main/xray/speedtest_cli.py" && chmod +x ${local_date}speedtest
+${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
   judge "installed successfully speedtest"
 cat> /root/.profile << END
 # ~/.profile: executed by Bourne-compatible login shells.
@@ -633,7 +634,9 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
   systemctl daemon-reload
   systemctl enable nginx
   systemctl restart nginx
+  systemctl restart xray
   cd
+  menu
 }
 
 
