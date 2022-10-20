@@ -186,7 +186,7 @@ function install_xray() {
    rm -rf /www/xray_web
    mkdir -p /www/xray_web
 # / /  Xray Core Version new
-   uuid=$(cat /proc/sys/kernel/random/uuid)
+   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
 # set uuid
 uuid=$(cat /proc/sys/kernel/random/uuid)
