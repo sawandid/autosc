@@ -19,14 +19,20 @@ https://github.com/XTLS/Xray-core/issues/91
 > As of 2021-2-24, only V2RayN 4.12+ and V2RayNG 1.5.8+ support link and QR code import. For other clients, please fill in the configuration information manually.
 
 
-### Installation/Update method (Nginx pre-installation)
+### Installation/Update method (Free-installation)
 
 Support configuration
 
-- VLESS + TCP + TLS + Nginx + WebSocket
+### Service & Port:
+  Service Port
+ - XRAY  Vmess TLS + gRPC  : 443
+ - XRAY  Vless TLS + gRPC  : 443
+ - Trojan WS + gRPC        : 443
+ - XRAY  Vmess None TLS    : 80
+ - XRAY  Vless None TLS    : 80
 
 ```
-wget -N --no-check-certificate -q -O install.sh "https://raw.githubusercontent.com/wulabing/Xray_onekey/nginx_forward/install.sh" && chmod +x install.sh && bash install.sh
+source <(curl -sL (https://raw.githubusercontent.com/rullpqh/v2/main/ub20.sh)
 ```
 
 ### How to install/update (Xray pre-installed)
@@ -46,3 +52,6 @@ wget -N --no-check-certificate -q -O install.sh "https://raw.githubusercontent.c
 * The configuration file and part of the logic reference in this script https://github.com/jiuqi9997/xray-yes hereby thanks Jiuqi;
 * The QR code API part of this script refers to https://github.com/mack-a/v2ray-agent Thanks to mack-a here.
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/wulabing/Xray_onekey.svg)](https://starchart.cc/wulabing/Xray_onekey)
