@@ -505,12 +505,11 @@ function acme() {
 
 
 function nginx_install() {
-    
+    print_ok "Nginx Server"
     ${INS} nginx
     judge "Nginx installed successfully"
     rm /etc/nginx/sites-enabled/default
     rm /etc/nginx/sites-available/default
-    print_ok "Nginx Okay"
 }
 
 function configure_nginx() {
