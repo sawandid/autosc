@@ -640,9 +640,9 @@ function install_sc() {
   dependency_install
   nginx_install
   install_xray
+  configure_nginx
   acme
   download_config
-  configure_nginx
 
 }
 
