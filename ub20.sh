@@ -50,6 +50,74 @@ judge() {
   fi
 }
 
+function domain_add_cloudflare() {
+clear  
+mkdir -p /etc/xray
+touch /etc/xray/domain
+DOMAIN=yha-net.systems
+sub=$(</dev/urandom tr -dc a-z0-9 | head -c2)
+SUB_DOMAIN=cloud-${sub}.yha-net.systems
+CF_ID=bhoikfostyahya@gmail.com
+CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+set -euo pipefail
+IP=$(wget -qO- ipinfo.io/ip);
+echo "Updating DNS for ${SUB_DOMAIN}..."
+ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" | jq -r .result[0].id)
+
+RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${SUB_DOMAIN}" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" | jq -r .result[0].id)
+
+if [[ "${#RECORD}" -le 10 ]]; then
+     RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" \
+     --data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}' | jq -r .result.id)
+fi
+
+RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" \
+     --data '{"type":"A","name":"'${SUB_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}')
+
+WILD_DOMAIN="*.$sub"
+set -euo pipefail
+echo ""
+echo "Updating DNS for ${WILD_DOMAIN}..."
+ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" | jq -r .result[0].id)
+
+RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${WILD_DOMAIN}" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" | jq -r .result[0].id)
+
+if [[ "${#RECORD}" -le 10 ]]; then
+     RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" \
+     --data '{"type":"A","name":"'${WILD_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}' | jq -r .result.id)
+fi
+
+RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+     -H "X-Auth-Email: ${CF_ID}" \
+     -H "X-Auth-Key: ${CF_KEY}" \
+     -H "Content-Type: application/json" \
+     --data '{"type":"A","name":"'${WILD_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}')
+echo "Host : $SUB_DOMAIN"
+echo $SUB_DOMAIN > /root/xray/domain
+echo $SUB_DOMAIN > /root/xray/scdomain
+
+}
 
 function domain_add() {
   clear  
@@ -644,7 +712,16 @@ function install_sc() {
   download_config
 
 }
+function install_sc_cf() {
+  domain_add_cloudflare
+  dependency_install
+  nginx_install
+  install_xray
+  configure_nginx
+  acme
+  download_config
 
+}
 
 
   # Prevent the default bin directory of some system xray from missing
@@ -657,16 +734,29 @@ echo -e "$green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴  
 echo -e "[ ${red}INFO${NC} ] Autoscript xray vpn lite (multi port)"
 echo -e "[ ${red}INFO${NC} ] no licence script (free lifetime)"
 echo -e "[ ${red}INFO${NC} ] Make sure the internet is smooth when installing the script"
-echo -e "[ ${red}INFO${NC} ] First connect your VPS IP to the Domain"
-  read -rp "CONTINUING TO INSTALL AUTOSCRIPT (y/n)? "  menu_num
+echo -e "[ ${Green}MANUAL{Font} ${red}POINTING{NC} ] First connect your VPS IP to the Domain click Y/yes "
+echo -e "[ ${Green}AUTO{Font} ${red}POINTING${NC} ] do you not have a domain? please click N/not
+  read -rp "CONTINUING TO INSTALL AUTOSCRIPT (y/n)? "  menu_num 
   case $menu_num in
-  1)
+  Y)
     install_sc
     ;;
   y)
     install_sc
     ;;
+  yes)
+    install_sc
+    ;;
+  N)
+    install_sc_cf
+    ;;
   n)
+    install_sc_cf
+    ;;
+  not)
+    install_sc_cf
+    ;;
+  back)
     exit
     ;;
   esac
