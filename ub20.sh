@@ -21,7 +21,7 @@ ERROR="${Red}[ERROR]${Font}"
 IMP="wget -q -O"
 local_date="/usr/bin/"
 myhost="https://sc-xray.yha.my.id/file_xtls/"
-
+domain="cat /etc/xray/domain"
 
 function print_ok() {
   echo -e "${OK} ${Blue} $1 ${Font}"
