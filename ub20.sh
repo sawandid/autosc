@@ -16,7 +16,11 @@ GreenBG="\033[42;37m"
 RedBG="\033[41;37m"
 OK="${Green}[OKAY]${Font}"
 ERROR="${Red}[ERROR]${Font}"
-myhost_github="https://raw.githubusercontent.com/rullpqh/autoscript/main/"
+
+# // configuration GET
+IMP="wget -q -O"
+local_date="/usr/bin/"
+myhost="https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/"
 
 
 function print_ok() {
@@ -127,9 +131,6 @@ function dependency_install() {
 }
 
 function download_config() {
-IMP="wget -q -O"
-local_date="/usr/bin/"
-myhost="https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/"
 ${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
   judge "installed successfully add-tr"
 ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
