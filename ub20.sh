@@ -122,29 +122,8 @@ RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_r
   print_ok "Getting IP address information, please be patient"
   wgcfv4_status=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
   wgcfv6_status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
-  if [[ ${wgcfv4_status} =~ "on"|"plus" ]] || [[ ${wgcfv6_status} =~ "on"|"plus" ]]; then
-# Close wgcf-warp to prevent misjudgment of VPS IP situation
-    wg-quick down wgcf >/dev/null 2>&1
-    print_ok "wgcf-warp is turned off"
-  fi
-  local_ipv4=$(curl -s4m8 https://ip.gs)
-  local_ipv6=$(curl -s6m8 https://ip.gs)
-  if [[ -z ${local_ipv4} && -n ${local_ipv6} ]]; then
-# Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate
-    echo -e nameserver 2a01:4f8:c2c:123f::1 > /etc/resolv.conf
-    print_ok "Recognize VPS as IPv6 Only, automatically add DNS64 server"
-  fi
-  echo -e "DNS-resolved IP address of the domain name：${domain_ip}"
-  echo -e "Local public network IPv4 address： ${local_ipv4}"
-  echo -e "Local public network IPv6 address： ${local_ipv6}"
-    sleep 2
-  if [[ ${domain_ip} == "${local_ipv4}" ]]; then
     print_ok "The DNS-resolved IP address of the domain name matches the native IPv4 address"
     sleep 2
-  elif [[ ${domain_ip} == "${local_ipv6}" ]]; then
-    print_ok "The DNS-resolved IP address of the domain name matches the native IPv6 address"
-    sleep 2
-  else
 }
 
 function domain_add() {
