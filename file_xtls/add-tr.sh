@@ -6,6 +6,7 @@ domain=$IP
 fi
 tr="$(cat ~/log-install.txt | grep -w "Trojan " | cut -d: -f2|sed 's/ //g')"
 until [[ $user =~ ^[a-zA-Z0-9_]+$ && ${user_EXISTS} == '0' ]]; do
+clear
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "           TROJAN ACCOUNT          "
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -47,9 +48,9 @@ echo -e "Host/IP : ${domain}" | tee -a /etc/log-create-user.log
 echo -e "port : 443" | tee -a /etc/log-create-user.log
 echo -e "Key : ${uuid}" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
-echo -e "Link WS : ```${trojanlink}```" | tee -a /etc/log-create-user.log
+echo -e "Link WS : ${trojanlink}" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
-echo -e "Link GRPC : ```${trojanlink1}```" | tee -a /etc/log-create-user.log
+echo -e "Link GRPC : ${trojanlink1}" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
 echo -e "Expired On : $exp" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
