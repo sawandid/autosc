@@ -99,7 +99,7 @@ ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 # set locale
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 
-
+domain="cat /etc/bhoikfostyahya/domain"
 install_ssl(){
     if [ -f "/usr/bin/apt-get" ];then
             isDebian=`cat /etc/issue|grep Debian`
