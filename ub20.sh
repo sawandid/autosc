@@ -687,13 +687,14 @@ function install_sc() {
 
 }
 function install_sc_cf() {
-  domain_add_cloudflare
   dependency_install
   nginx_install
+  download_config
+  domain_add_cloudflare
   install_xray
   configure_nginx
   acme
-  download_config
+
 
 }
 
@@ -708,8 +709,8 @@ echo -e "$green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴  
 echo -e "[ ${red}INFO${NC} ] Autoscript xray vpn lite (multi port)"
 echo -e "[ ${red}INFO${NC} ] no licence script (free lifetime)"
 echo -e "[ ${red}INFO${NC} ] Make sure the internet is smooth when installing the script"
-echo -e "[ ${red}MANUAL_POINTING{NC} ] First connect your VPS IP to the Domain please click Y/yes"
-echo -e "[ ${red}AUTO_POINTING${NC} ] do you not have a domain, please click N/not"
+echo -e "[ ${red}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain? please click Y/yes"
+echo -e "[ ${red}AUTO POINTING${NC} ] do you not have a domain? please click N/not"
   read -rp "CONTINUING TO INSTALL AUTOSCRIPT (y/n)? "  menu_num 
   case $menu_num in
   Y)
