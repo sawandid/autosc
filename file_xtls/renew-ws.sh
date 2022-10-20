@@ -1,11 +1,10 @@
 #!/bin/bash
-
 clear
 NUMBER_OF_CLIENTS=$(grep -c -E "^### " "/etc/xray/config.json")
 	if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
 		clear
         echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo -e "            Renew Vmess            "
+        echo -e "           Renew Vmess             "
         echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 		echo ""
 		echo "You have no existing clients!"
@@ -18,7 +17,7 @@ NUMBER_OF_CLIENTS=$(grep -c -E "^### " "/etc/xray/config.json")
 
 	clear
 	echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "            Renew Vmess            "
+    echo -e "           Renew Vmess             "
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
   	grep -E "^### " "/etc/xray/config.json" | cut -d ' ' -f 2-3 | column -t | sort | uniq
