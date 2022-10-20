@@ -9,6 +9,7 @@ fi
 tls="$(cat ~/log-install.txt | grep -w "Vmess TLS" | cut -d: -f2|sed 's/ //g')"
 none="$(cat ~/log-install.txt | grep -w "Vmess None TLS" | cut -d: -f2|sed 's/ //g')"
 until [[ $user =~ ^[a-zA-Z0-9_]+$ && ${CLIENT_EXISTS} == '0' ]]; do
+clear
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "      Add Xray/Vmess Account      "
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
