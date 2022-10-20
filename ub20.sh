@@ -655,8 +655,8 @@ function install_sc() {
 
 
 function install_sc_cf() {
-  domain_cf
   dependency_install
+  domain_cf
   nginx_install
   install_xray
   configure_nginx
