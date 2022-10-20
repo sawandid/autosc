@@ -94,7 +94,7 @@ function domain_add() {
       ;;
     *)
       print_error "installed successfully"
-      exit 2
+      #exit 2
       ;;
     esac
   fi
