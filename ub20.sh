@@ -90,6 +90,7 @@ RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_r
 echo "Host : $SUB_DOMAIN"
 echo "${SUB_DOMAIN}" > /etc/xray/scdomain
 echo "${SUB_DOMAIN}" > /etc/xray/domain
+domain="(cat /etc/xray/domain)"
 }
 
 function domain_add() {
