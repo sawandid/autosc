@@ -51,7 +51,9 @@ judge() {
 }
 
 function domain_add_cloudflare() {
-clear  
+clear
+print_ok "Getting IP address information, please be patient"
+apt install jq curl -y
 mkdir -p /etc/xray
 touch /etc/xray/domain
 DOMEN=yha-net.systems
