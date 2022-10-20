@@ -1,2 +1,48 @@
 # v2
 autoscpt xray v.2
+
+## Xray Nginx-based VLESS + XTLS one-click installation script <img src="https://raw.githubusercontent.com/wulabing/Xray_onekey/main/image/project_xray.jpg" alt="Project_Xray" width="122" height="30" align="bottom" />
+
+> Thanks to bhoikfostyahya for the non-commercial open source software development license!
+
+> Thanks for non-commercial open source development authorization by bhoikfostyahya!
+
+### Due to the possibility of xtls being blocked, it is recommended to use the Nginx pre-version
+
+### Telegram 
+* Telegram ：https://t.me/bhoikfost_yahya 
+
+
+### Import link specification
+https://github.com/XTLS/Xray-core/issues/91
+
+> As of 2021-2-24, only V2RayN 4.12+ and V2RayNG 1.5.8+ support link and QR code import. For other clients, please fill in the configuration information manually.
+
+
+### Installation/Update method (Nginx pre-installation)
+
+Support configuration
+
+- VLESS + TCP + TLS + Nginx + WebSocket
+
+```
+wget -N --no-check-certificate -q -O install.sh "https://raw.githubusercontent.com/wulabing/Xray_onekey/nginx_forward/install.sh" && chmod +x install.sh && bash install.sh
+```
+
+### How to install/update (Xray pre-installed)
+
+### Precautions
+* If you do not understand the specific meaning of each setting in the script, except the domain name, please use the default value provided by the script;
+* Use of this script requires you to have Linux foundation and experience, understand some knowledge of computer network, and basic computer operations;
+* Currently supports Debian 9+ / Ubuntu 18.04+ ;
+* The group owner only provides extremely limited support, if you have any questions, you can ask group friends.
+
+### Thanks
+
+* README Project_Xray project images in this script are provided by Blitzcrank Telegram: @Blitz_crank Thanks to Blitzcrank
+* In this script, MTProxyTLS is based on https://github.com/sunpma/mtp with secondary modification. Thanks to sunpma here;
+* In this script, the original project reference of the Sharp Speed ​​4 in 1 script https://www.94ish.me/1635.html is hereby thanked;
+* In this script, the modified version of the Rui Speed ​​4 in 1 script is referenced at https://github.com/ylx2016/Linux-NetSpeed. Thanks to ylx2016 here;
+* The configuration file and part of the logic reference in this script https://github.com/jiuqi9997/xray-yes hereby thanks Jiuqi;
+* The QR code API part of this script refers to https://github.com/mack-a/v2ray-agent Thanks to mack-a here.
+
