@@ -18,6 +18,7 @@ domain=$IP
 fi
 tr="$(cat ~/log-install.txt | grep -w "Trojan " | cut -d: -f2|sed 's/ //g')"
 until [[ $user =~ ^[a-zA-Z0-9_]+$ && ${user_EXISTS} == '0' ]]; do
+clear
 echo -e "\\[\033[1;93m\━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo -e "\e[42m          TROJAN ACCOUNT          \E[0m"
 echo -e "\\[\033[1;93m\━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
