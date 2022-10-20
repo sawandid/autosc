@@ -665,6 +665,7 @@ function install_sc_cf() {
   # Prevent the default bin directory of some system xray from missing
 red='\e[1;31m'
 green='\e[0;32m'
+tyblue='\e[1;36m'
 NC='\e[0m'
 echo -e "$green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC"
 echo -e "$green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC"
@@ -672,11 +673,11 @@ echo -e "$green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴  
 echo -e "[ ${red}INFO${NC} ] Autoscript xray vpn lite (multi port)"
 echo -e "[ ${red}INFO${NC} ] no licence script (free lifetime)"
 echo -e "[ ${red}INFO${NC} ] Make sure the internet is smooth when installing the script"
-echo -e "[ ${green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain? please click Y/yes"
-echo -e "[ ${green}AUTO POINTING${NC} ] do you not have a domain? please click N/not"
+echo -e "[ ${tyblue}[1]${NC}.${green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain? please click num 1"
+echo -e "[ ${tyblue}[2]${NC}.${green}AUTO POINTING${NC} ] do you not have a domain? please click num 2"
   read -rp "CONTINUING TO INSTALL AUTOSCRIPT (y/n)? "  menu_num 
   case $menu_num in
-  Y)
+  1)
     install_sc
     ;;
   y)
@@ -685,7 +686,7 @@ echo -e "[ ${green}AUTO POINTING${NC} ] do you not have a domain? please click N
   yes)
     install_sc
     ;;
-  N)
+  2)
     install_sc_cf
     ;;
   n)
