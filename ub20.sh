@@ -529,7 +529,6 @@ clear
 
 function acme() {
   systemctl stop nginx
-  curl -L https://get.acme.sh | bash
   judge "installed successfully SSL certificate generation script"
   mkdir /root/.acme.sh
   curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
