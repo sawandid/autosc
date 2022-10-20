@@ -132,27 +132,27 @@ function dependency_install() {
 
 function download_config() {
 ${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
-  judge "installed successfully add-tr"
+  judge "installed successfully add trojan account"
 ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
-  judge "installed successfully add-vless"
+  judge "installed successfully add vless account"
 ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
-  judge "installed successfully add-ws"
+  judge "installed successfully add vmess account"
 ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
-  judge "installed successfully del-tr"
+  judge "installed successfully del trojan account"
 ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
-  judge "installed successfully del-vless"
+  judge "installed successfully del vless account"
 ${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
-  judge "installed successfully del-ws"
+  judge "installed successfully del vmess account"
 ${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
-  judge "installed successfully renew-tr"
+  judge "installed successfully renew trojan account"
 ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
-  judge "installed successfully renew-vless"
+  judge "installed successfully renew vless account"
 ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
-  judge "installed successfully renew-ws"
+  judge "installed successfully renew vmess account"
 ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
-  judge "installed successfully menu"
+  judge "installed successfully menu ur dashboard vps"
 ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
-  judge "installed successfully xp"
+  judge "installed successfully exp all account"
 ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
   judge "installed successfully speedtest"
 cat> /root/.profile << END
@@ -640,9 +640,10 @@ function install_sc() {
   dependency_install
   nginx_install
   install_xray
+  acme
   download_config
   configure_nginx
-  acme
+
 }
 
 
