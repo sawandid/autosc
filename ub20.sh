@@ -136,12 +136,6 @@ ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}a
   judge "installed successfully add-vless"
 ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
   judge "installed successfully add-ws"
-${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
-  judge "installed successfully cek-tr"
-${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
-  judge "installed successfully cek-vless"
-${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
-  judge "installed successfully cek-ws"
 ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
   judge "installed successfully del-tr"
 ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
