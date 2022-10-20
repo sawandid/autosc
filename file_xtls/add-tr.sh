@@ -7,7 +7,7 @@ fi
 tr="$(cat ~/log-install.txt | grep -w "Trojan " | cut -d: -f2|sed 's/ //g')"
 until [[ $user =~ ^[a-zA-Z0-9_]+$ && ${user_EXISTS} == '0' ]]; do
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "           TROJAN ACCOUNT          \E[0m"
+echo -e "           TROJAN ACCOUNT          "
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 		read -rp "User: " -e user
@@ -16,7 +16,7 @@ echo -e "━━━━━━━━━━━━━━━━━━━━━━━�
 		if [[ ${user_EXISTS} == '1' ]]; then
 clear
 		echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-		echo -e "           TROJAN ACCOUNT          \E[0m"
+		echo -e "           TROJAN ACCOUNT          "
 		echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 			echo ""
 			echo "A client with the specified name was already created, please choose another name."
