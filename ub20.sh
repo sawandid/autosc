@@ -154,7 +154,7 @@ ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_da
   judge "installed successfully renew-vless"
 ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
   judge "installed successfully renew-ws"
-${IMP} ${local_date}menu "https://raw.githubusercontent.com/rullpqh/autoscript/main/menu.sh" && chmod +x ${local_date}menu
+${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
   judge "installed successfully menu"
 ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
   judge "installed successfully xp"
