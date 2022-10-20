@@ -20,6 +20,7 @@ fi
 tls="$(cat ~/log-install.txt | grep -w "Vless TLS" | cut -d: -f2|sed 's/ //g')"
 none="$(cat ~/log-install.txt | grep -w "Vless None TLS" | cut -d: -f2|sed 's/ //g')"
 until [[ $user =~ ^[a-zA-Z0-9_]+$ && ${CLIENT_EXISTS} == '0' ]]; do
+clear
 echo -e "\\[\033[1;93m\━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 echo -e "\e[42m            Add Xray/Vless Account      \E[0m"
 echo -e "\\[\033[1;93m\━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
