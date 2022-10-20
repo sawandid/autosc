@@ -139,7 +139,7 @@ apt -y install nginx
 cd
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only//nginx.conf"
+wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/rullpqh/v2/main/ssh_only/nginx.conf"
 mkdir -p /home/vps/public_html
 /etc/init.d/nginx restart
 cat >/etc/nginx/conf.d/xray.conf <<EOF
@@ -290,6 +290,38 @@ cat> /etc/issue.net << END
 <font color="white"><b>     BHOIKFOSTYAHYA         </b></font><br> 
 <font color="red"><b>============================</b></font>
 END
+#!/bin/bash
+#installer Websocker tunneling 
+
+cd
+
+#Install Script Websocket-SSH Python
+wget -O /usr/local/bin/ws-dropbear https://raw.githubusercontent.com/rullpqh/autoscript/main/sshws/dropbear-ws.py
+wget -O /usr/local/bin/ws-stunnel https://raw.githubusercontent.com/rullpqh/autoscript/main/sshws/ws-stunnel
+chmod +x /usr/local/bin/ws-dropbear
+chmod +x /usr/local/bin/ws-stunnel
+
+
+#System Dropbear Websocket-SSH Python
+wget -O /etc/systemd/system/ws-dropbear.service https://raw.githubusercontent.com/rullpqh/autoscript/main/sshws/service-wsdropbear && chmod +x /etc/systemd/system/ws-dropbear.service
+
+#System SSL/TLS Websocket-SSH Python
+wget -O /etc/systemd/system/ws-stunnel.service https://raw.githubusercontent.com/rullpqh/autoscript/main/sshws/ws-stunnel.service && chmod +x /etc/systemd/system/ws-stunnel.service
+
+#restart service
+systemctl daemon-reload
+
+
+#Enable & Start & Restart ws-dropbear service
+systemctl enable ws-dropbear.service
+systemctl start ws-dropbear.service
+systemctl restart ws-dropbear.service
+
+#Enable & Start & Restart ws-openssh service
+systemctl enable ws-stunnel.service
+systemctl start ws-stunnel.service
+systemctl restart ws-stunnel.service
+
 
 # blockir torrent
 iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
