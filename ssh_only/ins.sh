@@ -13,22 +13,22 @@ yellow() { echo -e "\\033[33;1m${*}\\033[0m"; }
 green() { echo -e "\\033[32;1m${*}\\033[0m"; }
 red() { echo -e "\\033[31;1m${*}\\033[0m"; }
 clear
-# initializing var
-export DEBIAN_FRONTEND=noninteractive
-MYIP=$(wget -qO- ipinfo.io/ip);
-MYIP2="s/xxxxxxxxx/$MYIP/g";
-NET=$(ip -o $ANU -4 route show to default | awk '{print $5}');
-source /etc/os-release
-ver=$VERSION_ID
 
-#detail nama perusahaan
-country=ID
-state=Indonesia
-locality=none
-organization=none
-organizationalunit=none
-commonname=none
-email=admin@bahenol
+
+
+yellow "Add Domain for SSH ONLY"
+mkdir -p /etc/bhoikfostyahya
+touch /etc/bhoikfostyahya/domain
+echo " "
+read -rp "Input ur domain : " -e pp
+    if [ -z $pp ]; then
+        echo -e "
+        Nothing input for domain!
+        Then a random domain will be created"
+    else
+        echo "$pp" > /etc/bhoikfostyahya/domain
+    fi
+
 
 # simple password minimal
 curl -sS https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/password | openssl aes-256-cbc -d -a -pass pass:scvps07gg -pbkdf2 > /etc/pam.d/common-password
@@ -293,9 +293,6 @@ cat> /etc/issue.net << END
 <font color="white"><b>     BHOIKFOSTYAHYA         </b></font><br> 
 <font color="red"><b>============================</b></font>
 END
-
-#install bbr dan optimasi kernel
-wget https://raw.githubusercontent.com/rullpqh/autoscript/main/ssh/bbr.sh && chmod +x bbr.sh && ./bbr.sh
 
 # blockir torrent
 iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
