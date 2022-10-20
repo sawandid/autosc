@@ -490,7 +490,6 @@ clear
 
 
 function acme() {
-  systemctl stop nginx
   judge "installed successfully SSL certificate generation script"
   mkdir /root/.acme.sh
   curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
@@ -499,8 +498,6 @@ function acme() {
   /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
   /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
   ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-  systemctl enable nginx
-  systemctl restart nginx
     print_ok "SSL Certificate generated successfully"
 }
 
@@ -645,10 +642,10 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 function install_sc() {
   domain_add
   dependency_install
+  acme
   nginx_install
   install_xray
   configure_nginx
-  acme
   download_config
 
 }
@@ -657,10 +654,10 @@ function install_sc() {
 function install_sc_cf() {
   dependency_install
   domain_cf
+  acme
   nginx_install
   install_xray
   configure_nginx
-  acme
   download_config
 
 }
