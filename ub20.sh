@@ -54,7 +54,7 @@ function domain_add_cloudflare() {
 clear  
 mkdir -p /etc/xray
 touch /etc/xray/domain
-DOMAIN=yha-net.systems
+DOMEN=yha-net.systems
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c2)
 SUB_DOMAIN=cloud-${sub}.yha-net.systems
 CF_ID=bhoikfostyahya@gmail.com
@@ -62,7 +62,7 @@ CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
 set -euo pipefail
 IP=$(wget -qO- ipinfo.io/ip);
 echo "Updating DNS for ${SUB_DOMAIN}..."
-ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" | jq -r .result[0].id)
@@ -90,7 +90,7 @@ WILD_DOMAIN="*.$sub"
 set -euo pipefail
 echo ""
 echo "Updating DNS for ${WILD_DOMAIN}..."
-ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMAIN}&status=active" \
+ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
      -H "X-Auth-Email: ${CF_ID}" \
      -H "X-Auth-Key: ${CF_KEY}" \
      -H "Content-Type: application/json" | jq -r .result[0].id)
@@ -114,9 +114,34 @@ RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_r
      -H "Content-Type: application/json" \
      --data '{"type":"A","name":"'${WILD_DOMAIN}'","content":"'${IP}'","ttl":120,"proxied":false}')
 echo "Host : $SUB_DOMAIN"
-echo $SUB_DOMAIN > /root/xray/domain
-echo $SUB_DOMAIN > /root/xray/scdomain
-
+  domain_ip=$(curl -sm8 ipget.net/?ip="${SUB_DOMAIN}")
+  print_ok "Getting IP address information, please be patient"
+  wgcfv4_status=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+  wgcfv6_status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+  echo "${SUB_DOMAIN}" > /etc/xray/scdomain
+  echo "${SUB_DOMAIN}" > /etc/xray/domain
+  if [[ ${wgcfv4_status} =~ "on"|"plus" ]] || [[ ${wgcfv6_status} =~ "on"|"plus" ]]; then
+# Close wgcf-warp to prevent misjudgment of VPS IP situation
+    wg-quick down wgcf >/dev/null 2>&1
+    print_ok "wgcf-warp is turned off"
+  fi
+  local_ipv4=$(curl -s4m8 https://ip.gs)
+  local_ipv6=$(curl -s6m8 https://ip.gs)
+  if [[ -z ${local_ipv4} && -n ${local_ipv6} ]]; then
+# Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate
+    echo -e nameserver 2a01:4f8:c2c:123f::1 > /etc/resolv.conf
+    print_ok "Recognize VPS as IPv6 Only, automatically add DNS64 server"
+  fi
+  echo -e "DNS-resolved IP address of the domain name：${domain_ip}"
+  echo -e "Local public network IPv4 address： ${local_ipv4}"
+  echo -e "Local public network IPv6 address： ${local_ipv6}"
+  if [[ ${domain_ip} == "${local_ipv4}" ]]; then
+    print_ok "The DNS-resolved IP address of the domain name matches the native IPv4 address"
+    sleep 2
+  elif [[ ${domain_ip} == "${local_ipv6}" ]]; then
+    print_ok "The DNS-resolved IP address of the domain name matches the native IPv6 address"
+    sleep 2  
+  
 }
 
 function domain_add() {
