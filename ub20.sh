@@ -129,7 +129,7 @@ function dependency_install() {
 function download_config() {
 IMP="wget -q -O"
 local_date="/usr/bin/"
-myhost="https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/xp.sh/"
+myhost="https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/"
 ${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
   judge "installed successfully add-tr"
 ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
