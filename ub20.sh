@@ -20,7 +20,7 @@ ERROR="${Red}[ERROR]${Font}"
 # // configuration GET
 IMP="wget -q -O"
 local_date="/usr/bin/"
-myhost="https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/"
+myhost="https://sc-xray.yha.my.id/file_xtls/"
 
 
 function print_ok() {
