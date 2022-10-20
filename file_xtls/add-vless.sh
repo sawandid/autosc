@@ -53,11 +53,11 @@ echo -e "Network : ws" | tee -a /etc/log-create-user.log
 echo -e "Path : /vless" | tee -a /etc/log-create-user.log
 echo -e "ServiceName : vless-grpc" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
-echo -e "Link TLS : ```${vlesslink1}```" | tee -a /etc/log-create-user.log
+echo -e "Link TLS : ${vlesslink1}" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
-echo -e "Link none TLS : ```${vlesslink2}```" | tee -a /etc/log-create-user.log
+echo -e "Link none TLS : ${vlesslink2}" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
-echo -e "Link GRPC : ```${vlesslink3}```" | tee -a /etc/log-create-user.log
+echo -e "Link GRPC : ${vlesslink3}" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
 echo -e "Expired On : $exp" | tee -a /etc/log-create-user.log
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | tee -a /etc/log-create-user.log
