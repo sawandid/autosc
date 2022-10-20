@@ -24,24 +24,24 @@ nginx=$( systemctl status nginx | grep Active | awk '{print $3}' | sed 's/(//g' 
 	up=$(uptime|awk '{ $1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; print }')
 #systm status
 if [[ $nginx == "run" ]]; then
- status_nginx="${GREEN}Online${NC}"
+   status_nginx="${RED}Not Active${NC}"
 else
- status_nginx="${RED}Not Active${NC}"
+   status_nginx="${GREEN}Online${NC}"
     fi
 if [[ $vmess == "run" ]]; then 
-   status_vmess=" ${GREEN}Online${NC} "
-else
    status_vmess="${RED}Not Active${NC}"
+else
+   status_vmess=" ${GREEN}Online${NC} "
    fi
 if [[ $vless == "run" ]]; then 
-   status_vless=" ${GREEN}Online${NC} "
-else
    status_vless="${RED}Not Active${NC}"
+else
+   status_vless=" ${GREEN}Online${NC} "
    fi
 if [[ $trojan == "run" ]]; then 
-   status_trojan=" ${GREEN}Online${NC} "
-else
    status_trojan="${RED}Not Active${NC}" 
+else
+   status_trojan=" ${GREEN}Online${NC} "
    fi  
 
 
