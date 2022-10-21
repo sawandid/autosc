@@ -17,19 +17,7 @@ menu (){
     3) Panduan (Penting)
     """
 }
-signup (){
-    clear
-    touch .key
-    echo "Nama : "
-    read nama
-    echo "Nomer WhatsApp : "
-    read no
-    echo $nama >.key
-    echo $no >>.key
-    echo "Done✓"
-    sleep 1
-    read -p "Tekan Enter [Enter] Untuk Melanjutkan"
-}
+
 manage (){
     echo
     echo """
