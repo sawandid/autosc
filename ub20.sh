@@ -635,7 +635,8 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
   systemctl restart nginx
   systemctl restart xray
   cd
-  menu
+  sleep 5
+  reboot
 }
 
 
@@ -646,9 +647,8 @@ function install_sc() {
   acme
   nginx_install
   install_xray
-  configure_nginx
   download_config
-
+  configure_nginx
 }
 
 
