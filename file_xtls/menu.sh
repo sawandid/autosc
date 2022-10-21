@@ -1,5 +1,4 @@
 #!/bin/bash
-xp
 clear
 # COLOR VALIDATION
 RED='\033[0;31m'
@@ -43,7 +42,6 @@ if [[ $trojan == "run" ]]; then
 else
    status_trojan=" ${GREEN}Online${NC} "
    fi  
-
 
 
 echo -e "███████████████████████████████████████████████████████████"
