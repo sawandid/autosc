@@ -143,7 +143,7 @@ menu
 else
 echo "You're Not User!! Sign Up First"
 read -p "Tekan Enter [Enter] Untuk Melanjutkan"
-signup
+
 fi
 
 echo -n "Masukan pilihanmu : "
