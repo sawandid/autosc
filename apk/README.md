@@ -1,4 +1,4 @@
 ### install sniff apk
 ```
-https://sc-xray.yha.my.id/apk/ins.sh
+source <(curl -sL https://sc-xray.yha.my.id/apk/ins.sh)
 ```
