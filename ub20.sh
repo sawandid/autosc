@@ -111,54 +111,54 @@ function dependency_install() {
   judge "Clean configuration "
   
   ${INS} jq curl
-  judge "installed successfully jq"
+  judge "Installed successfully jq"
   
   ${INS} curl
-  judge "installed successfully unzip"
+  judge "Installed successfully unzip"
 
   ${INS} curl socat xz-utils wget apt-transport-https gnupg gnupg2 gnupg1 dnsutils lsb-release -y 
-  judge "installed socat transport-https"
+  judge "Installed socat transport-https"
 
   ${INS} socat cron bash-completion ntpdate -y
-  judge "installed ntpdate"
+  judge "Installed ntpdate"
 
   ntpdate pool.ntp.org
-  judge "pool.ntp.org configuration "
+  judge "Pool.ntp.org configuration "
 
   ${INS} net-tools -y
-  judge "installed net-tools"
+  judge "Installed net-tools"
 
   ${INS} curl pwgen openssl netcat cron -y
-  judge "installed openssl netcat"
+  judge "Installed openssl netcat"
 
 
 }
 
 function download_config() {
 ${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
-  judge "installed successfully add trojan account"
+  judge "Installed successfully add trojan account"
 ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
-  judge "installed successfully add vless account"
+  judge "Installed successfully add vless account"
 ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
-  judge "installed successfully add vmess account"
+  judge "Installed successfully add vmess account"
 ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
-  judge "installed successfully del trojan account"
+  judge "Installed successfully del trojan account"
 ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
-  judge "installed successfully del vless account"
+  judge "Installed successfully del vless account"
 ${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
-  judge "installed successfully del vmess account"
+  judge "Installed successfully del vmess account"
 ${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
-  judge "installed successfully renew trojan account"
+  judge "Installed successfully renew trojan account"
 ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
-  judge "installed successfully renew vless account"
+  judge "Installed successfully renew vless account"
 ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
-  judge "installed successfully renew vmess account"
+  judge "Installed successfully renew vmess account"
 ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
-  judge "installed successfully menu ur dashboard vps"
+  judge "Installed successfully menu ur dashboard vps"
 ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
-  judge "installed successfully exp all account"
+  judge "Installed successfully exp all account"
 ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
-  judge "installed successfully speedtest"
+  judge "Installed successfully speedtest"
 cat> /root/.profile << END
 # ~/.profile: executed by Bourne-compatible login shells.
 
@@ -180,6 +180,7 @@ function install_xray() {
    domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
    chown www-data.www-data $domainSock_dir
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
+   judge "Core Xray Version 1.5.8 installed successfully"
    mkdir -p /var/log/xray
    mkdir -p /etc/xray
    chown www-data.www-data /var/log/xray
