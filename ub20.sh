@@ -513,7 +513,7 @@ function nginx_install() {
 
 function domain_cf() {
     print_ok "enter the domain into the cloudflare dns"
-    source <(curl -sL https://raw.githubusercontent.com/rullpqh/v2/main/file_xtls/cf.sh)
+    source <(curl -sL ${myhost}cf.sh)
     judge "domain installed successfully"
 }
 
