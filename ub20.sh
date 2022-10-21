@@ -675,7 +675,7 @@ echo -e "[ ${red}INFO${NC} ] no licence script (free lifetime)"
 echo -e "[ ${red}INFO${NC} ] Make sure the internet is smooth when installing the script"
 echo -e "${tyblue}[1]${NC}.${green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain? please click num 1"
 echo -e "${tyblue}[2]${NC}.${green}AUTO POINTING${NC} ] do you not have a domain? please click num 2"
-  read -rp "CONTINUING TO INSTALL AUTOSCRIPT (y/n)? "  menu_num 
+  read -rp "CONTINUING TO INSTALL AUTOSCRIPT (1/2)? "  menu_num 
   case $menu_num in
   1)
     install_sc
