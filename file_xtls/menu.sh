@@ -5,12 +5,12 @@ RED='\033[0;31m'
 NC='\033[0m'
 gray="\e[1;30m"
 GREEN='\033[0;32m'
-grenbo"\e[92;1m"
+grenbo="\e[92;1m"
 ISP=$(curl -s ipinfo.io/org | cut -d " " -f 2-10 )
 CITY=$(curl -s ipinfo.io/city )
 WKT=$(curl -s ipinfo.io/timezone )
 IPVPS=$(curl -s ipv4.icanhazip.com )
-domain='cat /etc/xray/domain'
+domain="(cat /etc/xray/domain)"
 vmess=$(systemctl status xray | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
 vless=$(systemctl status xray | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
 trojan=$(systemctl status xray | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
