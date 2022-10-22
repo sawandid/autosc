@@ -42,10 +42,10 @@ function is_root() {
 
 judge() {
   if [[ 0 -eq $? ]]; then
-    print_ok "$1 Complete... | thx to ${Green}bhoikfostyahya${Font}"
+    print_ok "$1 Complete... | thx to ${Yellow}bhoikfostyahya${Font}"
     sleep 1
   else
-    print_error "$1 Fail... | thx to ${Green}bhoikfostyahya${Font}"
+    print_error "$1 Fail... | thx to ${Yellow}bhoikfostyahya${Font}"
     exit 1
   fi
 }
@@ -141,6 +141,12 @@ ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}a
   judge "Installed successfully add vless account"
 ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
   judge "Installed successfully add vmess account"
+${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
+  judge "Installed successfully check trojan account"
+${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
+  judge "Installed successfully check vless account"
+${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
+  judge "Installed successfully check vmess account"
 ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
   judge "Installed successfully del trojan account"
 ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
@@ -153,12 +159,12 @@ ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_da
   judge "Installed successfully renew vless account"
 ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
   judge "Installed successfully renew vmess account"
-${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
-  judge "Installed successfully menu ur dashboard vps"
 ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
   judge "Installed successfully exp all account"
 ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
   judge "Installed successfully speedtest"
+${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
+  judge "Installed successfully menu ur dashboard vps"  
 cat> /root/.profile << END
 # ~/.profile: executed by Bourne-compatible login shells.
 
