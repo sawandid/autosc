@@ -22,7 +22,7 @@ fi
 clear
 until [[ $user =~ ^[a-zA-Z0-9_]+$ && ${CLIENT_EXISTS} == '0' ]]; do
 echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-echo -e "\e[42m            Add Xray/Vless Account      \E[0m"
+echo -e "\e[42m         Add Xray/Vless Account      \E[0m"
 echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 
 		read -rp "User: " -e user
@@ -31,7 +31,7 @@ echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━�
 		if [[ ${CLIENT_EXISTS} == '1' ]]; then
 clear
 		echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
-		echo -e "\e[42m            Add Xray/Vless Account      \E[0m"
+		echo -e "\e[42m         Add Xray/Vless Account      \E[0m"
 		echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
 			echo ""
 			echo "A client with the specified name was already created, please choose another name."
@@ -54,7 +54,7 @@ vlesslink3="vless://${uuid}@${domain}:443?mode=gun&security=tls&encryption=none&
 systemctl restart xray
 clear
 echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m" | tee -a /etc/log-create-user.log
-echo -e "\e[42m              Xray/Vless Account        \E[0m" | tee -a /etc/log-create-user.log
+echo -e "\e[42m         Add Xray/Vless Account      \E[0m" | tee -a /etc/log-create-user.log
 echo -e "\033[1;93m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m" | tee -a /etc/log-create-user.log
 echo -e "Remarks : ${user}" | tee -a /etc/log-create-user.log
 echo -e "Domain : ${domain}" | tee -a /etc/log-create-user.log
