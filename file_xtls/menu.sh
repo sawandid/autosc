@@ -52,7 +52,7 @@ echo -e "███████████████████████ \
 echo -e "█▄─▄███▄─▄█─▄─▄─█▄─▄▄─█ \e[032;1mTotal Amount Of RAM:\e[0m \e[1;32m$tram MB\e[0m"
 echo -e "██─██▀██─████─████─▄█▀█ \e[032;1mIsp Name:\e[0m \e[1;32m$ISP\e[0m"
 echo -e "▀▄▄▄▄▄▀▄▄▄▀▀▄▄▄▀▀▄▄▄▄▄▀ \e[033;1mIp VPS:\e[0m \e[1;32m$IPVPS\e[0m"
-echo -e "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ \e[033;1mDomain:\e[0m: \e[1;32m$domain\e[0m"  
+echo -e "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ \e[033;1mDomain:\e[0m: \e[1;32m$( cat /etc/xray/domain )\e[0m"  
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e " Vmess Status: $status_vmess  Trojan Status: $status_trojan"
 echo -e " VLess Status: $status_vless  Nginx Status: $status_nginx"     
