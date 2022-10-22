@@ -24,7 +24,6 @@ https://github.com/XTLS/Xray-core/issues/91
 Support configuration
 
 ### Service & Port:
-  Service Port
  - XRAY  Vmess TLS + gRPC  : 443
  - XRAY  Vless TLS + gRPC  : 443
  - Trojan WS + gRPC        : 443
@@ -52,6 +51,5 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 * The configuration file and part of the logic reference in this script https://github.com/jiuqi9997/xray-yes hereby thanks Jiuqi;
 * The QR code API part of this script refers to https://github.com/mack-a/v2ray-agent Thanks to mack-a here.
 
-## Stargazers over time
+## ss
 
-[![Stargazers over time](https://starchart.cc/wulabing/Xray_onekey.svg)](https://starchart.cc/wulabing/Xray_onekey)
