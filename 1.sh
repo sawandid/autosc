@@ -489,11 +489,11 @@ cat >/etc/nginx/conf.d/xray.conf <<EOF
              ssl_stapling on;
              ssl_stapling_verify on;
              ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5;
-             index index.html index.htm index.php default.php default.htm default.html;
              ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
              access_log  /dev/null;
              error_log  /dev/null;
              root /var/www/html;
+             index index.html index.htm index.php default.php default.htm default.html;
         }
 EOF
 sed -i '$ ilocation = /vless' /etc/nginx/conf.d/xray.conf
