@@ -602,23 +602,22 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 function install_sc() {
   domain_add
   dependency_install
-  acme
   nginx_install
+  acme
   install_xray
-  download_config
   configure_nginx
+  download_config
 }
 
 
 function install_sc_cf() {
   dependency_install
   domain_cf
-  acme
   nginx_install
+  acme
   install_xray
-  download_config
   configure_nginx
-
+  download_config
 }
 
   # Prevent the default bin directory of some system xray from missing
