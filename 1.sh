@@ -186,16 +186,6 @@ chmod 644 /root/.profile
 function install_xray() {
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
-   mkdir -p /var/log/xray
-   mkdir -p /etc/xray
-   chown www-data.www-data /var/log/xray
-   chmod +x /var/log/xray
-       touch /var/log/xray/access.log
-       touch /var/log/xray/error.log
-       touch /var/log/xray/access2.log
-       touch /var/log/xray/error2.log
-   rm -rf /www/xray_web
-   mkdir -p /www/xray_web
 # / /  Xray Core Version new
    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
 # set uuid
@@ -454,45 +444,7 @@ cat > /etc/xray/config.json << END
   }
 }
 END
-rm -rf /etc/systemd/system/xray.service.d
-cat <<EOF> /etc/systemd/system/xray.service
-Description=Xray Service
-Documentation=https://github.com/xtls
-After=network.target nss-lookup.target
-
-[Service]
-User=www-data
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
-ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
-Restart=on-failure
-RestartPreventExitStatus=23
-LimitNPROC=10000
-LimitNOFILE=1000000
-
-[Install]
-WantedBy=multi-user.target
-
-EOF
-cat > /etc/systemd/system/runn.service <<EOF
-[Unit]
-Description=BhoikfostYahya
-After=network.target
-
-[Service]
-Type=simple
-ExecStartPre=-${local_date}mkdir -p /var/run/xray
-ExecStart=${local_date}chown www-data:www-data /var/run/xray
-Restart=on-abort
-
-[Install]
-WantedBy=multi-user.target
-EOF
-clear
 }
-
-
-
 
 
 function acme() {
@@ -522,8 +474,8 @@ function domain_cf() {
 
 function configure_nginx() {
 #nginx config
-rm var/www/html/*.html
-wget var/www/html/${myhost_html}index.html
+rm /var/www/html/*.html
+wget -q -O /var/www/html/index.html ${myhost_html}index.html
 cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
@@ -637,6 +589,7 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
   judge "Nginx configuration modification"
   systemctl daemon-reload
+  systemctl enable nginx
   systemctl restart nginx
   systemctl restart xray
   cd
