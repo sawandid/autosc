@@ -544,7 +544,7 @@ cat >/etc/nginx/conf.d/xray.conf <<EOF
              root /var/www/html;
         }
 EOF
-sed -i '$ ilocation = /vless' /etc/nginx/conf.d/xray.conf
+sed -i '$ ilocation = /vless' /etc/nginx/conf.d/$domain.conf
 sed -i '$ i{' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_pass http://127.0.0.1:14016;' /etc/nginx/conf.d/xray.conf
