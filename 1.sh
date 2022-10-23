@@ -480,7 +480,6 @@ function acme() {
 function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
-    sed -i "s/xxx/${domain}/g" ${nginx_conf}
     judge "Nginx installed successfully"
 }
 
@@ -501,7 +500,7 @@ cat >/etc/nginx/conf.d/${domain}.conf <<EOF
              listen 443 ssl http2 default_server;
              listen [::]:443 ssl http2 default_server;
              return 301 https://$domain$request_uri;
-             server_name xxx;
+             server_name $domain;
              ssl_certificate /etc/xray/xray.crt;
              ssl_certificate_key /etc/xray/xray.key;
              ssl_stapling on;
