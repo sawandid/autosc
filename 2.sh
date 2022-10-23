@@ -467,8 +467,7 @@ function acme() {
   chmod +x /root/.acme.sh/acme.sh
   /root/.acme.sh/acme.sh --upgrade --auto-upgrade
   /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
-  /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
-  /root/.acme.sh/acme.sh --issue --insecure -d "${domain}" --webroot -k ec-256 --force
+  /root/.acme.sh/acme.sh --issue --insecure -d $domain --standalone --webroot -k ec-256
   ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
     print_ok "SSL Certificate generated successfully"
 }
