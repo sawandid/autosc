@@ -1,4 +1,4 @@
-#!/bin/bash
+#!${local_date}env bash
 # //====================================================
 # //	System Request:Debian 9+/Ubuntu 18.04+/20+
 # //	Author:	bhoikfostyahya
@@ -183,6 +183,8 @@ chmod 644 /root/.profile
 }
 
 function install_xray() {
+   domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
+   chown www-data.www-data $domainSock_dir
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
    mkdir -p /var/log/xray
@@ -222,19 +224,19 @@ cat > /etc/xray/config.json << END
      "port": "14016",
      "protocol": "vless",
       "settings": {
- "decryption":"none",
-   "clients": [
-      {
-        "id": "${uuid}"        
+          "decryption":"none",
+            "clients": [
+               {
+                 "id": "${uuid}"                 
 #vless
-    }
- ]
+             }
+          ]
        },
        "streamSettings":{
-"network": "ws",
-   "wsSettings": {
-       "path": "/vless"
- }
+         "network": "ws",
+            "wsSettings": {
+                "path": "/vless"
+          }
         }
      },
      {
@@ -242,19 +244,19 @@ cat > /etc/xray/config.json << END
      "port": "14017",
      "protocol": "vmess",
       "settings": {
-   "clients": [
-      {
-        "id": "${uuid}",
-        "alterId": 0
+            "clients": [
+               {
+                 "id": "${uuid}",
+                 "alterId": 0
 #vmess
-    }
- ]
+             }
+          ]
        },
        "streamSettings":{
-"network": "ws",
-   "wsSettings": {
-       "path": "/vmess"
- }
+         "network": "ws",
+            "wsSettings": {
+                "path": "/vmess"
+          }
         }
      },
     {
@@ -262,41 +264,41 @@ cat > /etc/xray/config.json << END
       "port": "14018",
       "protocol": "trojan",
       "settings": {
- "decryption":"none",		
-  "clients": [
-     {
-        "password": "${uuid}"
+          "decryption":"none",		
+           "clients": [
+              {
+                 "password": "${uuid}"
 #trojanws
-     }
- ],
-"udp": true
+              }
+          ],
+         "udp": true
        },
        "streamSettings":{
-  "network": "ws",
-  "wsSettings": {
-      "path": "/trojan-ws"
-   }
-}
+           "network": "ws",
+           "wsSettings": {
+               "path": "/trojan-ws"
+            }
+         }
      },
     {
-"listen": "127.0.0.1",
+         "listen": "127.0.0.1",
         "port": "30300",
         "protocol": "shadowsocks",
         "settings": {
-  "clients": [
-  {
-  "method": "aes-128-gcm",
- "password": "${uuid}"
+           "clients": [
+           {
+           "method": "aes-128-gcm",
+          "password": "${uuid}"
 #ssws
-  }
- ],
- "network": "tcp,udp"
+           }
+          ],
+          "network": "tcp,udp"
        },
        "streamSettings":{
- "network": "ws",
-    "wsSettings": {
-      "path": "/ss-ws"
-  }
+          "network": "ws",
+             "wsSettings": {
+               "path": "/ss-ws"
+           }
         }
      },	
       {
@@ -304,19 +306,19 @@ cat > /etc/xray/config.json << END
         "port": "14019",
         "protocol": "vless",
         "settings": {
-"decryption":"none",
-  "clients": [
-    {
-      "id": "${uuid}"
+         "decryption":"none",
+           "clients": [
+             {
+               "id": "${uuid}"
 #vlessgrpc
-    }
- ]
+             }
+          ]
        },
- "streamSettings":{
-    "network": "grpc",
-    "grpcSettings": {
-       "serviceName": "vless-grpc"
-  }
+          "streamSettings":{
+             "network": "grpc",
+             "grpcSettings": {
+                "serviceName": "vless-grpc"
+           }
         }
      },
      {
@@ -324,19 +326,19 @@ cat > /etc/xray/config.json << END
       "port": "14020",
      "protocol": "vmess",
       "settings": {
-   "clients": [
-      {
-        "id": "${uuid}",
-        "alterId": 0
+            "clients": [
+               {
+                 "id": "${uuid}",
+                 "alterId": 0
 #vmessgrpc
-    }
- ]
+             }
+          ]
        },
        "streamSettings":{
-"network": "grpc",
-   "grpcSettings": {
-       "serviceName": "vmess-grpc"
- }
+         "network": "grpc",
+            "grpcSettings": {
+                "serviceName": "vmess-grpc"
+          }
         }
      },
      {
@@ -344,19 +346,19 @@ cat > /etc/xray/config.json << END
         "port": "14021",
         "protocol": "trojan",
         "settings": {
- "decryption":"none",
-    "clients": [
-      {
-        "password": "${uuid}"
+          "decryption":"none",
+             "clients": [
+               {
+                 "password": "${uuid}"
 #trojangrpc
-      }
-  ]
+               }
+           ]
         },
-"streamSettings":{
-"network": "grpc",
-  "grpcSettings": {
-      "serviceName": "trojan-grpc"
-}
+         "streamSettings":{
+         "network": "grpc",
+           "grpcSettings": {
+               "serviceName": "trojan-grpc"
+         }
       }
    },
    {
@@ -365,19 +367,19 @@ cat > /etc/xray/config.json << END
     "protocol": "shadowsocks",
     "settings": {
         "clients": [
- {
-    "method": "aes-128-gcm",
-    "password": "${uuid}"
+          {
+             "method": "aes-128-gcm",
+             "password": "${uuid}"
 #ssgrpc
-  }
-],
-  "network": "tcp,udp"
+           }
+         ],
+           "network": "tcp,udp"
       },
     "streamSettings":{
      "network": "grpc",
         "grpcSettings": {
-  "serviceName": "ss-grpc"
- }
+           "serviceName": "ss-grpc"
+          }
        }
     }	
   ],
@@ -397,26 +399,26 @@ cat > /etc/xray/config.json << END
       {
         "type": "field",
         "ip": [
- "0.0.0.0/8",
- "10.0.0.0/8",
- "100.64.0.0/10",
- "169.254.0.0/16",
- "172.16.0.0/12",
- "192.0.0.0/24",
- "192.0.2.0/24",
- "192.168.0.0/16",
- "198.18.0.0/15",
- "198.51.100.0/24",
- "203.0.113.0/24",
- "::1/128",
- "fc00::/7",
- "fe80::/10"
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.0.0.0/24",
+          "192.0.2.0/24",
+          "192.168.0.0/16",
+          "198.18.0.0/15",
+          "198.51.100.0/24",
+          "203.0.113.0/24",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10"
         ],
         "outboundTag": "blocked"
       },
       {
         "inboundTag": [
- "api"
+          "api"
         ],
         "outboundTag": "api",
         "type": "field"
@@ -425,7 +427,7 @@ cat > /etc/xray/config.json << END
         "type": "field",
         "outboundTag": "blocked",
         "protocol": [
- "bittorrent"
+          "bittorrent"
         ]
       }
     ]
@@ -461,7 +463,7 @@ After=network.target nss-lookup.target
 
 [Service]
 User=www-data
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE      AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
 ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
 Restart=on-failure
@@ -473,6 +475,24 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
+cat > /etc/systemd/system/runn.service <<EOF
+[Unit]
+Description=BhoikfostYahya
+After=network.target
+
+[Service]
+Type=simple
+ExecStartPre=-${local_date}mkdir -p /var/run/xray
+ExecStart=${local_date}chown www-data:www-data /var/run/xray
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+EOF
+clear
+}
+
+
 
 
 
@@ -503,34 +523,20 @@ function domain_cf() {
 
 function configure_nginx() {
 #nginx config
-cat >etc/nginx/sites-enabled/default <<EOF
-
-server {
-    listen 80;
-    server_name $domain;
-    rewrite ^/(.*) $domain permanent;
-}
-
-server {
-    listen 443 ssl http2 reuseport;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-
-    index index.html;
-
-    server_name $domain;
-    ssl_certificate /etc/xray/xray.crt;
-    ssl_certificate_key /etc/xray/xray.key;
-    ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5;
-    ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
-    root /var/www/html;
-
-    location / {
-   try_files $uri $uri/ =404;
-    }
-}
-
+cat >/etc/nginx/conf.d/xray.conf <<EOF
+    server {
+             listen 80;
+             listen [::]:80;
+    server {         
+             listen 443 ssl http2 reuseport;
+             listen [::]:80 default_server;	
+             server_name $domain;
+             ssl_certificate /etc/xray/xray.crt;
+             ssl_certificate_key /etc/xray/xray.key;
+             ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5;
+             ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+             root /var/www/html;
+        }
 EOF
 sed -i '$ ilocation = /vless' /etc/nginx/conf.d/xray.conf
 sed -i '$ i{' /etc/nginx/conf.d/xray.conf
