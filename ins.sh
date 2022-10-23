@@ -1,4 +1,4 @@
-#!${local_date}env bash
+#!/bin/bash
 # //====================================================
 # //	System Request:Debian 9+/Ubuntu 18.04+/20+
 # //	Author:	bhoikfostyahya
@@ -183,8 +183,6 @@ chmod 644 /root/.profile
 }
 
 function install_xray() {
-   domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
-   chown www-data.www-data $domainSock_dir
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
    mkdir -p /var/log/xray
@@ -475,24 +473,6 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
-cat > /etc/systemd/system/runn.service <<EOF
-[Unit]
-Description=BhoikfostYahya
-After=network.target
-
-[Service]
-Type=simple
-ExecStartPre=-${local_date}mkdir -p /var/run/xray
-ExecStart=${local_date}chown www-data:www-data /var/run/xray
-Restart=on-abort
-
-[Install]
-WantedBy=multi-user.target
-EOF
-clear
-}
-
-
 
 
 
