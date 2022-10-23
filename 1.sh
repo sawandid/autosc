@@ -23,6 +23,8 @@ local_date="/usr/bin/"
 myhost="https://sc-xray.yha.my.id/file_xtls/"
 myhost_html="https://sc-xray.yha.my.id/"
 domain="cat /etc/xray/domain"
+nginx_conf="/etc/nginx/conf.d/${domain}.conf"
+website_dir="var/www/html/"
 
 function print_ok() {
   echo -e "${OK} ${Blue} $1 ${Font}"
@@ -448,21 +450,26 @@ END
 
 
 function acme() {
+  systemctl stop nginx
   judge "installed successfully SSL certificate generation script"
+  sed -i "6s/^/#/" "$nginx_conf"
+  sed -i "6a\\\troot $website_dir;" "$nginx_conf"
   mkdir /root/.acme.sh
   curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
   chmod +x /root/.acme.sh/acme.sh
   /root/.acme.sh/acme.sh --upgrade --auto-upgrade
   /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+  /root/.acme.sh/acme.sh "${domain}" --webroot "$website_dir" -k ec-256 --force
   /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
   ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-    print_ok "SSL Certificate generated successfully"
+   print_ok "SSL Certificate generated successfully"
 }
 
 
 function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
+    sed -i "s/xxx/${domain}/g" ${nginx_conf}
     judge "Nginx installed successfully"
 }
 
@@ -476,14 +483,14 @@ function configure_nginx() {
 #nginx config
 rm /var/www/html/*.html
 wget -q -O /var/www/html/index.html ${myhost_html}index.html
-cat >/etc/nginx/conf.d/xray.conf <<EOF
+cat >/etc/nginx/conf.d/${domain}.conf <<EOF
     server {
              listen 80 default_server;
              listen [::]:80 default_server;
              listen 443 ssl http2 default_server;
              listen [::]:443 ssl http2 default_server;
              return 301 https://$domain$request_uri;
-             server_name $domain www.$domain;
+             server_name xxx;
              ssl_certificate /etc/xray/xray.crt;
              ssl_certificate_key /etc/xray/xray.key;
              ssl_stapling on;
