@@ -186,16 +186,6 @@ function install_xray() {
 
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
-   mkdir -p /var/log/xray
-   mkdir -p /etc/xray
-   chown www-data.www-data /var/log/xray
-   chmod +x /var/log/xray
-       touch /var/log/xray/access.log
-       touch /var/log/xray/error.log
-       touch /var/log/xray/access2.log
-       touch /var/log/xray/error2.log
-   rm -rf /www/xray_web
-   mkdir -p /www/xray_web
 # / /  Xray Core Version new
    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
 # set uuid
