@@ -183,8 +183,7 @@ chmod 644 /root/.profile
 }
 
 function install_xray() {
-   domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
-   chown www-data.www-data $domainSock_dir
+
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
    mkdir -p /var/log/xray
@@ -455,41 +454,6 @@ cat > /etc/xray/config.json << END
   }
 }
 END
-rm -rf /etc/systemd/system/xray.service.d
-cat <<EOF> /etc/systemd/system/xray.service
-Description=Xray Service
-Documentation=https://github.com/xtls
-After=network.target nss-lookup.target
-
-[Service]
-User=www-data
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
-ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
-Restart=on-failure
-RestartPreventExitStatus=23
-LimitNPROC=10000
-LimitNOFILE=1000000
-
-[Install]
-WantedBy=multi-user.target
-
-EOF
-cat > /etc/systemd/system/runn.service <<EOF
-[Unit]
-Description=BhoikfostYahya
-After=network.target
-
-[Service]
-Type=simple
-ExecStartPre=-${local_date}mkdir -p /var/run/xray
-ExecStart=${local_date}chown www-data:www-data /var/run/xray
-Restart=on-abort
-
-[Install]
-WantedBy=multi-user.target
-EOF
-clear
 }
 
 
@@ -512,9 +476,9 @@ function acme() {
 function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
+    /root/.acme.sh/acme.sh --issue --insecure -d "${domain}" --webroot /var/www/html/ -k ec-256 --force
+    /root/.acme.sh/acme.sh --installcert -d "${domain}" --fullchainpath etc/xray/xray.crt --keypath etc/xray/xray.key --reloadcmd --ecc --force
     judge "Nginx installed successfully"
-    rm /etc/nginx/sites-enabled/default
-    rm /etc/nginx/sites-available/default
 }
 
 function domain_cf() {
@@ -529,18 +493,14 @@ cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
              listen [::]:80;
-             server_name $domain;    
-         }
-    server {        
              listen 443 ssl http2 reuseport;
-             listen [::]:80 default_server;	
-             server_name $domain;
+             listen [::]:443 http2 reuseport;	
+             server_name $MYIP;
+             return 301 $domain www.$domain;
              ssl_certificate /etc/xray/xray.crt;
              ssl_certificate_key /etc/xray/xray.key;
              ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5;
              ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
-             
-             index index.html index.htm index.nginx-debian.html;
              root /var/www/html;
         }
 EOF
