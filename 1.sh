@@ -185,6 +185,16 @@ chmod 644 /root/.profile
 
 }
 
+function restart() {
+  systemctl daemon-reload
+  systemctl enable nginx
+  systemctl restart nginx
+  systemctl restart xray
+  judge "restart all service successfully"
+  sleep 5
+  reboot
+}
+
 function install_xray() {
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
@@ -588,13 +598,7 @@ sed -i '$ igrpc_pass grpc://127.0.0.1:30310;' /etc/nginx/conf.d/xray.conf
 sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
   judge "Nginx configuration modification"
-  systemctl daemon-reload
-  systemctl enable nginx
-  systemctl restart nginx
-  systemctl restart xray
-  cd
-  sleep 5
-  reboot
+  
 }
 
 
@@ -603,10 +607,11 @@ function install_sc() {
   domain_add
   dependency_install
   nginx_install
-  acme
   install_xray
   configure_nginx
+  acme
   download_config
+  restart
 }
 
 
@@ -614,10 +619,11 @@ function install_sc_cf() {
   dependency_install
   domain_cf
   nginx_install
-  acme
   install_xray
   configure_nginx
+  acme
   download_config
+  restart
 }
 
   # Prevent the default bin directory of some system xray from missing
@@ -638,22 +644,10 @@ echo -e "${tyblue}[2]${NC}.${green}AUTO POINTING${NC} ] do you not have a domain
   1)
     install_sc
     ;;
-  y)
-    install_sc
-    ;;
-  yes)
-    install_sc
-    ;;
   2)
     install_sc_cf
     ;;
-  n)
-    install_sc_cf
-    ;;
-  not)
-    install_sc_cf
-    ;;
-  back)
+  *)
     exit
     ;;
   esac
