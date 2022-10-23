@@ -468,6 +468,7 @@ function acme() {
   /root/.acme.sh/acme.sh --upgrade --auto-upgrade
   /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
   /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
+  /root/.acme.sh/acme.sh --issue --insecure -d "${domain}" --webroot -k ec-256 --force
   ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
     print_ok "SSL Certificate generated successfully"
 }
@@ -476,8 +477,6 @@ function acme() {
 function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
-    /root/.acme.sh/acme.sh --issue --insecure -d "${domain}" --webroot /var/www/html/ -k ec-256 --force
-    /root/.acme.sh/acme.sh --installcert -d "${domain}" --fullchainpath etc/xray/xray.crt --keypath etc/xray/xray.key --reloadcmd --ecc --force
     judge "Nginx installed successfully"
 }
 
