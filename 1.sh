@@ -186,11 +186,12 @@ chmod 644 /root/.profile
 }
 
 function restart() {
-  systemctl daemon-reload
   systemctl enable nginx
   systemctl restart nginx
   systemctl restart xray
+  systemctl daemon-reload
   judge "restart all service successfully"
+  echo; echo 'Installation autoscript completed ...'
   sleep 5
   reboot
 }
