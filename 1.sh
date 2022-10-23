@@ -21,8 +21,8 @@ ERROR="${Red}[ERROR]${Font}"
 IMP="wget -q -O"
 local_date="/usr/bin/"
 myhost="https://sc-xray.yha.my.id/file_xtls/"
+myhost_html="https://sc-xray.yha.my.id/"
 domain="cat /etc/xray/domain"
-MYIP="wget -qO- ipinfo.io/ip"
 
 function print_ok() {
   echo -e "${OK} ${Blue} $1 ${Font}"
@@ -194,6 +194,8 @@ function install_xray() {
        touch /var/log/xray/error.log
        touch /var/log/xray/access2.log
        touch /var/log/xray/error2.log
+   rm -rf /www/xray_web
+   mkdir -p /www/xray_web
 # / /  Xray Core Version new
    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
 # set uuid
@@ -452,8 +454,46 @@ cat > /etc/xray/config.json << END
   }
 }
 END
+rm -rf /etc/systemd/system/xray.service.d
+cat <<EOF> /etc/systemd/system/xray.service
+Description=Xray Service
+Documentation=https://github.com/xtls
+After=network.target nss-lookup.target
 
+[Service]
+User=www-data
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+cat > /etc/systemd/system/runn.service <<EOF
+[Unit]
+Description=BhoikfostYahya
+After=network.target
+
+[Service]
+Type=simple
+ExecStartPre=-${local_date}mkdir -p /var/run/xray
+ExecStart=${local_date}chown www-data:www-data /var/run/xray
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+EOF
+clear
 }
+
+
+
+
 
 function acme() {
   judge "installed successfully SSL certificate generation script"
@@ -464,7 +504,6 @@ function acme() {
   /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
   /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
   ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-
     print_ok "SSL Certificate generated successfully"
 }
 
@@ -472,8 +511,6 @@ function acme() {
 function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
-    /root/.acme.sh/acme.sh --issue --insecure -d "${domain}" --webroot /var/www/html/ -k ec-256 --force
-    /root/.acme.sh/acme.sh --installcert -d "${domain}" --fullchainpath etc/xray/xray.crt --keypath etc/xray/xray.key --reloadcmd --ecc --force
     judge "Nginx installed successfully"
 }
 
@@ -485,13 +522,15 @@ function domain_cf() {
 
 function configure_nginx() {
 #nginx config
+rm var/www/html/*.html
+wget var/www/html/${myhost_html}index.html
 cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
              listen [::]:80;
              listen 443 ssl http2 reuseport;
              listen [::]:443 http2 reuseport;	
-             server_name $MYIP;
+             server_name $domain;
              return 301 $domain www.$domain;
              ssl_certificate /etc/xray/xray.crt;
              ssl_certificate_key /etc/xray/xray.key;
@@ -598,7 +637,6 @@ sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
   judge "Nginx configuration modification"
   systemctl daemon-reload
-  systemctl enable nginx
   systemctl restart nginx
   systemctl restart xray
   cd
