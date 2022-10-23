@@ -22,6 +22,7 @@ IMP="wget -q -O"
 local_date="/usr/bin/"
 myhost="https://sc-xray.yha.my.id/file_xtls/"
 domain="cat /etc/xray/domain"
+MYIP="wget -qO- ipinfo.io/ip"
 
 function print_ok() {
   echo -e "${OK} ${Blue} $1 ${Font}"
@@ -482,7 +483,6 @@ function domain_cf() {
 
 function configure_nginx() {
 #nginx config
-MYIP=$(wget -qO- ipinfo.io/ip);
 cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
