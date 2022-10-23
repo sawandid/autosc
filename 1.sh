@@ -187,7 +187,7 @@ function install_xray() {
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
 # / /  Xray Core Version new
-   bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
+curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install
 # set uuid
 uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
 # xray config
@@ -482,8 +482,7 @@ cat >/etc/nginx/conf.d/xray.conf <<EOF
              listen [::]:80;
              listen 443 ssl http2 reuseport;
              listen [::]:443 http2 reuseport;	
-             server_name $domain;
-             return 301 $domain www.$domain;
+             server_name $domain www.$domain;
              ssl_certificate /etc/xray/xray.crt;
              ssl_certificate_key /etc/xray/xray.key;
              ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+ECDSA+AES128:EECDH+aRSA+AES128:RSA+AES128:EECDH+ECDSA+AES256:EECDH+aRSA+AES256:RSA+AES256:EECDH+ECDSA+3DES:EECDH+aRSA+3DES:RSA+3DES:!MD5;
