@@ -469,8 +469,6 @@ function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
     judge "Nginx installed successfully"
-    rm /etc/nginx/sites-enabled/default
-    rm /etc/nginx/sites-available/default
 }
 
 function domain_cf() {
