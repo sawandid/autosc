@@ -53,7 +53,6 @@ judge() {
 }
 
 
-
 function domain_add() {
   clear  
   mkdir -p /etc/xray
@@ -143,24 +142,24 @@ ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}a
   judge "Installed successfully add vless account"
 ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
   judge "Installed successfully add vmess account"
-${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
-  judge "Installed successfully check trojan account"
-${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
-  judge "Installed successfully check vless account"
-${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
-  judge "Installed successfully check vmess account"
 ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
   judge "Installed successfully del trojan account"
 ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
   judge "Installed successfully del vless account"
 ${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
-  judge "Installed successfully del vmess account"
+  judge "Installed successfully del vmess account"  
 ${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
   judge "Installed successfully renew trojan account"
 ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
   judge "Installed successfully renew vless account"
 ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
   judge "Installed successfully renew vmess account"
+${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
+  judge "Installed successfully check trojan account"
+${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
+  judge "Installed successfully check vless account"
+${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
+  judge "Installed successfully check vmess account"  
 ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
   judge "Installed successfully exp all account"
 ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
@@ -185,14 +184,8 @@ chmod 644 /root/.profile
 }
 
 function install_xray() {
-   domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
-   chown www-data.www-data $domainSock_dir
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
-   mkdir -p /var/log/xray
-   mkdir -p /etc/xray
-   chown www-data.www-data /var/log/xray
-   chmod +x /var/log/xray
 # / /  Xray Core Version new
    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
    
@@ -452,41 +445,7 @@ cat > /etc/xray/config.json << END
   }
 }
 END
-rm -rf /etc/systemd/system/xray.service.d
-cat <<EOF> /etc/systemd/system/xray.service
-Description=Xray Service
-Documentation=https://github.com/xtls
-After=network.target nss-lookup.target
 
-[Service]
-User=www-data
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
-ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
-Restart=on-failure
-RestartPreventExitStatus=23
-LimitNPROC=10000
-LimitNOFILE=1000000
-
-[Install]
-WantedBy=multi-user.target
-
-EOF
-cat > /etc/systemd/system/runn.service <<EOF
-[Unit]
-Description=BhoikfostYahya
-After=network.target
-
-[Service]
-Type=simple
-ExecStartPre=-${local_date}mkdir -p /var/run/xray
-ExecStart=${local_date}chown www-data:www-data /var/run/xray
-Restart=on-abort
-
-[Install]
-WantedBy=multi-user.target
-EOF
-clear
 }
 
 
