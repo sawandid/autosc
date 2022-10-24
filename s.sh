@@ -57,6 +57,7 @@ judge() {
 function domain_add() {
   clear  
   mkdir -p /etc/xray
+  mkdir -p /var/log/xray
   touch /etc/xray/domain
   read -rp "Please enter your domain name information(eg: www.example.com):" domain
   domain_ip=$(curl -sm8 ipget.net/?ip="${domain}")
@@ -187,14 +188,6 @@ chmod 644 /root/.profile
 function install_xray() {
    # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
-   mkdir -p /var/log/xray
-   mkdir -p /etc/xray
-   chown www-data.www-data /var/log/xray
-   chmod +x /var/log/xray
-       touch /var/log/xray/access.log
-       touch /var/log/xray/error.log
-       touch /var/log/xray/access2.log
-       touch /var/log/xray/error2.log
 # / /  Xray Core Version new
    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
 # set uuid
@@ -454,7 +447,7 @@ cat > /etc/xray/config.json << END
 }
 END
 rm -rf /etc/systemd/system/xray.service.d
-cat > /etc/systemd/system/xray.service<<EOF
+cat > /etc/systemd/system/xray.service <<EOF
 Description=Xray Service
 Documentation=https://github.com/xtls
 After=network.target nss-lookup.target
@@ -474,11 +467,8 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
-
 clear
 }
-
-
 
 
 
