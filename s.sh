@@ -465,7 +465,7 @@ LimitNOFILE=1000000
 [Install]
 WantedBy=multi-user.target
 
-EOF
+END
 }
 
 
