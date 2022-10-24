@@ -187,7 +187,7 @@ function install_xray() {
  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
 # / /  Xray Core Version new
-   bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
+curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install
 # set uuid
 uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
 # xray config
@@ -474,6 +474,8 @@ function domain_cf() {
 
 function configure_nginx() {
 #nginx config
+rm /var/www/html/*.html
+wget -q -O /var/www/html/index.html ${myhost_html}index.html
 cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
