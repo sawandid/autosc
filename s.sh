@@ -56,10 +56,14 @@ judge() {
 
 
 function domain_add() {
-  clear  
-  mkdir -p /etc/xray
-  mkdir -p /var/log/xray
-  touch /etc/xray/domain
+   clear  
+# // Make Folder Xray to accsess
+   mkdir -p /etc/xray
+   mkdir -p /var/log/xray
+   chmod +x /var/log/xray
+       touch /etc/xray/domain
+       touch /var/log/xray/access.log
+       touch /var/log/xray/error.log
   read -rp "Please enter your domain name information(eg: www.example.com):" domain
   domain_ip=$(curl -sm8 ipget.net/?ip="${domain}")
   print_ok "Getting IP address information, please be patient"
@@ -190,7 +194,7 @@ function install_xray() {
 # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
 # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT  
-   curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install
+   bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
 # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT  
    uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
 # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
