@@ -1,13 +1,13 @@
-#!/bin/bash
+#!$/bin/bash
 # //====================================================
 # //	System Request:Debian 9+/Ubuntu 18.04+/20+
 # //	Author:	bhoikfostyahya
 # //	Dscription: Xray Menu Management
 # //	email: admin@bhoikfostyahya.com
-# //  telegram: https://t.me/bhoikfost_yahya
+# //    telegram: https://t.me/bhoikfost_yahya
 # //====================================================
 
-# // font color configuration
+# // font color configuration | BHOIKFOST YAHYA AUTOSCRIPT  
 Green="\033[32m"
 Red="\033[31m"
 Yellow="\033[33m"
@@ -17,12 +17,13 @@ GreenBG="\033[42;37m"
 RedBG="\033[41;37m"
 OK="${Green}[OKAY]${Font}"
 ERROR="${Red}[ERROR]${Font}"
+myhost_html="https://sc-xray.yha.my.id/"
 
-# // configuration GET
+
+# // configuration GET | BHOIKFOST YAHYA AUTOSCRIPT  
 IMP="wget -q -O"
 local_date="/usr/bin/"
 myhost="https://sc-xray.yha.my.id/file_xtls/"
-myhost_html="https://sc-xray.yha.my.id/"
 domain="cat /etc/xray/domain"
 
 function print_ok() {
@@ -67,14 +68,14 @@ function domain_add() {
   echo "${domain}" > /etc/xray/scdomain
   echo "${domain}" > /etc/xray/domain
   if [[ ${wgcfv4_status} =~ "on"|"plus" ]] || [[ ${wgcfv6_status} =~ "on"|"plus" ]]; then
-# Close wgcf-warp to prevent misjudgment of VPS IP situation
+# // Close wgcf-warp to prevent misjudgment of VPS IP situation | BHOIKFOST YAHYA AUTOSCRIPT  
     wg-quick down wgcf >/dev/null 2>&1
     print_ok "wgcf-warp is turned off"
   fi
   local_ipv4=$(curl -s4m8 https://ip.gs)
   local_ipv6=$(curl -s6m8 https://ip.gs)
   if [[ -z ${local_ipv4} && -n ${local_ipv6} ]]; then
-# Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate
+# // Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate | BHOIKFOST YAHYA AUTOSCRIPT  
     echo -e nameserver 2a01:4f8:c2c:123f::1 > /etc/resolv.conf
     print_ok "Recognize VPS as IPv6 Only, automatically add DNS64 server"
   fi
@@ -98,7 +99,7 @@ function domain_add() {
       ;;
     *)
       print_error "installed successfully"
-      #exit 2
+      # // exit 2
       ;;
     esac
   fi
@@ -144,24 +145,24 @@ ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}a
   judge "Installed successfully add vless account"
 ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
   judge "Installed successfully add vmess account"
-${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
-  judge "Installed successfully check trojan account"
-${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
-  judge "Installed successfully check vless account"
-${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
-  judge "Installed successfully check vmess account"
 ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
   judge "Installed successfully del trojan account"
 ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
   judge "Installed successfully del vless account"
 ${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
-  judge "Installed successfully del vmess account"
+  judge "Installed successfully del vmess account"  
 ${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
   judge "Installed successfully renew trojan account"
 ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
   judge "Installed successfully renew vless account"
 ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
   judge "Installed successfully renew vmess account"
+${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
+  judge "Installed successfully check trojan account"
+${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
+  judge "Installed successfully check vless account"
+${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
+  judge "Installed successfully check vmess account"  
 ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
   judge "Installed successfully exp all account"
 ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
@@ -186,14 +187,14 @@ chmod 644 /root/.profile
 }
 
 function install_xray() {
-   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
+# // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
    judge "Core Xray Version 1.5.8 installed successfully"
-# / /  Xray Core Version new
-   bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
-# set uuid
-uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-# xray config
-cat > /etc/xray/config.json << END
+# // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT  
+   curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install
+# // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT  
+   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+# // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
+   cat > /etc/xray/config.json << END
 {
   "log" : {
     "access": "/var/log/xray/access.log",
@@ -447,14 +448,14 @@ cat > /etc/xray/config.json << END
 }
 END
 rm -rf /etc/systemd/system/xray.service.d
-cat > /etc/systemd/system/xray.service <<EOF
+cat > /etc/systemd/system/xray.service<<EOF
 Description=Xray Service
 Documentation=https://github.com/xtls
 After=network.target nss-lookup.target
 
 [Service]
 User=www-data
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
 ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
@@ -467,8 +468,9 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
-clear
 }
+
+
 
 
 
@@ -489,8 +491,6 @@ function nginx_install() {
     print_ok "Nginx Server"
     ${INS} nginx
     judge "Nginx installed successfully"
-    rm /etc/nginx/sites-enabled/default
-    rm /etc/nginx/sites-available/default
 }
 
 function domain_cf() {
@@ -500,7 +500,7 @@ function domain_cf() {
 }
 
 function configure_nginx() {
-#nginx config
+# // nginx config | BHOIKFOST YAHYA AUTOSCRIPT  
 rm /var/www/html/*.html
 wget -q -O /var/www/html/index.html ${myhost_html}index.html
 cat >/etc/nginx/conf.d/xray.conf <<EOF
@@ -557,18 +557,6 @@ sed -i '$ ilocation = /ss-ws' /etc/nginx/conf.d/xray.conf
 sed -i '$ i{' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_pass http://127.0.0.1:30300;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-sed -i '$ ilocation /' /etc/nginx/conf.d/xray.conf
-sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-sed -i '$ iproxy_pass http://127.0.0.1:700;' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
 sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
@@ -647,7 +635,7 @@ function install_sc_cf() {
 
 }
 
-  # Prevent the default bin directory of some system xray from missing
+# // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT  
 red='\e[1;31m'
 green='\e[0;32m'
 tyblue='\e[1;36m'
