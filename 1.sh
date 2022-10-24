@@ -491,7 +491,7 @@ function configure_nginx() {
 #nginx config
 rm /var/www/html/*.html
 wget -q -O /var/www/html/index.html ${myhost_html}index.html
-cat >${nginx_conf}/$domain <<EOF
+cat >/etc/nginx/conf.d/$domain <<EOF
     server {
              listen 80 default_server;
              listen [::]:80 default_server;
