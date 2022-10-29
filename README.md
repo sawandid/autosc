@@ -41,16 +41,6 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 * Use of this script requires you to have Linux foundation and experience, understand some knowledge of computer network, and basic computer operations;
 * Currently supports Debian 9+ / Ubuntu 18.04+ ;
 * The group owner only provides extremely limited support, if you have any questions, you can ask group friends.
-
-### Thanks
-
-* README Project_Xray project images in this script are provided by Blitzcrank Telegram: @Blitz_crank Thanks to Blitzcrank
-* In this script, MTProxyTLS is based on https://github.com/sunpma/mtp with secondary modification. Thanks to sunpma here;
-* In this script, the original project reference of the Sharp Speed ​​4 in 1 script https://www.94ish.me/1635.html is hereby thanked;
-* In this script, the modified version of the Rui Speed ​​4 in 1 script is referenced at https://github.com/ylx2016/Linux-NetSpeed. Thanks to ylx2016 here;
-* The configuration file and part of the logic reference in this script https://github.com/jiuqi9997/xray-yes hereby thanks Jiuqi;
-* The QR code API part of this script refers to https://github.com/mack-a/v2ray-agent Thanks to mack-a here.
-
 ## ss
 ![avatar](fodder/Screenshot_20221029_083555.jpg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jrohy/trojan)](https://goreportcard.com/report/github.com/Jrohy/trojan)
@@ -60,6 +50,16 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 ![](https://img.shields.io/docker/pulls/jrohy/trojan.svg)
 
 ![OS](https://shields.io/badge/OS-Ubuntu%2020.04-green?logo=ubuntu&style=for-the-badge) ![Virtualization](https://shields.io/badge/Virtualization-KVM-green?logo=tryhackme&style=for-the-badge) ![Architecture](https://shields.io/badge/Architecture-Intel%20or%20AMD-green?logo=moleculer&style=for-the-badge)
+### Thanks
+
+* README Project_Xray project images in this script are provided by Blitzcrank Telegram: @Blitz_crank Thanks to Blitzcrank
+* In this script, MTProxyTLS is based on https://github.com/sunpma/mtp with secondary modification. Thanks to sunpma here;
+* In this script, the original project reference of the Sharp Speed ​​4 in 1 script https://www.94ish.me/1635.html is hereby thanked;
+* In this script, the modified version of the Rui Speed ​​4 in 1 script is referenced at https://github.com/ylx2016/Linux-NetSpeed. Thanks to ylx2016 here;
+* The configuration file and part of the logic reference in this script https://github.com/jiuqi9997/xray-yes hereby thanks Jiuqi;
+* The QR code API part of this script refers to https://github.com/mack-a/v2ray-agent Thanks to mack-a here.
+
+
 
 
 
