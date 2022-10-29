@@ -62,5 +62,5 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 
 
 
-![avatar](.github/workflows/1.png)
+![avatar](.github/workflows/Screenshot_20221029_083555.jpg)
 
