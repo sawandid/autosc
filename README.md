@@ -52,6 +52,7 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 * The QR code API part of this script refers to https://github.com/mack-a/v2ray-agent Thanks to mack-a here.
 
 ## ss
+![avatar](fodder/Screenshot_20221029_083555.jpg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Jrohy/trojan)](https://goreportcard.com/report/github.com/Jrohy/trojan)
 [![Downloads](https://img.shields.io/github/downloads/Jrohy/trojan/total.svg)](https://img.shields.io/github/downloads/Jrohy/trojan/total.svg)
 [![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
@@ -62,5 +63,5 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 
 
 
-![avatar](fodder/Screenshot_20221029_083555.jpg)
+
 
