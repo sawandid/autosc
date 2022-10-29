@@ -1,4 +1,4 @@
-# autoscpt xray v.2
+# autoscript xray v.2
 
 
 ## Xray Nginx-based VLESS| VMESS| TROJAN + XTLS one-click installation script <img src="https://raw.githubusercontent.com/wulabing/Xray_onekey/main/image/project_xray.jpg" alt="Project_Xray" width="122" height="30" align="bottom" />
