@@ -42,11 +42,6 @@ source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 * Currently supports Debian 9+ / Ubuntu 18.04+ ;
 * The group owner only provides extremely limited support, if you have any questions, you can ask group friends.
 ## ss
-[![Go Report Card](https://goreportcard.com/badge/github.com/Jrohy/trojan)](https://goreportcard.com/report/github.com/Jrohy/trojan)
-[![Downloads](https://img.shields.io/github/downloads/Jrohy/trojan/total.svg)](https://img.shields.io/github/downloads/Jrohy/trojan/total.svg)
-[![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-![](https://img.shields.io/github/v/release/Jrohy/trojan.svg) 
-![](https://img.shields.io/docker/pulls/jrohy/trojan.svg)
 ![OS](https://shields.io/badge/OS-Ubuntu%2020.04-green?logo=ubuntu&style=for-the-badge) ![Virtualization](https://shields.io/badge/Virtualization-KVM-green?logo=tryhackme&style=for-the-badge) ![Architecture](https://shields.io/badge/Architecture-Intel%20or%20AMD-green?logo=moleculer&style=for-the-badge)
 ![avatar](fodder/Screenshot_20221029_083555.jpg)
 
