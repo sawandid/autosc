@@ -109,7 +109,8 @@ function download_config() {
   judge "Installed successfully exp all account"
   ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
   judge "Installed successfully menu ur dashboard vps"
-  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash && apt-get install speedtest >/dev/null 2>&1
+  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash >/dev/null 2>&1
+  apt-get install speedtest >/dev/null 2>&1
   judge "Installed successfully speedtest"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
@@ -319,11 +320,10 @@ function install_xray() {
   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
   judge "Core Xray Version 1.5.8 installed successfully"
   # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8 >/dev/null 2>&1
+  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
-  cat >/etc/xray/config.json <<END 
 {
   "log" : {
     "access": "/var/log/xray/access.log",
