@@ -109,8 +109,7 @@ function download_config() {
   judge "Installed successfully exp all account"
   ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
   judge "Installed successfully menu ur dashboard vps"
-  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash >/dev/null 2>&1
-  apt-get install speedtest >/dev/null 2>&1
+  ${IMP} ${local_date}speedtest "https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py" && chmod +x ${local_date}speedtest
   judge "Installed successfully speedtest"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
