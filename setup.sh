@@ -608,9 +608,16 @@ EOF
 }
 
 function install_ssh() {
+    export DEBIAN_FRONTEND=noninteractive
+    MYIP=$(wget -qO- ipinfo.io/ip);
+    MYIP2="s/xxxxxxxxx/$MYIP/g";
+    source /etc/os-release
+    ver=$VERSION_ID  
     apt install stunnel4 -y
     apt install squid3 -y
     apt install dropbear -y
+    wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/squid3.conf"
+    sed -i $MYIP2 /etc/squid/squid.conf
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g'
     sed -i '/Port 22/a Port 500' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 40000' /etc/ssh/sshd_config
