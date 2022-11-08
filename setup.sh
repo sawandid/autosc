@@ -189,6 +189,18 @@ EOF
   sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
   sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
+  sed -i '$ ilocation = /trojan-ws' /etc/nginx/conf.d/xray.conf
+  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_pass http://127.0.0.1:14018;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+
   sed -i '$ ilocation = /ss-ws' /etc/nginx/conf.d/xray.conf
   sed -i '$ i{' /etc/nginx/conf.d/xray.conf
   sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
@@ -228,6 +240,15 @@ EOF
   sed -i '$ igrpc_pass grpc://127.0.0.1:14021;' /etc/nginx/conf.d/xray.conf
   sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
+  sed -i '$ ilocation ^~ /ss-grpc' /etc/nginx/conf.d/xray.conf
+  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ igrpc_pass grpc://127.0.0.1:30310;' /etc/nginx/conf.d/xray.conf
+  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+  
   judge "Nginx configuration modification"
   systemctl daemon-reload >/dev/null 2>&1
   systemctl enable nginx >/dev/null 2>&1
@@ -323,7 +344,7 @@ function install_xray() {
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
-cat >/etc/xray/config.json <<END
+  cat >/etc/xray/config.json <<END
 {
   "log" : {
     "access": "/var/log/xray/access.log",
@@ -401,6 +422,27 @@ cat >/etc/xray/config.json <<END
             }
          }
      },
+    {
+         "listen": "127.0.0.1",
+        "port": "30300",
+        "protocol": "shadowsocks",
+        "settings": {
+           "clients": [
+           {
+           "method": "aes-128-gcm",
+          "password": "${uuid}"
+#ssws
+           }
+          ],
+          "network": "tcp,udp"
+       },
+       "streamSettings":{
+          "network": "ws",
+             "wsSettings": {
+               "path": "/ss-ws"
+           }
+        }
+     },	
       {
         "listen": "127.0.0.1",
         "port": "14019",
@@ -461,6 +503,28 @@ cat >/etc/xray/config.json <<END
          }
       }
    },
+   {
+    "listen": "127.0.0.1",
+    "port": "30310",
+    "protocol": "shadowsocks",
+    "settings": {
+        "clients": [
+          {
+             "method": "aes-128-gcm",
+             "password": "${uuid}"
+#ssgrpc
+           }
+         ],
+           "network": "tcp,udp"
+      },
+    "streamSettings":{
+     "network": "grpc",
+        "grpcSettings": {
+           "serviceName": "ss-grpc"
+          }
+       }
+    }	
+  ],
   "outbounds": [
     {
       "protocol": "freedom",
