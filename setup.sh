@@ -72,7 +72,8 @@ function nginx_install() {
         echo -e "${OK} Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
         sleep 1
         sudo add-apt-repository ppa:ondrej/nginx -y
-        apt update
+        apt update -y
+        apt upgrade -y
         ${INS} nginx -y
         ${INS} python3-certbot-nginx -y
         elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
@@ -360,8 +361,8 @@ function dependency_install() {
     ${INS} net-tools -y
     judge "Installed net-tools"
     
-    ${INS} curl pwgen openssl netcat cron -y
-    judge "Installed openssl netcat"
+    ${INS} python -y
+    judge "Installed python"
     
 }
 
