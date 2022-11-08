@@ -264,7 +264,7 @@ EOF
     sed -i '$ i}' /etc/nginx/conf.d/xray.conf
     
     judge "Nginx configuration modification"
-
+    
 }
 
 function domain_add() {
@@ -631,23 +631,20 @@ refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
 refresh_pattern . 0 20% 4320
 visible_hostname yha
 EOF
-    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g'
     sed -i '/Port 22/a Port 500' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 40000' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 51443' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 58080' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 200' /etc/ssh/sshd_config
     sed -i 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
-    /etc/init.d/ssh restart
+   
     
-    sed -i 's/NO_START=1/NO_START=0/g' /etc/dropbear
-    sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/dropbear
-    sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"/g' /etc/dropbear
+    sed -i 's/NO_START=1/NO_START=0/g' /etc/init.d/dropbear
+    sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/init.d/dropbear
+    sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"/g' /etc/init.d/dropbear
     echo "/bin/false" >> /etc/shells
     echo "/usr/sbin/nologin" >> /etc/shells
-    /etc/init.d/ssh restart
-    /etc/init.d/dropbear restart
-    
+
     
 cat >/etc/stunnel/stunnel.conf <<-END
 cert = /etc/stunnel/stunnel.pem
@@ -851,7 +848,9 @@ END
     systemctl enable ws-stunnel.service
     systemctl start ws-stunnel.service
     systemctl restart ws-stunnel.service
-
+    /etc/init.d/ssh restart
+    /etc/init.d/dropbear restart
+    
     secs_to_human() {
         echo "Installation time : $(( ${1} / 3600 )) hours $(( (${1} / 60) % 60 )) minute's $(( ${1} % 60 )) seconds"
     }
