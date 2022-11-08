@@ -59,11 +59,11 @@ function nginx_install() {
   # // Checking System
   if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
     echo -e "${OK} Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    ${INS} nginx -y
+    ${INS} nginx -y >/dev/null 2>&1
   elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
     echo -e "${OK} Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    sudo apt update
-    apt -y install nginx
+    sudo apt update >/dev/null 2>&1
+    apt -y install nginx >/dev/null 2>&1
   else
     echo -e "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
     exit 1
@@ -75,7 +75,7 @@ function nginx_install() {
 
 function domain_cf() {
   print_ok "enter the domain into the cloudflare dns"
-  source <(curl -sL ${myhost}cf.sh)
+  source <(curl -sL ${myhost}cf.sh) >/dev/null 2>&1
   judge "domain installed successfully"
 
 }
@@ -109,7 +109,7 @@ function download_config() {
   judge "Installed successfully exp all account"
   ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
   judge "Installed successfully menu ur dashboard vps"
-  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash && apt-get install speedtest
+  curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash && apt-get install speedtest >/dev/null 2>&1
   judge "Installed successfully speedtest"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
@@ -135,13 +135,13 @@ END
 
 function acme() {
   judge "installed successfully SSL certificate generation script"
-  mkdir /root/.acme.sh
-  curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
-  chmod +x /root/.acme.sh/acme.sh
-  /root/.acme.sh/acme.sh --upgrade --auto-upgrade
-  /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
-  /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
-  ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
+  mkdir /root/.acme.sh  >/dev/null 2>&1
+  curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh >/dev/null 2>&1
+  chmod +x /root/.acme.sh/acme.sh >/dev/null 2>&1
+  /root/.acme.sh/acme.sh --upgrade --auto-upgrade >/dev/null 2>&1
+  /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >/dev/null 2>&1
+  /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256 >/dev/null 2>&1
+  ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc >/dev/null 2>&1
   print_ok "SSL Certificate generated successfully"
 }
 
@@ -149,8 +149,8 @@ function configure_nginx() {
   # // nginx config | BHOIKFOST YAHYA AUTOSCRIPT
   rm /var/www/html/*.html
   rm /etc/nginx/sites-enabled/default
-  rm /etc/nginx/sites-available/default
-  wget -q -O /var/www/html/index.html ${myhost_html}index.html
+  rm /etc/nginx/sites-available/default 
+  wget -q -O /var/www/html/index.html ${myhost_html}index.html >/dev/null 2>&1
   cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
@@ -188,7 +188,6 @@ EOF
   sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
   sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
   sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
 
   sed -i '$ ilocation = /ss-ws' /etc/nginx/conf.d/xray.conf
   sed -i '$ i{' /etc/nginx/conf.d/xray.conf
@@ -297,22 +296,22 @@ function domain_add() {
 
 function dependency_install() {
   INS="apt install -y"
-  apt update
+  apt update >/dev/null 2>&1
   judge "Update configuration"
 
-  apt clean all
+  apt clean all >/dev/null 2>&1
   judge "Clean configuration "
 
-  ${INS} jq curl
+  ${INS} jq curl >/dev/null 2>&1
   judge "Installed successfully jq"
 
-  ${INS} curl socat -y
+  ${INS} curl socat  >/dev/null 2>&1
   judge "Installed socat transport-https"
 
-  ${INS} systemd -y
+  ${INS} systemd >/dev/null 2>&1
   judge "Installed systemd"
 
-  ${INS} net-tools -y
+  ${INS} net-tools >/dev/null 2>&1
   judge "Installed net-tools"
 
 
@@ -322,7 +321,7 @@ function install_xray() {
   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
   judge "Core Xray Version 1.5.8 installed successfully"
   # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
+  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8 >/dev/null 2>&1
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
@@ -583,17 +582,24 @@ function install_sc_cf() {
 
 # // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT
 red='\e[1;31m'
-green='\e[0;32m'
+green='\e[92;1m'
 tyblue='\e[1;36m'
+Yellow="\033[33m"
+Font="\033[0m"
+gray="\e[1;30m"
 NC='\e[0m'
-echo -e "$green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC"
-echo -e "$green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC"
-echo -e "$green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC"
-echo -e "[ ${red}INFO${NC} ] Autoscript xray vpn lite (multi port)"
-echo -e "[ ${red}INFO${NC} ] no licence script (free lifetime)"
-echo -e "[ ${red}INFO${NC} ] Make sure the internet is smooth when installing the script"
-echo -e "${tyblue}[1]${NC}.${green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain? please click num 1"
-echo -e "${tyblue}[2]${NC}.${green}AUTO POINTING${NC} ] do you not have a domain? please click num 2"
+echo -e "               ┌───────────────────────────────────────────────┐"
+echo -e "───────────────│                                               │───────────────"
+echo -e "───────────────│    $green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
+echo -e "───────────────│    $green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
+echo -e "───────────────│    $green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
+echo -e "               │   ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
+echo -e "               └───────────────────────────────────────────────┘"
+echo -e "                      Autoscript xray vpn lite (multi port)    "
+echo -e "                       no licence script (free lifetime)"
+echo -e "            Make sure the internet is smooth when installing the script"
+echo -e "${gray}1)${NC}.${green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain?"
+echo -e "${gray}2)${NC}.${green}AUTO POINTING${NC} ] do you not have a domain?"
 read -rp "CONTINUING TO INSTALL AUTOSCRIPT (1/2)? " menu_num
 case $menu_num in
 1)
@@ -603,6 +609,6 @@ case $menu_num in
   install_sc_cf
   ;;
 *)
-echo -e "[ ${red}You wrong command !${NC} ] 
+echo "You wrong command !"
   ;;
 esac
