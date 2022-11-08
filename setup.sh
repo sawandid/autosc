@@ -306,23 +306,15 @@ function dependency_install() {
   ${INS} jq curl
   judge "Installed successfully jq"
 
-  ${INS} curl
-  judge "Installed successfully unzip"
-
-  ${INS} curl socat xz-utils wget apt-transport-https gnupg gnupg2 gnupg1 dnsutils lsb-release -y
+  ${INS} curl socat -y
   judge "Installed socat transport-https"
 
-  ${INS} socat cron bash-completion ntpdate -y
-  judge "Installed ntpdate"
-
-  ntpdate pool.ntp.org
-  judge "Pool.ntp.org configuration "
+  ${INS} systemd -y
+  judge "Installed systemd"
 
   ${INS} net-tools -y
   judge "Installed net-tools"
 
-  ${INS} curl pwgen openssl netcat cron -y
-  judge "Installed openssl netcat"
 
 }
 
