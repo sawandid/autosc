@@ -57,11 +57,11 @@ judge() {
 function nginx_install() {
   print_ok "Nginx Server"
   # // Checking System
-  if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-    echo -e "${OK} Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+  if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' == "ubuntu" ]]; then
+    echo -e "judge  Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
     ${INS} nginx -y >/dev/null 2>&1
-  elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-    echo -e "${OK} Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+  elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' == "debian" ]]; then
+    echo -e "judge  Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
     sudo apt update >/dev/null 2>&1
     apt -y install nginx >/dev/null 2>&1
   else
@@ -229,12 +229,10 @@ EOF
   sed -i '$ i}' /etc/nginx/conf.d/xray.conf
 
   judge "Nginx configuration modification"
-  systemctl daemon-reload
-  systemctl enable nginx
-  systemctl restart nginx
-  systemctl restart xray
-  cd
-  clear
+  systemctl daemon-reload >/dev/null 2>&1
+  systemctl enable nginx >/dev/null 2>&1
+  systemctl restart nginx >/dev/null 2>&1
+  systemctl restart xray >/dev/null 2>&1
   judge "waiting reboot ur vps"
   sleep 5
   reboot
@@ -325,7 +323,7 @@ function install_xray() {
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
-  cat >/etc/xray/config.json <<END
+  cat >/etc/xray/config.json <<END 
 {
   "log" : {
     "access": "/var/log/xray/access.log",
@@ -581,6 +579,7 @@ function install_sc_cf() {
 }
 
 # // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT
+clear
 red='\e[1;31m'
 green='\e[92;1m'
 tyblue='\e[1;36m'
