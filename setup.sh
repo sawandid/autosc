@@ -611,7 +611,7 @@ EOF
 function install_ssh() {
     MYIP="$(wget -qO- ipinfo.io/ip)"
     apt install stunnel4 -y
-    apt install dropbear -y    
+    apt install dropbear -y
     apt install squid3 -y
     # Squid Configuration
 cat >/etc/squid/squid.conf <<EOF
