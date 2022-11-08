@@ -264,21 +264,6 @@ EOF
     sed -i '$ i}' /etc/nginx/conf.d/xray.conf
     
     judge "Nginx configuration modification"
-    systemctl daemon-reload
-    systemctl enable nginx
-    systemctl restart nginx
-    systemctl restart xray
-    systemctl enable ws-dropbear.service
-    systemctl start ws-dropbear.service
-    systemctl restart ws-dropbear.service
-    systemctl enable ws-stunnel.service
-    systemctl start ws-stunnel.service
-    systemctl restart ws-stunnel.service
-    cd
-    clear
-    judge "waiting reboot ur vps"
-    sleep 5
-    reboot
 }
 
 function domain_add() {
@@ -829,7 +814,16 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 2 0 * * * root /usr/bin/xp
 END
     chmod 644 /root/.profile
-    
+    systemctl daemon-reload
+    systemctl enable nginx
+    systemctl restart nginx
+    systemctl restart xray
+    systemctl enable ws-dropbear.service
+    systemctl start ws-dropbear.service
+    systemctl restart ws-dropbear.service
+    systemctl enable ws-stunnel.service
+    systemctl start ws-stunnel.service
+    systemctl restart ws-stunnel.service
     secs_to_human() {
         echo "Installation time : $(( ${1} / 3600 )) hours $(( (${1} / 60) % 60 )) minute's $(( ${1} % 60 )) seconds"
     }
@@ -869,6 +863,7 @@ END
     echo "    │   - Full Orders For Various Services                  │"  | tee -a log-install.txt
     echo "    └───────────────────────────────────────────────────────┘"  | tee -a log-install.txt
     echo "" | tee -a log-install.txt
+
     rm *.sh>/dev/null 2>&1
     secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
     echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
