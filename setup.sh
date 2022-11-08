@@ -252,6 +252,7 @@ EOF
   judge "Nginx configuration modification"
   systemctl daemon-reload >/dev/null 2>&1
   systemctl enable nginx >/dev/null 2>&1
+  systemctl enable xray >/dev/null 2>&1
   systemctl restart nginx >/dev/null 2>&1
   systemctl restart xray >/dev/null 2>&1
   judge "waiting reboot ur vps"
