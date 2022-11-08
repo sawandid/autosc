@@ -264,6 +264,21 @@ EOF
     sed -i '$ i}' /etc/nginx/conf.d/xray.conf
     
     judge "Nginx configuration modification"
+    systemctl daemon-reload
+    systemctl enable nginx
+    systemctl restart nginx
+    systemctl restart xray
+    systemctl enable ws-dropbear.service
+    systemctl start ws-dropbear.service
+    systemctl restart ws-dropbear.service
+    systemctl enable ws-stunnel.service
+    systemctl start ws-stunnel.service
+    systemctl restart ws-stunnel.service
+    cd
+    clear
+    judge "waiting reboot ur vps"
+    sleep 5
+    reboot
 }
 
 function domain_add() {
@@ -594,16 +609,43 @@ EOF
 }
 
 function install_ssh() {
-    export DEBIAN_FRONTEND=noninteractive
-    MYIP=$(wget -qO- ipinfo.io/ip);
-    MYIP2="s/xxxxxxxxx/$MYIP/g";
-    source /etc/os-release
-    ver=$VERSION_ID
+    MYIP="$(wget -qO- ipinfo.io/ip)"
     apt install stunnel4 -y
-    #apt install squid3 -y
-    apt install dropbear -y
-    #wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/squid3.conf"
-    #sed -i $MYIP2 /etc/squid/squid.conf
+    apt install dropbear -y    
+    apt install squid3 -y
+    # Squid Configuration
+cat >/etc/squid/squid.conf <<EOF
+acl manager proto cache_object
+acl localhost src 127.0.0.1/32 ::1
+acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
+acl SSL_ports port 443
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl Safe_ports port 70
+acl Safe_ports port 210
+acl Safe_ports port 1025-65535
+acl Safe_ports port 280
+acl Safe_ports port 488
+acl Safe_ports port 591
+acl Safe_ports port 777
+acl CONNECT method CONNECT
+acl SSH dst $MYIP
+http_access allow SSH
+http_access allow manager localhost
+http_access deny manager
+http_access allow localhost
+http_access deny all
+http_port 8000
+http_port 8080
+http_port 3128
+coredump_dir /etc/squid
+refresh_pattern ^ftp: 1440 20% 10080
+refresh_pattern ^gopher: 1440 0% 1440
+refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
+refresh_pattern . 0 20% 4320
+visible_hostname yha
+EOF
+    sed -i $MYIP2 /etc/squid/squid.conf
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g'
     sed -i '/Port 22/a Port 500' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 40000' /etc/ssh/sshd_config
@@ -613,16 +655,16 @@ function install_ssh() {
     sed -i 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
     /etc/init.d/ssh restart
     
-    sed -i 's/NO_START=1/NO_START=0/g' /etc/default/dropbear
-    sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/default/dropbear
-    sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"/g' /etc/default/dropbear
+    sed -i 's/NO_START=1/NO_START=0/g' /etc/dropbear
+    sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/dropbear
+    sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"/g' /etc/dropbear
     echo "/bin/false" >> /etc/shells
     echo "/usr/sbin/nologin" >> /etc/shells
     /etc/init.d/ssh restart
     /etc/init.d/dropbear restart
     
     
-cat > /etc/stunnel/stunnel.conf <<-END
+cat >/etc/stunnel/stunnel.conf <<-END
 cert = /etc/stunnel/stunnel.pem
 client = no
 socket = a:SO_REUSEADDR=1
@@ -649,7 +691,7 @@ END
     wget -q -O /usr/local/bin/ws-dropbear https://wss-multi.yha.my.id/sshws/dropbear-ws.py && chmod +x /usr/local/bin/ws-dropbear
     wget -q -O /usr/local/bin/ws-stunnel https://wss-multi.yha.my.id/sshws/ws-stunnel && chmod +x /usr/local/bin/ws-stunnel
     
-cat > /etc/systemd/system/ws-dropbear.service <<-END
+cat >/etc/systemd/system/ws-dropbear.service <<-END
 [Unit]
 Description=Websocket-OpenSSH By BhoikfostYahya
 Documentation=https://google.com
@@ -667,7 +709,7 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 END
-cat > /etc/systemd/system/ws-stunnel.service <<-END
+cat >/etc/systemd/system/ws-stunnel.service <<-END
 [Unit]
 Description=SSH Over Websocket Python BhoikfostYahya
 Documentation=https://google.com
@@ -814,16 +856,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 2 0 * * * root /usr/bin/xp
 END
     chmod 644 /root/.profile
-    systemctl daemon-reload
-    systemctl enable nginx
-    systemctl restart nginx
-    systemctl restart xray
-    systemctl enable ws-dropbear.service
-    systemctl start ws-dropbear.service
-    systemctl restart ws-dropbear.service
-    systemctl enable ws-stunnel.service
-    systemctl start ws-stunnel.service
-    systemctl restart ws-stunnel.service
+    
     secs_to_human() {
         echo "Installation time : $(( ${1} / 3600 )) hours $(( (${1} / 60) % 60 )) minute's $(( ${1} % 60 )) seconds"
     }
@@ -863,7 +896,6 @@ END
     echo "    │   - Full Orders For Various Services                  │"  | tee -a log-install.txt
     echo "    └───────────────────────────────────────────────────────┘"  | tee -a log-install.txt
     echo "" | tee -a log-install.txt
-
     rm *.sh>/dev/null 2>&1
     secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
     echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
