@@ -613,7 +613,7 @@ function install_ssh() {
     MYIP=$(wget -qO- ipinfo.io/ip);
     MYIP2="s/xxxxxxxxx/$MYIP/g";
     source /etc/os-release
-    ver=$VERSION_ID  
+    ver=$VERSION_ID
     apt install stunnel4 -y
     apt install squid3 -y
     apt install dropbear -y
@@ -663,8 +663,44 @@ connect = 127.0.0.1:1194
 END
     wget -q -O /usr/local/bin/ws-dropbear https://wss-multi.yha.my.id/sshws/dropbear-ws.py && chmod +x /usr/local/bin/ws-dropbear
     wget -q -O /usr/local/bin/ws-stunnel https://wss-multi.yha.my.id/sshws/ws-stunnel && chmod +x /usr/local/bin/ws-stunnel
-    wget -q -O /etc/systemd/system/ws-dropbear.service https://wss-multi.yha.my.id/sshws/service-wsdropbear && chmod +x /etc/systemd/system/ws-dropbear.service
-    wget -q -O /etc/systemd/system/ws-stunnel.service https://wss-multi.yha.my.id/sshws/ws-stunnel.service && chmod +x /etc/systemd/system/ws-stunnel.service
+    
+cat > /etc/systemd/system/ws-dropbear.service <<-END
+[Unit]
+Description=Websocket-OpenSSH By BhoikfostYahya
+Documentation=https://google.com
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+User=root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/usr/bin/python -O /usr/local/bin/ws-dropbear 2095
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+END
+cat > /etc/systemd/system/ws-stunnel.service <<-END
+[Unit]
+Description=SSH Over Websocket Python BhoikfostYahya
+Documentation=https://google.com
+After=network.target nss-lookup.target
+
+[Service]
+Type=simple
+User=root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+Restart=on-failure
+ExecStart=/usr/bin/python -O /usr/local/bin/ws-stunnel
+
+[Install]
+WantedBy=multi-user.target
+END
+    
     # // DOWNLOAD SSH
     ${IMP} ${LOCAL_DATE}usernew "${HOSTING_SSH}usernew.sh" && chmod +x ${LOCAL_DATE}usernew
     judge "Installed successfully add SSH + OVPN"
