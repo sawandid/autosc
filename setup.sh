@@ -57,16 +57,16 @@ judge() {
 function nginx_install() {
   print_ok "Nginx Server"
   # // Checking System
-  if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' == "ubuntu" ]]; then
-    echo -e "judge  Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+  if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
+    judge "Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
     ${INS} nginx -y >/dev/null 2>&1
-  elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g' == "debian" ]]; then
-    echo -e "judge  Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+  elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
+    judge "Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
     sudo apt update >/dev/null 2>&1
     apt -y install nginx >/dev/null 2>&1
   else
-    echo -e "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    exit 1
+    judge "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+    # // exit 1
   fi
 
   judge "Nginx installed successfully"
