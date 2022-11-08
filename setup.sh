@@ -600,7 +600,7 @@ function install_ssh() {
     source /etc/os-release
     ver=$VERSION_ID
     apt install stunnel4 -y
-    apt install squid3 -y
+    #apt install squid3 -y
     apt install dropbear -y
     #wget -O /etc/squid/squid.conf "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/squid3.conf"
     #sed -i $MYIP2 /etc/squid/squid.conf
