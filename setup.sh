@@ -323,6 +323,7 @@ function install_xray() {
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
+cat >/etc/xray/config.json <<END
 {
   "log" : {
     "access": "/var/log/xray/access.log",
