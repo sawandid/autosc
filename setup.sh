@@ -796,8 +796,9 @@ function install_sc() {
     acme
     nginx_install
     install_xray
-    download_config
+    #download_config
     configure_nginx
+    install_ssh
 }
 
 function install_sc_cf() {
@@ -806,8 +807,9 @@ function install_sc_cf() {
     acme
     nginx_install
     install_xray
-    download_config
+    #download_config
     configure_nginx
+    install_ssh
     
 }
 
