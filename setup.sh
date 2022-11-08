@@ -631,7 +631,6 @@ refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
 refresh_pattern . 0 20% 4320
 visible_hostname yha
 EOF
-    sed -i $MYIP2 /etc/squid/squid.conf
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g'
     sed -i '/Port 22/a Port 500' /etc/ssh/sshd_config
     sed -i '/Port 22/a Port 40000' /etc/ssh/sshd_config
