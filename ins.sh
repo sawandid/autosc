@@ -719,8 +719,10 @@ WantedBy=multi-user.target
 EOF
     
 }
+function install_ssh() {
+wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/vpn.sh && chmod +x vpn.sh && ./vpn.sh
 
-
+}
 function install_sc() {
     domain_add
     dependency_install
@@ -728,6 +730,7 @@ function install_sc() {
     nginx_install
     install_xray
     download_config
+    install_ssh
     configure_nginx
 }
 
@@ -738,6 +741,7 @@ function install_sc_cf() {
     nginx_install
     install_xray
     download_config
+    install_ssh
     configure_nginx
     
 }
