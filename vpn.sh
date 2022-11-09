@@ -1,4 +1,37 @@
 #!/bin/bash
+# //====================================================
+# //	System Request:Debian 9+/Ubuntu 18.04+/20+
+# //	Author:	bhoikfostyahya
+# //	Dscription: Xray Menu Management
+# //	email: admin@bhoikfostyahya.com
+# //  telegram: https://t.me/bhoikfost_yahya
+# //====================================================
+
+# // font color configuration | BHOIKFOST YAHYA AUTOSCRIPT
+Green="\e[92;1m"
+Red="\033[31m"
+Yellow="\033[33m"
+Blue="\033[36m"
+Font="\033[0m"
+gray="\e[1;30m"
+GreenBG="\033[42;37m"
+RedBG="\033[41;37m"
+OK="${Green}[OKAY]${Font}"
+ERROR="${Red}[ERROR]${Font}"
+apt install jq -y
+
+https://wss-multi.yha.my.id/tool_configurasi/tools.sh
+# // configuration GET | BHOIKFOST YAHYA AUTOSCRIPT
+HOSTING="https://wss-multi.yha.my.id/"
+HOSTING_XRAY="${HOSTING}/xray/"
+HOSTING_SSH="${HOSTING}/ssh/"
+HOSTING_SSHWS="${HOSTING}/sshws/"
+HOSTING_TOOL="${HOSTING}/tool_configurasi/"
+IMP="wget -q -O"
+LOCAL_DATE="/usr/bin/"
+domain="$(cat /etc/xray/domain)"
+myhost_html="https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/"
+${IMP} ${LOCAL_DATE}infosc "${HOSTING_TOOL}info.sh" && chmod +x ${LOCAL_DATE}infosc
 
 export DEBIAN_FRONTEND=noninteractive
 MYIP=$(wget -qO- ipinfo.io/ip);
