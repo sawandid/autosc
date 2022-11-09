@@ -280,13 +280,16 @@ EOF
   systemctl restart nginx >/dev/null 2>&1
   systemctl restart xray >/dev/null 2>&1
 clear
-echo "               ┌───────────────────────────────────────────────┐"
-echo "───────────────│                                               │───────────────"
-echo "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
-echo "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
-echo "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
-echo "               │   ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
-echo "               └───────────────────────────────────────────────┘"
+echo -e "               ┌───────────────────────────────────────────────┐"
+echo -e "───────────────│                                               │───────────────"
+echo -e "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
+echo -e "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
+echo -e "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
+echo -e "               │    ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
+echo -e "               └───────────────────────────────────────────────┘"
+echo -e "                      Autoscript xray vpn lite (multi port)    "
+echo -e "                       no licence script (free lifetime)"
+echo -e "            Make sure the internet is smooth when installing the script"
 echo "           ┌───────────────────────────────────────────────────────┐"
 echo "           │       >>> Service & Port                              │"
 echo "           │   - XRAY  Vmess TLS         : 443                     │"
@@ -309,9 +312,7 @@ echo "           │   - Admin Control                                     │"
 echo "           │   - Restore Data                                      │"
 echo "           │   - Full Orders For Various Services                  │"
 echo "           └───────────────────────────────────────────────────────┘"
-echo "
-rm *.sh>/dev/null 2>&1
-secs_to_human "$(($(date +%s) - ${start}))
+secs_to_human "$(($(date +%s) - ${start}))"
 echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
 read answer
 if [ "$answer" == "${answer#[Yy]}" ] ;then
@@ -400,9 +401,9 @@ function dependency_install() {
 }
 function install_xray() {
   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
-  judge "Core Xray New Version installed successfully"
+  judge "Core Xray 1.6.1 Version installed successfully"
   # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-  curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install >/dev/null 2>&1
+  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.1 >/dev/null 2>&1
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
@@ -712,7 +713,7 @@ echo -e "───────────────│                       
 echo -e "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
 echo -e "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
 echo -e "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
-echo -e "               │   ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
+echo -e "               │    ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
 echo -e "               └───────────────────────────────────────────────┘"
 echo -e "                      Autoscript xray vpn lite (multi port)    "
 echo -e "                       no licence script (free lifetime)"
