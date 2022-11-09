@@ -34,91 +34,451 @@ secs_to_human() {
 start=$(date +%s)
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 function print_ok() {
-  echo -e "${OK} ${Blue} $1 ${Font}"
+    echo -e "${OK} ${Blue} $1 ${Font}"
 }
 
 function print_error() {
-  echo -e "${ERROR} ${RedBG} $1 ${Font}"
+    echo -e "${ERROR} ${RedBG} $1 ${Font}"
 }
 
 function is_root() {
-  if [[ 0 == "$UID" ]]; then
-    print_ok "Root user Start installation process"
-  else
-    print_error "The current user is not the root user, please switch to the root user and run the script again"
-    # // exit 1
-  fi
-
+    if [[ 0 == "$UID" ]]; then
+        print_ok "Root user Start installation process"
+    else
+        print_error "The current user is not the root user, please switch to the root user and run the script again"
+        # // exit 1
+    fi
+    
 }
 
 judge() {
-  if [[ 0 -eq $? ]]; then
-    print_ok "$1 Complete... | thx to ${Yellow}bhoikfostyahya${Font}"
-    sleep 1
-  else
-    print_error "$1 Fail... | thx to ${Yellow}bhoikfostyahya${Font}"
-    # // exit 1
-  fi
-
+    if [[ 0 -eq $? ]]; then
+        print_ok "$1 Complete... | thx to ${Yellow}bhoikfostyahya${Font}"
+        sleep 1
+    else
+        print_error "$1 Fail... | thx to ${Yellow}bhoikfostyahya${Font}"
+        # // exit 1
+    fi
+    
 }
 
 function nginx_install() {
-  print_ok "Nginx Server"
-  # // Checking System
-  if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-    judge "Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-    ${INS} nginx -y >/dev/null 2>&1
-  elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-    judge "Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
-    sudo apt update >/dev/null 2>&1
-    apt -y install nginx >/dev/null 2>&1
-  else
-    judge "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    # // exit 1
-  fi
-
-  judge "Nginx installed successfully"
-
+    print_ok "Nginx Server"
+    # // Checking System
+    if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
+        judge "Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
+        ${INS} nginx -y >/dev/null 2>&1
+        elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
+        judge "Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
+        sudo apt update >/dev/null 2>&1
+        apt -y install nginx >/dev/null 2>&1
+    else
+        judge "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+        # // exit 1
+    fi
+    
+    judge "Nginx installed successfully"
+    
 }
 
-function domain_cf() {
-  print_ok "enter the domain into the cloudflare dns"
-  source <(curl -sL ${myhost}cf.sh) >/dev/null 2>&1
-  judge "domain installed successfully"
+function install_bbr() {
+  judge "installed successfully BBR tcp"
+[[ $EUID -ne 0 ]] && echo -e "${red}Error:${plain} This script must be run as root!" && exit 1
 
+[[ -d "/proc/vz" ]] && echo -e "${red}Error:${plain} Your VPS is based on OpenVZ, which is not supported." && exit 1
+
+if [ -f /etc/redhat-release ]; then
+    release="centos"
+    elif cat /etc/issue | grep -Eqi "debian"; then
+    release="debian"
+    elif cat /etc/issue | grep -Eqi "ubuntu"; then
+    release="ubuntu"
+    elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
+    release="centos"
+    elif cat /proc/version | grep -Eqi "debian"; then
+    release="debian"
+    elif cat /proc/version | grep -Eqi "ubuntu"; then
+    release="ubuntu"
+    elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
+    release="centos"
+else
+    release=""
+fi
+
+is_digit(){
+    local input=${1}
+    if [[ "$input" =~ ^[0-9]+$ ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+is_64bit(){
+    if [ $(getconf WORD_BIT) = '32' ] && [ $(getconf LONG_BIT) = '64' ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+get_valid_valname(){
+    local val=${1}
+    local new_val=$(eval echo $val | sed 's/[-.]/_/g')
+    echo ${new_val}
+}
+
+get_hint(){
+    local val=${1}
+    local new_val=$(get_valid_valname $val)
+    eval echo "\$hint_${new_val}"
+}
+
+#Display Memu
+display_menu(){
+    local soft=${1}
+    local default=${2}
+    eval local arr=(\${${soft}_arr[@]})
+    local default_prompt
+    if [[ "$default" != "" ]]; then
+        if [[ "$default" == "last" ]]; then
+            default=${#arr[@]}
+        fi
+        default_prompt="(default ${arr[$default-1]})"
+    fi
+    local pick
+    local hint
+    local vname
+    local prompt="which ${soft} you'd select ${default_prompt}: "
+    
+    while :
+    do
+        echo -e "\n------------ ${soft} setting ------------\n"
+        for ((i=1;i<=${#arr[@]};i++ )); do
+            vname="$(get_valid_valname ${arr[$i-1]})"
+            hint="$(get_hint $vname)"
+            [[ "$hint" == "" ]] && hint="${arr[$i-1]}"
+            echo -e "${green}${i}${plain}) $hint"
+        done
+        echo
+        read -p "${prompt}" pick
+        if [[ "$pick" == "" && "$default" != "" ]]; then
+            pick=${default}
+            break
+        fi
+        
+        if ! is_digit "$pick"; then
+            prompt="Input error, please input a number"
+            continue
+        fi
+        
+        if [[ "$pick" -lt 1 || "$pick" -gt ${#arr[@]} ]]; then
+            prompt="Input error, please input a number between 1 and ${#arr[@]}: "
+            continue
+        fi
+        
+        break
+    done
+    
+    eval ${soft}=${arr[$pick-1]}
+    vname="$(get_valid_valname ${arr[$pick-1]})"
+    hint="$(get_hint $vname)"
+    [[ "$hint" == "" ]] && hint="${arr[$pick-1]}"
+    echo -e "\nyour selection: $hint\n"
+}
+
+version_ge(){
+    test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" == "$1"
+}
+
+get_latest_version() {
+    latest_version=($(wget -q https://kernel.ubuntu.com/~kernel-ppa/mainline/ | awk -F'\"v' '/v[4-9]./{print $2}' | cut -d/ -f1 | grep -v - | sort -V))
+    
+    [ ${#latest_version[@]} -eq 0 ] && echo -e "${red}Error:${plain} Get latest kernel version failed." && exit 1
+    
+    kernel_arr=()
+    for i in ${latest_version[@]}; do
+        if version_ge $i 4.14; then
+            kernel_arr+=($i);
+        fi
+    done
+    
+    display_menu kernel last
+    
+    if [[ `getconf WORD_BIT` == "32" && `getconf LONG_BIT` == "64" ]]; then
+        deb_name=$(wget -q https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/ | grep "linux-image" | grep "generic" | awk -F'\">' '/amd64.deb/{print $2}' | cut -d'<' -f1 | head -1)
+        deb_kernel_url="https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/${deb_name}"
+        deb_kernel_name="linux-image-${kernel}-amd64.deb"
+        modules_deb_name=$(wget -q https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/ | grep "linux-modules" | grep "generic" | awk -F'\">' '/amd64.deb/{print $2}' | cut -d'<' -f1 | head -1)
+        deb_kernel_modules_url="https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/${modules_deb_name}"
+        deb_kernel_modules_name="linux-modules-${kernel}-amd64.deb"
+    else
+        deb_name=$(wget -q https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/ | grep "linux-image" | grep "generic" | awk -F'\">' '/i386.deb/{print $2}' | cut -d'<' -f1 | head -1)
+        deb_kernel_url="https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/${deb_name}"
+        deb_kernel_name="linux-image-${kernel}-i386.deb"
+        modules_deb_name=$(wget -q https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/ | grep "linux-modules" | grep "generic" | awk -F'\">' '/i386.deb/{print $2}' | cut -d'<' -f1 | head -1)
+        deb_kernel_modules_url="https://kernel.ubuntu.com/~kernel-ppa/mainline/v${kernel}/${modules_deb_name}"
+        deb_kernel_modules_name="linux-modules-${kernel}-i386.deb"
+    fi
+    
+    [ -z ${deb_name} ] && echo -e "${red}Error:${plain} Getting Linux kernel binary package name failed, maybe kernel build failed. Please choose other one and try again." && exit 1
+}
+
+get_opsy() {
+    [ -f /etc/redhat-release ] && awk '{print ($1,$3~/^[0-9]/?$3:$4)}' /etc/redhat-release && return
+    [ -f /etc/os-release ] && awk -F'[= "]' '/PRETTY_NAME/{print $3,$4,$5}' /etc/os-release && return
+    [ -f /etc/lsb-release ] && awk -F'[="]+' '/DESCRIPTION/{print $2}' /etc/lsb-release && return
+}
+
+opsy=$( get_opsy )
+arch=$( uname -m )
+lbit=$( getconf LONG_BIT )
+kern=$( uname -r )
+
+get_char() {
+    SAVEDSTTY=`stty -g`
+    stty -echo
+    stty cbreak
+    # dd if=/dev/tty bs=1 count=1 2> /dev/null
+    stty -raw
+    stty echo
+    stty $SAVEDSTTY
+}
+
+getversion() {
+    if [[ -s /etc/redhat-release ]]; then
+        grep -oE  "[0-9.]+" /etc/redhat-release
+    else
+        grep -oE  "[0-9.]+" /etc/issue
+    fi
+}
+
+centosversion() {
+    if [ x"${release}" == x"centos" ]; then
+        local code=$1
+        local version="$(getversion)"
+        local main_ver=${version%%.*}
+        if [ "$main_ver" == "$code" ]; then
+            return 0
+        else
+            return 1
+        fi
+    else
+        return 1
+    fi
+}
+
+check_bbr_status() {
+    local param=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
+    if [[ x"${param}" == x"bbr" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+check_kernel_version() {
+    local kernel_version=$(uname -r | cut -d- -f1)
+    if version_ge ${kernel_version} 4.9; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+install_elrepo() {
+    
+    if centosversion 5; then
+        echo -e "${red}Error:${plain} not supported CentOS 5."
+        exit 1
+    fi
+    
+    rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+    
+    if centosversion 6; then
+        rpm -Uvh https://www.elrepo.org/elrepo-release-6-8.el6.elrepo.noarch.rpm
+        elif centosversion 7; then
+        rpm -Uvh https://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+    fi
+    
+    if [ ! -f /etc/yum.repos.d/elrepo.repo ]; then
+        echo -e "${red}Error:${plain} Install elrepo failed, please check it."
+        exit 1
+    fi
+}
+
+sysctl_config() {
+    sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
+    sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
+    echo "net.core.default_qdisc = fq" >> /etc/sysctl.conf
+    echo "net.ipv4.tcp_congestion_control = bbr" >> /etc/sysctl.conf
+    sysctl -p >/dev/null 2>&1
+}
+
+install_config() {
+    if [[ x"${release}" == x"centos" ]]; then
+        if centosversion 6; then
+            if [ ! -f "/boot/grub/grub.conf" ]; then
+                echo -e "${red}Error:${plain} /boot/grub/grub.conf not found, please check it."
+                exit 1
+            fi
+            sed -i 's/^default=.*/default=0/g' /boot/grub/grub.conf
+            elif centosversion 7; then
+            if [ ! -f "/boot/grub2/grub.cfg" ]; then
+                echo -e "${red}Error:${plain} /boot/grub2/grub.cfg not found, please check it."
+                exit 1
+            fi
+            grub2-set-default 0
+        fi
+        elif [[ x"${release}" == x"debian" || x"${release}" == x"ubuntu" ]]; then
+        /usr/sbin/update-grub
+    fi
+}
+
+reboot_os() {
+    echo
+    echo -e "${green}Info:${plain} The system needs to reboot."
+    read -p "Do you want to restart system? [y/n]" is_reboot
+    if [[ ${is_reboot} == "y" || ${is_reboot} == "Y" ]]; then
+        reboot
+    else
+        echo -e "${red}Info:${plain} Reboot has been canceled..."
+        exit 0
+    fi
+}
+
+install_bbr() {
+    check_bbr_status
+    if [ $? -eq 0 ]; then
+        echo
+        echo -e "${green}Info:${plain} TCP BBR has already been installed. nothing to do..."
+        exit 0
+    fi
+    check_kernel_version
+    if [ $? -eq 0 ]; then
+        echo
+        echo -e "${green}Info:${plain} Your kernel version is greater than 4.9, directly setting TCP BBR..."
+        sysctl_config
+        echo -e "${green}Info:${plain} Setting TCP BBR completed..."
+        exit 0
+    fi
+    
+    if [[ x"${release}" == x"centos" ]]; then
+        install_elrepo
+        [ ! "$(command -v yum-config-manager)" ] && yum install -y yum-utils > /dev/null 2>&1
+        [ x"$(yum-config-manager elrepo-kernel | grep -w enabled | awk '{print $3}')" != x"True" ] && yum-config-manager --enable elrepo-kernel > /dev/null 2>&1
+        if centosversion 6; then
+            if is_64bit; then
+                rpm_kernel_name="kernel-ml-4.18.20-1.el6.elrepo.x86_64.rpm"
+                rpm_kernel_devel_name="kernel-ml-devel-4.18.20-1.el6.elrepo.x86_64.rpm"
+                rpm_kernel_url_1="http://repos.lax.quadranet.com/elrepo/archive/kernel/el6/x86_64/RPMS/"
+            else
+                rpm_kernel_name="kernel-ml-4.18.20-1.el6.elrepo.i686.rpm"
+                rpm_kernel_devel_name="kernel-ml-devel-4.18.20-1.el6.elrepo.i686.rpm"
+                rpm_kernel_url_1="http://repos.lax.quadranet.com/elrepo/archive/kernel/el6/i386/RPMS/"
+            fi
+            rpm_kernel_url_2="https://dl.lamp.sh/files/"
+            wget -c -t3 -T60 -O ${rpm_kernel_name} ${rpm_kernel_url_1}${rpm_kernel_name}
+            if [ $? -ne 0 ]; then
+                rm -rf ${rpm_kernel_name}
+                wget -c -t3 -T60 -O ${rpm_kernel_name} ${rpm_kernel_url_2}${rpm_kernel_name}
+            fi
+            wget -c -t3 -T60 -O ${rpm_kernel_devel_name} ${rpm_kernel_url_1}${rpm_kernel_devel_name}
+            if [ $? -ne 0 ]; then
+                rm -rf ${rpm_kernel_devel_name}
+                wget -c -t3 -T60 -O ${rpm_kernel_devel_name} ${rpm_kernel_url_2}${rpm_kernel_devel_name}
+            fi
+            if [ -f "${rpm_kernel_name}" ]; then
+                rpm -ivh ${rpm_kernel_name}
+            else
+                echo -e "${red}Error:${plain} Download ${rpm_kernel_name} failed, please check it."
+                exit 1
+            fi
+            if [ -f "${rpm_kernel_devel_name}" ]; then
+                rpm -ivh ${rpm_kernel_devel_name}
+            else
+                echo -e "${red}Error:${plain} Download ${rpm_kernel_devel_name} failed, please check it."
+                exit 1
+            fi
+            rm -f ${rpm_kernel_name} ${rpm_kernel_devel_name}
+            elif centosversion 7; then
+            yum -y install kernel-ml kernel-ml-devel
+            if [ $? -ne 0 ]; then
+                echo -e "${red}Error:${plain} Install latest kernel failed, please check it."
+                exit 1
+            fi
+        fi
+        elif [[ x"${release}" == x"debian" || x"${release}" == x"ubuntu" ]]; then
+        [[ ! -e "/usr/bin/wget" ]] && apt-get -y update && apt-get -y install wget
+        echo -e "${green}Info:${plain} Getting latest kernel version..."
+        get_latest_version
+        if [ -n ${modules_deb_name} ]; then
+            wget -c -t3 -T60 -O ${deb_kernel_modules_name} ${deb_kernel_modules_url}
+            if [ $? -ne 0 ]; then
+                echo -e "${red}Error:${plain} Download ${deb_kernel_modules_name} failed, please check it."
+                exit 1
+            fi
+        fi
+        wget -c -t3 -T60 -O ${deb_kernel_name} ${deb_kernel_url}
+        if [ $? -ne 0 ]; then
+            echo -e "${red}Error:${plain} Download ${deb_kernel_name} failed, please check it."
+            exit 1
+        fi
+        [ -f ${deb_kernel_modules_name} ] && dpkg -i ${deb_kernel_modules_name}
+        dpkg -i ${deb_kernel_name}
+        rm -f ${deb_kernel_name} ${deb_kernel_modules_name}
+    else
+        echo -e "${red}Error:${plain} OS is not be supported, please change to CentOS/Debian/Ubuntu and try again."
+        exit 1
+    fi
+    
+    install_config
+    sysctl_config
+    reboot_os
+}
+
+install_bbr 2>&1 | tee ${cur_dir}/install_bbr.log
+}
+
+
+function domain_cf() {
+    print_ok "enter the domain into the cloudflare dns"
+    source <(curl -sL ${myhost}cf.sh) >/dev/null 2>&1
+    judge "domain installed successfully"
+    
 }
 
 function download_config() {
-  ${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
-  judge "Installed successfully add trojan account"
-  ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
-  judge "Installed successfully add vless account"
-  ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
-  judge "Installed successfully add vmess account"
-  ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
-  judge "Installed successfully remove trojan account"
-  ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
-  judge "Installed successfully remove vless account"
-  ${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
-  judge "Installed successfully remove vmess account"
-  ${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
-  judge "Installed successfully renew trojan account"
-  ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
-  judge "Installed successfully renew vless account"
-  ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
-  judge "Installed successfully renew vmess account"
-  ${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
-  judge "Installed successfully check trojan account"
-  ${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
-  judge "Installed successfully check vless account"
-  ${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
-  judge "Installed successfully check vmess account"
-  ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
-  judge "Installed successfully exp all account"
-  ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
-  judge "Installed successfully menu ur dashboard vps"
-  ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
-  judge "Installed successfully speedtest"
+    ${IMP} ${local_date}add-tr "${myhost}add-tr.sh" && chmod +x ${local_date}add-tr
+    judge "Installed successfully add trojan account"
+    ${IMP} ${local_date}add-vless "${myhost}add-vless.sh" && chmod +x ${local_date}add-vless
+    judge "Installed successfully add vless account"
+    ${IMP} ${local_date}add-ws "${myhost}add-ws.sh" && chmod +x ${local_date}add-ws
+    judge "Installed successfully add vmess account"
+    ${IMP} ${local_date}del-tr "${myhost}del-tr.sh" && chmod +x ${local_date}del-tr
+    judge "Installed successfully remove trojan account"
+    ${IMP} ${local_date}del-vless "${myhost}del-vless.sh" && chmod +x ${local_date}del-vless
+    judge "Installed successfully remove vless account"
+    ${IMP} ${local_date}del-ws "${myhost}del-ws.sh" && chmod +x ${local_date}del-ws
+    judge "Installed successfully remove vmess account"
+    ${IMP} ${local_date}renew-tr "${myhost}renew-tr.sh" && chmod +x ${local_date}renew-tr
+    judge "Installed successfully renew trojan account"
+    ${IMP} ${local_date}renew-vless "${myhost}renew-vless.sh" && chmod +x ${local_date}renew-vless
+    judge "Installed successfully renew vless account"
+    ${IMP} ${local_date}renew-ws "${myhost}renew-ws.sh" && chmod +x ${local_date}renew-ws
+    judge "Installed successfully renew vmess account"
+    ${IMP} ${local_date}cek-tr "${myhost}cek-tr.sh" && chmod +x ${local_date}cek-tr
+    judge "Installed successfully check trojan account"
+    ${IMP} ${local_date}cek-vless "${myhost}cek-vless.sh" && chmod +x ${local_date}cek-vless
+    judge "Installed successfully check vless account"
+    ${IMP} ${local_date}cek-ws "${myhost}cek-ws.sh" && chmod +x ${local_date}cek-ws
+    judge "Installed successfully check vmess account"
+    ${IMP} ${local_date}xp "${myhost}xp.sh" && chmod +x ${local_date}xp
+    judge "Installed successfully exp all account"
+    ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
+    judge "Installed successfully menu ur dashboard vps"
+    ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
+    judge "Installed successfully speedtest"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
 
@@ -137,8 +497,8 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 2 0 * * * root /usr/bin/xp
 END
-  chmod 644 /root/.profile
-
+    chmod 644 /root/.profile
+    
 cat > /etc/cron.d/daily_reboot <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
@@ -147,40 +507,40 @@ END
 cat > /home/daily_reboot <<-END
 5
 END
-AUTOREB=$(cat /home/daily_reboot)
-SETT=11
-if [ $AUTOREB -gt $SETT ]
-then
-    TIME_DATE="PM"
-else
-    TIME_DATE="AM"
-fi
+    AUTOREB=$(cat /home/daily_reboot)
+    SETT=11
+    if [ $AUTOREB -gt $SETT ]
+    then
+        TIME_DATE="PM"
+    else
+        TIME_DATE="AM"
+    fi
 }
 
 function acme() {
-  judge "installed successfully SSL certificate generation script"
-  mkdir /root/.acme.sh  >/dev/null 2>&1
-  curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh >/dev/null 2>&1
-  chmod +x /root/.acme.sh/acme.sh >/dev/null 2>&1
-  /root/.acme.sh/acme.sh --upgrade --auto-upgrade >/dev/null 2>&1
-  /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >/dev/null 2>&1
-  /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256 >/dev/null 2>&1
-  ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc >/dev/null 2>&1
-  print_ok "SSL Certificate generated successfully"
+    judge "installed successfully SSL certificate generation script"
+    mkdir /root/.acme.sh  >/dev/null 2>&1
+    curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh >/dev/null 2>&1
+    chmod +x /root/.acme.sh/acme.sh >/dev/null 2>&1
+    /root/.acme.sh/acme.sh --upgrade --auto-upgrade >/dev/null 2>&1
+    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >/dev/null 2>&1
+    /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256 >/dev/null 2>&1
+    ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc >/dev/null 2>&1
+    print_ok "SSL Certificate generated successfully"
 }
 
 function configure_nginx() {
-  # // nginx config | BHOIKFOST YAHYA AUTOSCRIPT
-  rm /var/www/html/*.html
-  rm /etc/nginx/sites-enabled/default
-  rm /etc/nginx/sites-available/default 
-  wget -q -O /var/www/html/index.html ${myhost_html}index.html >/dev/null 2>&1
+    # // nginx config | BHOIKFOST YAHYA AUTOSCRIPT
+    rm /var/www/html/*.html
+    rm /etc/nginx/sites-enabled/default
+    rm /etc/nginx/sites-available/default
+    wget -q -O /var/www/html/index.html ${myhost_html}index.html >/dev/null 2>&1
   cat >/etc/nginx/conf.d/xray.conf <<EOF
     server {
              listen 80;
              listen [::]:80;
              listen 443 ssl http2 reuseport;
-             listen [::]:443 http2 reuseport;	
+             listen [::]:443 http2 reuseport;
              server_name $domain;
              ssl_certificate /etc/xray/xray.crt;
              ssl_certificate_key /etc/xray/xray.key;
@@ -189,224 +549,224 @@ function configure_nginx() {
              root /var/www/html;
         }
 EOF
-  sed -i '$ ilocation = /vless' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_pass http://127.0.0.1:14016;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation = /vmess' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_pass http://127.0.0.1:14017;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation = /trojan-ws' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_pass http://127.0.0.1:14018;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation = /ss-ws' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_pass http://127.0.0.1:30300;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation ^~ /vless-grpc' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_pass grpc://127.0.0.1:14019;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation ^~ /vmess-grpc' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_pass grpc://127.0.0.1:14020;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation ^~ /trojan-grpc' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_pass grpc://127.0.0.1:14021;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-
-  sed -i '$ ilocation ^~ /ss-grpc' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i{' /etc/nginx/conf.d/xray.conf
-  sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ igrpc_pass grpc://127.0.0.1:30310;' /etc/nginx/conf.d/xray.conf
-  sed -i '$ i}' /etc/nginx/conf.d/xray.conf
-  
-  judge "Nginx configuration modification"
-  systemctl daemon-reload >/dev/null 2>&1
-  systemctl enable nginx >/dev/null 2>&1
-  systemctl enable xray >/dev/null 2>&1
-  systemctl restart nginx >/dev/null 2>&1
-  systemctl restart xray >/dev/null 2>&1
-clear
-echo -e "               ┌───────────────────────────────────────────────┐"
-echo -e "───────────────│                                               │───────────────"
-echo -e "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
-echo -e "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
-echo -e "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
-echo -e "               │    ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
-echo -e "               └───────────────────────────────────────────────┘"
-echo -e "                      Autoscript xray vpn lite (multi port)    "
-echo -e "                       no licence script (free lifetime)"
-echo -e "            Make sure the internet is smooth when installing the script"
-echo "           ┌───────────────────────────────────────────────────────┐"
-echo "           │       >>> Service & Port                              │"
-echo "           │   - XRAY  Vmess TLS         : 443                     │"
-echo "           │   - XRAY  Vmess gRPC        : 443                     │"
-echo "           │   - XRAY  Vmess None TLS    : 80                      │"
-echo "           │   - XRAY  Vless TLS         : 443                     │"
-echo "           │   - XRAY  Vless gRPC        : 443                     │"
-echo "           │   - XRAY  Vless None TLS    : 80                      │"
-echo "           │   - XRAY  Vless TLS         : 443                     │"
-echo "           │   - Trojan GRPC             : 443                     │"
-echo "           │   - Trojan WS               : 443                     │"
-echo "           │                                                       │"
-echo "           │      >>> Server Information & Other Features          │"
-echo "           │   - Timezone                : Asia/Jakarta (GMT +7)   │"
-echo "           │   - Autoreboot On           : $AUTOREB:00 $TIME_DATE GMT +7          │"
-echo "           │   - Auto Delete Expired Account                       │"
-echo "           │   - Fully automatic script                            │"
-echo "           │   - VPS settings                                      │"
-echo "           │   - Admin Control                                     │"
-echo "           │   - Restore Data                                      │"
-echo "           │   - Full Orders For Various Services                  │"
-echo "           └───────────────────────────────────────────────────────┘"
-secs_to_human "$(($(date +%s) - ${start}))"
-echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
-read answer
-if [ "$answer" == "${answer#[Yy]}" ] ;then
-    exit 0
-else
-    reboot
-fi
-
+    sed -i '$ ilocation = /vless' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_pass http://127.0.0.1:14016;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation = /vmess' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_pass http://127.0.0.1:14017;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation = /trojan-ws' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_pass http://127.0.0.1:14018;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation = /ss-ws' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_pass http://127.0.0.1:30300;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_http_version 1.1;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Upgrade \$http_upgrade;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Connection "upgrade";' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation ^~ /vless-grpc' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_pass grpc://127.0.0.1:14019;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation ^~ /vmess-grpc' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_pass grpc://127.0.0.1:14020;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation ^~ /trojan-grpc' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_pass grpc://127.0.0.1:14021;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    sed -i '$ ilocation ^~ /ss-grpc' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i{' /etc/nginx/conf.d/xray.conf
+    sed -i '$ iproxy_redirect off;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Real-IP \$remote_addr;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_set_header Host \$http_host;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ igrpc_pass grpc://127.0.0.1:30310;' /etc/nginx/conf.d/xray.conf
+    sed -i '$ i}' /etc/nginx/conf.d/xray.conf
+    
+    judge "Nginx configuration modification"
+    systemctl daemon-reload >/dev/null 2>&1
+    systemctl enable nginx >/dev/null 2>&1
+    systemctl enable xray >/dev/null 2>&1
+    systemctl restart nginx >/dev/null 2>&1
+    systemctl restart xray >/dev/null 2>&1
+    clear
+    echo -e "               ┌───────────────────────────────────────────────┐"
+    echo -e "───────────────│                                               │───────────────"
+    echo -e "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
+    echo -e "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
+    echo -e "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
+    echo -e "               │    ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
+    echo -e "               └───────────────────────────────────────────────┘"
+    echo -e "                      Autoscript xray vpn lite (multi port)    "
+    echo -e "                       no licence script (free lifetime)"
+    echo -e "            Make sure the internet is smooth when installing the script"
+    echo "           ┌───────────────────────────────────────────────────────┐"
+    echo "           │       >>> Service & Port                              │"
+    echo "           │   - XRAY  Vmess TLS         : 443                     │"
+    echo "           │   - XRAY  Vmess gRPC        : 443                     │"
+    echo "           │   - XRAY  Vmess None TLS    : 80                      │"
+    echo "           │   - XRAY  Vless TLS         : 443                     │"
+    echo "           │   - XRAY  Vless gRPC        : 443                     │"
+    echo "           │   - XRAY  Vless None TLS    : 80                      │"
+    echo "           │   - XRAY  Vless TLS         : 443                     │"
+    echo "           │   - Trojan GRPC             : 443                     │"
+    echo "           │   - Trojan WS               : 443                     │"
+    echo "           │                                                       │"
+    echo "           │      >>> Server Information & Other Features          │"
+    echo "           │   - Timezone                : Asia/Jakarta (GMT +7)   │"
+    echo "           │   - Autoreboot On           : $AUTOREB:00 $TIME_DATE GMT +7          │"
+    echo "           │   - Auto Delete Expired Account                       │"
+    echo "           │   - Fully automatic script                            │"
+    echo "           │   - VPS settings                                      │"
+    echo "           │   - Admin Control                                     │"
+    echo "           │   - Restore Data                                      │"
+    echo "           │   - Full Orders For Various Services                  │"
+    echo "           └───────────────────────────────────────────────────────┘"
+    secs_to_human "$(($(date +%s) - ${start}))"
+    echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
+    read answer
+    if [ "$answer" == "${answer#[Yy]}" ] ;then
+        exit 0
+    else
+        reboot
+    fi
+    
 }
 
 function domain_add() {
-  clear
-  # // Make Folder Xray to accsess
-  mkdir -p /etc/xray
-  mkdir -p /var/log/xray
-  chmod +x /var/log/xray
-  touch /etc/xray/domain
-  touch /var/log/xray/access.log
-  touch /var/log/xray/error.log
-  read -rp "Please enter your domain name information(eg: www.example.com):" domain
-  domain_ip=$(curl -sm8 ipget.net/?ip="${domain}")
-  print_ok "Getting IP address information, please be patient"
-  wgcfv4_status=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
-  wgcfv6_status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
-  echo "${domain}" >/etc/xray/scdomain
-  echo "${domain}" >/etc/xray/domain
-  if [[ ${wgcfv4_status} =~ "on"|"plus" ]] || [[ ${wgcfv6_status} =~ "on"|"plus" ]]; then
-    # // Close wgcf-warp to prevent misjudgment of VPS IP situation | BHOIKFOST YAHYA AUTOSCRIPT
-    wg-quick down wgcf >/dev/null 2>&1
-    print_ok "wgcf-warp is turned off"
-  fi
-  local_ipv4=$(curl -s4m8 https://ip.gs)
-  local_ipv6=$(curl -s6m8 https://ip.gs)
-  if [[ -z ${local_ipv4} && -n ${local_ipv6} ]]; then
-    # // Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate | BHOIKFOST YAHYA AUTOSCRIPT
-    echo -e nameserver 2a01:4f8:c2c:123f::1 >/etc/resolv.conf
-    print_ok "Recognize VPS as IPv6 Only, automatically add DNS64 server"
-  fi
-  echo -e "DNS-resolved IP address of the domain name：${domain_ip}"
-  echo -e "Local public network IPv4 address： ${local_ipv4}"
-  echo -e "Local public network IPv6 address： ${local_ipv6}"
-  sleep 2
-  if [[ ${domain_ip} == "${local_ipv4}" ]]; then
-    print_ok "The DNS-resolved IP address of the domain name matches the native IPv4 address"
+    clear
+    # // Make Folder Xray to accsess
+    mkdir -p /etc/xray
+    mkdir -p /var/log/xray
+    chmod +x /var/log/xray
+    touch /etc/xray/domain
+    touch /var/log/xray/access.log
+    touch /var/log/xray/error.log
+    read -rp "Please enter your domain name information(eg: www.example.com):" domain
+    domain_ip=$(curl -sm8 ipget.net/?ip="${domain}")
+    print_ok "Getting IP address information, please be patient"
+    wgcfv4_status=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+    wgcfv6_status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+    echo "${domain}" >/etc/xray/scdomain
+    echo "${domain}" >/etc/xray/domain
+    if [[ ${wgcfv4_status} =~ "on"|"plus" ]] || [[ ${wgcfv6_status} =~ "on"|"plus" ]]; then
+        # // Close wgcf-warp to prevent misjudgment of VPS IP situation | BHOIKFOST YAHYA AUTOSCRIPT
+        wg-quick down wgcf >/dev/null 2>&1
+        print_ok "wgcf-warp is turned off"
+    fi
+    local_ipv4=$(curl -s4m8 https://ip.gs)
+    local_ipv6=$(curl -s6m8 https://ip.gs)
+    if [[ -z ${local_ipv4} && -n ${local_ipv6} ]]; then
+        # // Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate | BHOIKFOST YAHYA AUTOSCRIPT
+        echo -e nameserver 2a01:4f8:c2c:123f::1 >/etc/resolv.conf
+        print_ok "Recognize VPS as IPv6 Only, automatically add DNS64 server"
+    fi
+    echo -e "DNS-resolved IP address of the domain name：${domain_ip}"
+    echo -e "Local public network IPv4 address： ${local_ipv4}"
+    echo -e "Local public network IPv6 address： ${local_ipv6}"
     sleep 2
-  elif [[ ${domain_ip} == "${local_ipv6}" ]]; then
-    print_ok "The DNS-resolved IP address of the domain name matches the native IPv6 address"
-    sleep 2
-  else
-    print_error "Please make sure that the correct A/AAAA records are added to the domain name, otherwise xray will not work properly"
-    print_error "The IP address of the domain name resolved through DNS does not match the IPv4 / IPv6 address of the machine, continue installed successfully?（y/n）" && read -r install
-    case $install in
-    [yY][eE][sS] | [yY])
-      print_ok "Continue installed successfully"
-      sleep 2
-      ;;
-    *)
-      print_error "installed successfully"
-      # // exit 2
-      ;;
-    esac
-  fi
+    if [[ ${domain_ip} == "${local_ipv4}" ]]; then
+        print_ok "The DNS-resolved IP address of the domain name matches the native IPv4 address"
+        sleep 2
+        elif [[ ${domain_ip} == "${local_ipv6}" ]]; then
+        print_ok "The DNS-resolved IP address of the domain name matches the native IPv6 address"
+        sleep 2
+    else
+        print_error "Please make sure that the correct A/AAAA records are added to the domain name, otherwise xray will not work properly"
+        print_error "The IP address of the domain name resolved through DNS does not match the IPv4 / IPv6 address of the machine, continue installed successfully?（y/n）" && read -r install
+        case $install in
+            [yY][eE][sS] | [yY])
+                print_ok "Continue installed successfully"
+                sleep 2
+            ;;
+            *)
+                print_error "installed successfully"
+                # // exit 2
+            ;;
+        esac
+    fi
 }
 
 function dependency_install() {
-  INS="apt install -y"
-  apt update >/dev/null 2>&1
-  judge "Update configuration"
-
-  apt clean all >/dev/null 2>&1
-  judge "Clean configuration "
-
-  ${INS} jq curl >/dev/null 2>&1
-  judge "Installed successfully jq"
-
-  ${INS} curl socat  >/dev/null 2>&1
-  judge "Installed socat transport-https"
-
-  ${INS} systemd >/dev/null 2>&1
-  judge "Installed systemd"
-
-  ${INS} net-tools >/dev/null 2>&1
-  judge "Installed net-tools"
-
-
+    INS="apt install -y"
+    apt update >/dev/null 2>&1
+    judge "Update configuration"
+    
+    apt clean all >/dev/null 2>&1
+    judge "Clean configuration "
+    
+    ${INS} jq curl >/dev/null 2>&1
+    judge "Installed successfully jq"
+    
+    ${INS} curl socat  >/dev/null 2>&1
+    judge "Installed socat transport-https"
+    
+    ${INS} systemd >/dev/null 2>&1
+    judge "Installed systemd"
+    
+    ${INS} net-tools >/dev/null 2>&1
+    judge "Installed net-tools"
+    
+    
 }
 function install_xray() {
-  # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
-  judge "Core Xray 1.6.1 Version installed successfully"
-  # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.1 >/dev/null 2>&1
-  # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
-  uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-  # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
+    # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
+    judge "Core Xray 1.6.1 Version installed successfully"
+    # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
+    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.1 >/dev/null 2>&1
+    # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
+    uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+    # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   cat >/etc/xray/config.json <<END
 {
   "log" : {
@@ -432,7 +792,7 @@ function install_xray() {
           "decryption":"none",
             "clients": [
                {
-                 "id": "${uuid}"                 
+                 "id": "${uuid}"
 #vless
              }
           ]
@@ -469,7 +829,7 @@ function install_xray() {
       "port": "14018",
       "protocol": "trojan",
       "settings": {
-          "decryption":"none",		
+          "decryption":"none",
            "clients": [
               {
                  "password": "${uuid}"
@@ -505,7 +865,7 @@ function install_xray() {
                "path": "/ss-ws"
            }
         }
-     },	
+     },
       {
         "listen": "127.0.0.1",
         "port": "14019",
@@ -586,7 +946,7 @@ function install_xray() {
            "serviceName": "ss-grpc"
           }
        }
-    }	
+    }
   ],
   "outbounds": [
     {
@@ -660,7 +1020,7 @@ function install_xray() {
   }
 }
 END
-  rm -rf /etc/systemd/system/xray.service.d
+    rm -rf /etc/systemd/system/xray.service.d
   cat >/etc/systemd/system/xray.service <<EOF
 Description=Xray Service
 Documentation=https://github.com/xtls
@@ -668,7 +1028,7 @@ After=network.target nss-lookup.target
 
 [Service]
 User=www-data
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE                                 
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
 ExecStart=/usr/local/bin/xray run -config /etc/xray/config.json
@@ -681,28 +1041,30 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
-
+    
 }
 
 function install_sc() {
-  domain_add
-  dependency_install
-  acme
-  nginx_install
-  install_xray
-  download_config
-  configure_nginx
+    domain_add
+    dependency_install
+    acme
+    nginx_install
+    install_xray
+    download_config
+    install_bbr
+    configure_nginx
 }
 
 function install_sc_cf() {
-  dependency_install
-  domain_cf
-  acme
-  nginx_install
-  install_xray
-  download_config
-  configure_nginx
-
+    dependency_install
+    domain_cf
+    acme
+    nginx_install
+    install_xray
+    download_config
+    install_bbr
+    configure_nginx
+    
 }
 
 # // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT
@@ -722,13 +1084,13 @@ echo -e "${gray}1)${NC}.${Green}MANUAL POINTING${NC} ] First connect your VPS IP
 echo -e "${gray}2)${NC}.${Green}AUTO POINTING${NC} ] do you not have a domain?"
 read -rp "CONTINUING TO INSTALL AUTOSCRIPT (1/2)? " menu_num
 case $menu_num in
-1)
-  install_sc
-  ;;
-2)
-  install_sc_cf
-  ;;
-*)
-echo -e "${Red}You wrong command !${NC}"
-  ;;
+    1)
+        install_sc
+    ;;
+    2)
+        install_sc_cf
+    ;;
+    *)
+        echo -e "${Red}You wrong command !${NC}"
+    ;;
 esac
