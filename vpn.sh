@@ -1,38 +1,4 @@
 #!/bin/bash
-# //====================================================
-# //	System Request:Debian 9+/Ubuntu 18.04+/20+
-# //	Author:	bhoikfostyahya
-# //	Dscription: Xray Menu Management
-# //	email: admin@bhoikfostyahya.com
-# //  telegram: https://t.me/bhoikfost_yahya
-# //====================================================
-
-# // font color configuration | BHOIKFOST YAHYA AUTOSCRIPT
-Green="\e[92;1m"
-Red="\033[31m"
-Yellow="\033[33m"
-Blue="\033[36m"
-Font="\033[0m"
-gray="\e[1;30m"
-GreenBG="\033[42;37m"
-RedBG="\033[41;37m"
-OK="${Green}[OKAY]${Font}"
-ERROR="${Red}[ERROR]${Font}"
-apt install jq -y
-
-https://wss-multi.yha.my.id/tool_configurasi/tools.sh
-# // configuration GET | BHOIKFOST YAHYA AUTOSCRIPT
-HOSTING="https://wss-multi.yha.my.id/"
-HOSTING_XRAY="${HOSTING}/xray/"
-HOSTING_SSH="${HOSTING}/ssh/"
-HOSTING_SSHWS="${HOSTING}/sshws/"
-HOSTING_TOOL="${HOSTING}/tool_configurasi/"
-IMP="wget -q -O"
-LOCAL_DATE="/usr/bin/"
-domain="$(cat /etc/xray/domain)"
-myhost_html="https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/"
-${IMP} ${LOCAL_DATE}infosc "${HOSTING_TOOL}info.sh" && chmod +x ${LOCAL_DATE}infosc
-
 
 export DEBIAN_FRONTEND=noninteractive
 MYIP=$(wget -qO- ipinfo.io/ip);
@@ -77,6 +43,7 @@ exit 0
 END
 
 chmod +x /etc/rc.local
+
 systemctl enable rc-local
 systemctl start rc-local.service
 
@@ -92,7 +59,74 @@ ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 
 
+install_ssl(){
+    if [ -f "/usr/bin/apt-get" ];then
+        isDebian=`cat /etc/issue|grep Debian`
+        if [ "$isDebian" != "" ];then
+            apt-get install -y nginx certbot
+            apt install -y nginx certbot
+            sleep 3s
+        else
+            apt-get install -y nginx certbot
+            apt install -y nginx certbot
+            sleep 3s
+        fi
+    else
+        yum install -y nginx certbot
+        sleep 3s
+    fi
+    
+    systemctl stop nginx.service
+    
+    if [ -f "/usr/bin/apt-get" ];then
+        isDebian=`cat /etc/issue|grep Debian`
+        if [ "$isDebian" != "" ];then
+            echo "A" | certbot certonly --renew-by-default --register-unsafely-without-email --standalone -d $domain
+            sleep 3s
+        else
+            echo "A" | certbot certonly --renew-by-default --register-unsafely-without-email --standalone -d $domain
+            sleep 3s
+        fi
+    else
+        echo "Y" | certbot certonly --renew-by-default --register-unsafely-without-email --standalone -d $domain
+        sleep 3s
+    fi
+}
 
+# install webserver
+infosc
+echo -e "[ ${green}OKAY${NC} ] Installing nginx server web + xray + ssh websocket"
+cd
+# // Checking System
+if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
+    echo -e "${OK} Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+    sleep 1
+    sudo add-apt-repository ppa:ondrej/nginx -y
+    apt install nginx -y
+    apt install python3-certbot-nginx -y
+    elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
+    echo -e "${OK} Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+    sleep 1
+    apt install gnupg2 ca-certificates lsb-release -y
+    echo "deb http://nginx.org/packages/mainline/debian $(lsb_release -cs) nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
+    echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
+    curl -o /tmp/nginx_signing.key https://nginx.org/keys/nginx_signing.key
+    sudo mv /tmp/nginx_signing.key /etc/apt/trusted.gpg.d/nginx_signing.asc
+    sudo apt update
+    apt -y install nginx
+    apt --fix-broken install
+else
+    echo -e "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
+    exit 1
+fi
+judge "Nginx installed successfully"
+
+
+
+# install badvpn
+cd
+
+echo -e "[ ${green}OKAY${NC} ] Installing badvpn-udpgw"
 wget -q /usr/bin/badvpn-udpgw "https://wss-multi.yha.my.id/ssh/newudpgw"
 chmod +x /usr/bin/badvpn-udpgw
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500' /etc/rc.local
@@ -112,7 +146,7 @@ sed -i 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 
 
-
+echo -e "[ ${green}OKAY${NC} ] Installing Install Dropbear"
 sed -i 's/NO_START=1/NO_START=0/g' /etc/default/dropbear
 sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=143/g' /etc/default/dropbear
 sed -i 's/DROPBEAR_EXTRA_ARGS=/DROPBEAR_EXTRA_ARGS="-p 50000 -p 109 -p 110 -p 69"/g' /etc/default/dropbear
@@ -158,47 +192,165 @@ sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
 /etc/init.d/stunnel4 restart
 
 
-wget -q -O /usr/local/bin/ws-dropbear https://wss-multi.yha.my.id/sshws/dropbear-ws.py && chmod +x /usr/local/bin/ws-stunnel
-wget -q -O /etc/systemd/system/ws-stunnel.service https://wss-multi.yha.my.id/sshws/ws-stunnel.service && chmod +x /etc/systemd/system/ws-stunnel.service
-systemctl daemon-reload
-systemctl enable ws-stunnel.service
-systemctl start ws-stunnel.service
-systemctl restart ws-stunnel.service
+# install fail2ban
+
+echo -e "[ ${green}OKAY${NC} ] Installing fail2ban"
+apt -y install fail2ban
+
+# Instal DDOS Flate
+if [ -d '/usr/local/ddos' ]; then
+    echo; echo; echo "Please un-install the previous version first"
+    exit 0
+else
+    mkdir /usr/local/ddos
+fi
+
+echo -e "[ ${green}OKAY${NC} ] Installing DOS-Deflate 0.6"
+echo; echo 'Installing DOS-Deflate 0.6'; echo
+echo; echo -n 'Downloading source files...'
+wget -q -O /usr/local/ddos/ddos.conf http://www.inetbase.com/scripts/ddos/ddos.conf
+echo -n '.'
+wget -q -O /usr/local/ddos/LICENSE http://www.inetbase.com/scripts/ddos/LICENSE
+echo -n '.'
+wget -q -O /usr/local/ddos/ignore.ip.list http://www.inetbase.com/scripts/ddos/ignore.ip.list
+echo -n '.'
+wget -q -O /usr/local/ddos/ddos.sh http://www.inetbase.com/scripts/ddos/ddos.sh
+chmod 0755 /usr/local/ddos/ddos.sh
+cp -s /usr/local/ddos/ddos.sh /usr/local/sbin/ddos
+echo '...done'
+echo; echo -n 'Creating cron to run script every minute.....(Default setting)'
+/usr/local/ddos/ddos.sh --cron > /dev/null 2>&1
+echo '.....done'
+echo; echo 'Installation has completed.'
+echo 'Config file is at /usr/local/ddos/ddos.conf'
+echo 'Please send in your comments and/or suggestions to zaf@vsnl.com'
+
+# banner /etc/issue.net
+
+echo -e "[ ${green}OKAY${NC} ] Settings banner"
+echo -e "[ ${green}INFO$NC ] Settings banner"
+wget -q -O /etc/issue.net "https://wss-multi.yha.my.id/tool_configurasi/issue.net"
+chmod +x /etc/issue.net
+echo "Banner /etc/issue.net" >> /etc/ssh/sshd_config
+sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/issue.net"@g' /etc/default/dropbear
+
+
+#install bbr dan optimasi kernel
+
+echo -e "[ ${green}OKAY${NC} ] install bbr dan optimasi kernel"
+wget -q  https://wss-multi.yha.my.id/ssh/bbr.sh && chmod +x bbr.sh && ./bbr.sh
+
+# blockir torrent
+iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
+iptables -A FORWARD -m string --string "announce_peer" --algo bm -j DROP
+iptables -A FORWARD -m string --string "find_node" --algo bm -j DROP
+iptables -A FORWARD -m string --algo bm --string "BitTorrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "BitTorrent protocol" -j DROP
+iptables -A FORWARD -m string --algo bm --string "peer_id=" -j DROP
+iptables -A FORWARD -m string --algo bm --string ".torrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "announce.php?passkey=" -j DROP
+iptables -A FORWARD -m string --algo bm --string "torrent" -j DROP
+iptables -A FORWARD -m string --algo bm --string "announce" -j DROP
+iptables -A FORWARD -m string --algo bm --string "info_hash" -j DROP
+iptables-save > /etc/iptables.up.rules
+iptables-restore -t < /etc/iptables.up.rules
+netfilter-persistent save
+netfilter-persistent reload
+
+
+
+
+cat > /etc/cron.d/re_otm <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+0 7 * * * root /sbin/reboot
+END
+
+cat > /etc/cron.d/xp_otm <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+2 0 * * * root /usr/bin/xp
+END
+
+cat > /home/re_otm <<-END
+7
+END
+
+service cron restart >/dev/null 2>&1
+service cron reload >/dev/null 2>&1
+
+# remove unnecessary files
+sleep 1
+echo -e "[ ${green}INFO$NC ] Clearing trash"
+apt autoclean -y >/dev/null 2>&1
+
+if dpkg -s unscd >/dev/null 2>&1; then
+    apt -y remove --purge unscd >/dev/null 2>&1
+fi
+
+sleep 1
+echo -e "$greenOKAY$NC Restart All service SSH & OVPN"
+/etc/init.d/nginx restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting nginx"
+/etc/init.d/openvpn restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting cron "
+/etc/init.d/ssh restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting ssh "
+/etc/init.d/dropbear restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting dropbear "
+/etc/init.d/fail2ban restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting fail2ban "
+/etc/init.d/stunnel4 restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting stunnel4 "
+/etc/init.d/vnstat restart >/dev/null 2>&1
+sleep 1
+echo -e "[ ${green}OKAY${NC} ] Restarting vnstat "
+/etc/init.d/squid restart >/dev/null 2>&1
+
+history -c
+echo "unset HISTFILE" >> /etc/profile
+
 
 ${IMP} ${LOCAL_DATE}usernew "${HOSTING_SSH}usernew.sh" && chmod +x ${LOCAL_DATE}usernew
-judge "Installed successfully add SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}trial "${HOSTING_SSH}trial.sh" && chmod +x ${LOCAL_DATE}trial
-judge "Installed successfully trial SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}renew "${HOSTING_SSH}renew.sh" && chmod +x ${LOCAL_DATE}renew
-judge "Installed successfully renew SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}remove "${HOSTING_SSH}hapus.sh" && chmod +x ${LOCAL_DATE}remove
-judge "Installed successfully remove SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}cek "${HOSTING_SSH}cek.sh" && chmod +x ${LOCAL_DATE}cek
-judge "Installed successfully check SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}member "${HOSTING_SSH}member.sh" && chmod +x ${LOCAL_DATE}member
-judge "Installed successfully member SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}delete "${HOSTING_SSH}delete.sh" && chmod +x ${LOCAL_DATE}delete
-judge "Installed successfully delete SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}autokill "${HOSTING_SSH}autokill.sh" && chmod +x ${LOCAL_DATE}autokill
-judge "Installed successfully autokill SSH + OVPN"
+
 
 ${IMP} ${LOCAL_DATE}ceklim "${HOSTING_SSH}ceklim.sh" && chmod +x ${LOCAL_DATE}ceklim
-judge "Installed successfully ceklim SSH + OVPN"
+
 
 
 ${IMP} ${LOCAL_DATE}sshws "${HOSTING_SSH}sshws.sh" && chmod +x ${LOCAL_DATE}sshws
-judge "Installed successfully SSH WEBSOCKET "
+
 
 ${IMP} ${LOCAL_DATE}sshws-true "${HOSTING_SSH}sshws-true.sh" && chmod +x ${LOCAL_DATE}sshws-true
-judge "Installed successfully SSH WEBSOCKET ENABLE/DISABLE"
 
 
+wget -q ${HOSTING_SSHWS}insshws.sh && chmod +x insshws.sh && ./insshws.sh
 
 
