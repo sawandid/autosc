@@ -729,6 +729,6 @@ case $menu_num in
   install_sc_cf
   ;;
 *)
-echo "You wrong command !"
+echo -e "${Red}You wrong command !${NC}"
   ;;
 esac
