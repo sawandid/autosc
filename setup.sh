@@ -288,30 +288,30 @@ echo "───────────────│    $Green┴ ┴└─┘
 echo "               │   ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
 echo "               └───────────────────────────────────────────────┘"
 echo "           ┌───────────────────────────────────────────────────────┐"
-echo "           │       >>> Service & Port                              │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vmess TLS         : 443                     │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vmess gRPC        : 443                     │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vmess None TLS    : 80                      │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vless TLS         : 443                     │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vless gRPC        : 443                     │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vless None TLS    : 80                      │"  | tee -a log-install.txt
-echo "           │   - XRAY  Vless TLS         : 443                     │"  | tee -a log-install.txt
-echo "           │   - Trojan GRPC             : 443                     │"  | tee -a log-install.txt
-echo "           │   - Trojan WS               : 443                     │"  | tee -a log-install.txt
-echo "           │                                                       │"  | tee -a log-install.txt
-echo "           │      >>> Server Information & Other Features          │"  | tee -a log-install.txt
-echo "           │   - Timezone                : Asia/Jakarta (GMT +7)   │"  | tee -a log-install.txt
-echo "           │   - Autoreboot On           : $AUTOREB:00 $TIME_DATE GMT +7          │"  | tee -a log-install.txt
-echo "           │   - Auto Delete Expired Account                       │"  | tee -a log-install.txt
-echo "           │   - Fully automatic script                            │"  | tee -a log-install.txt
-echo "           │   - VPS settings                                      │"  | tee -a log-install.txt
-echo "           │   - Admin Control                                     │"  | tee -a log-install.txt
-echo "           │   - Restore Data                                      │"  | tee -a log-install.txt
-echo "           │   - Full Orders For Various Services                  │"  | tee -a log-install.txt
+echo "           │       >>> Service & Port                              │"
+echo "           │   - XRAY  Vmess TLS         : 443                     │"
+echo "           │   - XRAY  Vmess gRPC        : 443                     │"
+echo "           │   - XRAY  Vmess None TLS    : 80                      │"
+echo "           │   - XRAY  Vless TLS         : 443                     │"
+echo "           │   - XRAY  Vless gRPC        : 443                     │"
+echo "           │   - XRAY  Vless None TLS    : 80                      │"
+echo "           │   - XRAY  Vless TLS         : 443                     │"
+echo "           │   - Trojan GRPC             : 443                     │"
+echo "           │   - Trojan WS               : 443                     │"
+echo "           │                                                       │"
+echo "           │      >>> Server Information & Other Features          │"
+echo "           │   - Timezone                : Asia/Jakarta (GMT +7)   │"
+echo "           │   - Autoreboot On           : $AUTOREB:00 $TIME_DATE GMT +7          │"
+echo "           │   - Auto Delete Expired Account                       │"
+echo "           │   - Fully automatic script                            │"
+echo "           │   - VPS settings                                      │"
+echo "           │   - Admin Control                                     │"
+echo "           │   - Restore Data                                      │"
+echo "           │   - Full Orders For Various Services                  │"
 echo "           └───────────────────────────────────────────────────────┘"
-echo "" | tee -a log-install.txt
+echo "
 rm *.sh>/dev/null 2>&1
-secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
+secs_to_human "$(($(date +%s) - ${start}))
 echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
 read answer
 if [ "$answer" == "${answer#[Yy]}" ] ;then
