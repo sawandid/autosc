@@ -120,8 +120,8 @@ function download_config() {
     judge "Installed successfully menu ur dashboard vps"
     ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
     judge "Installed successfully speedtest"
-     ${IMP} ${local_date}bbr "${myhost}bbr.sh" && chmod +x ${local_date}bbr
-    judge "Installed successfully speedtest"
+   # ${IMP} ${local_date}bbr "${myhost}bbr.sh" && chmod +x ${local_date}bbr
+    judge "Installed successfully bbr"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
 
