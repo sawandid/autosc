@@ -20,13 +20,13 @@ _yellow() {
 }
 
 _info() {
-    _green "[Info] "
+    _green "---> "
     printf -- "%s" "$1"
     printf "\n"
 }
 
 _warn() {
-    _yellow "[Warning] "
+    _yellow "---> "
     printf -- "%s" "$1"
     printf "\n"
 }
