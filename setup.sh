@@ -148,7 +148,7 @@ cat > /home/daily_reboot <<-END
 5
 END
 AUTOREB=$(cat /home/daily_reboot)
-SETT=11
+SETT=5
 if [ $AUTOREB -gt $SETT ]
 then
     TIME_DATE="PM"
