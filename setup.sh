@@ -17,6 +17,8 @@ GreenBG="\033[42;37m"
 RedBG="\033[41;37m"
 OK="${Green}[OKAY]${Font}"
 ERROR="${Red}[ERROR]${Font}"
+gray="\e[1;30m"
+NC='\e[0m'
 
 # // configuration GET | BHOIKFOST YAHYA AUTOSCRIPT
 IMP="wget -q -O"
@@ -25,6 +27,11 @@ myhost="https://sc-xray.yha.my.id/file_xtls/"
 domain="cat /etc/xray/domain"
 myhost_html="https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/"
 
+secs_to_human() {
+    echo "Installation time : $(( ${1} / 3600 )) hours $(( (${1} / 60) % 60 )) minute's $(( ${1} % 60 )) seconds"
+}
+
+start=$(date +%s)
 function print_ok() {
   echo -e "${OK} ${Blue} $1 ${Font}"
 }
@@ -109,7 +116,7 @@ function download_config() {
   judge "Installed successfully exp all account"
   ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
   judge "Installed successfully menu ur dashboard vps"
-  ${IMP} ${local_date}speedtest "https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py" && chmod +x ${local_date}speedtest
+  ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
   judge "Installed successfully speedtest"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
@@ -131,6 +138,22 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 END
   chmod 644 /root/.profile
 
+cat > /etc/cron.d/daily_reboot <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+0 5 * * * root /sbin/reboot
+END
+cat > /home/daily_reboot <<-END
+5
+END
+AUTOREB=$(cat /home/daily_reboot)
+SETT=11
+if [ $AUTOREB -gt $SETT ]
+then
+    TIME_DATE="PM"
+else
+    TIME_DATE="AM"
+fi
 }
 
 function acme() {
@@ -255,9 +278,48 @@ EOF
   systemctl enable xray >/dev/null 2>&1
   systemctl restart nginx >/dev/null 2>&1
   systemctl restart xray >/dev/null 2>&1
-  judge "waiting reboot ur vps"
-  sleep 5
-  reboot
+clear
+
+echo "               ┌───────────────────────────────────────────────┐"
+echo "───────────────│                                               │───────────────"
+echo "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
+echo "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
+echo "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
+echo "               │   ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
+echo "               └───────────────────────────────────────────────┘"
+echo "           ┌───────────────────────────────────────────────────────┐"
+echo "           │       >>> Service & Port                              │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vmess TLS         : 443                     │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vmess gRPC        : 443                     │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vmess None TLS    : 80                      │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vless TLS         : 443                     │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vless gRPC        : 443                     │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vless None TLS    : 80                      │"  | tee -a log-install.txt
+echo "           │   - XRAY  Vless TLS         : 443                     │"  | tee -a log-install.txt
+echo "           │   - Trojan GRPC             : 443                     │"  | tee -a log-install.txt
+echo "           │   - Trojan WS               : 443                     │"  | tee -a log-install.txt
+echo "           │                                                       │"  | tee -a log-install.txt
+echo "           │      >>> Server Information & Other Features          │"  | tee -a log-install.txt
+echo "           │   - Timezone                : Asia/Jakarta (GMT +7)   │"  | tee -a log-install.txt
+echo "           │   - Autoreboot On           : $AUTOREB:00 $TIME_DATE GMT +7          │"  | tee -a log-install.txt
+echo "           │   - Auto Delete Expired Account                       │"  | tee -a log-install.txt
+echo "           │   - Fully automatic script                            │"  | tee -a log-install.txt
+echo "           │   - VPS settings                                      │"  | tee -a log-install.txt
+echo "           │   - Admin Control                                     │"  | tee -a log-install.txt
+echo "           │   - Restore Data                                      │"  | tee -a log-install.txt
+echo "           │   - Full Orders For Various Services                  │"  | tee -a log-install.txt
+echo "           └───────────────────────────────────────────────────────┘"
+echo "" | tee -a log-install.txt
+rm *.sh>/dev/null 2>&1
+secs_to_human "$(($(date +%s) - ${start}))" | tee -a log-install.txt
+echo -ne "         ${Yellow}Please Reboot Your Vps${Font} (y/n)? "
+read answer
+if [ "$answer" == "${answer#[Yy]}" ] ;then
+    exit 0
+else
+    reboot
+fi
+
 }
 
 function domain_add() {
@@ -645,25 +707,19 @@ function install_sc_cf() {
 
 # // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT
 clear
-red='\e[1;31m'
-green='\e[92;1m'
-tyblue='\e[1;36m'
-Yellow="\033[33m"
-Font="\033[0m"
-gray="\e[1;30m"
-NC='\e[0m'
+
 echo -e "               ┌───────────────────────────────────────────────┐"
 echo -e "───────────────│                                               │───────────────"
-echo -e "───────────────│    $green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
-echo -e "───────────────│    $green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
-echo -e "───────────────│    $green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
+echo -e "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
+echo -e "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
+echo -e "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
 echo -e "               │   ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC    │"
 echo -e "               └───────────────────────────────────────────────┘"
 echo -e "                      Autoscript xray vpn lite (multi port)    "
 echo -e "                       no licence script (free lifetime)"
 echo -e "            Make sure the internet is smooth when installing the script"
-echo -e "${gray}1)${NC}.${green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain?"
-echo -e "${gray}2)${NC}.${green}AUTO POINTING${NC} ] do you not have a domain?"
+echo -e "${gray}1)${NC}.${Green}MANUAL POINTING${NC} ] First connect your VPS IP to the Domain?"
+echo -e "${gray}2)${NC}.${Green}AUTO POINTING${NC} ] do you not have a domain?"
 read -rp "CONTINUING TO INSTALL AUTOSCRIPT (1/2)? " menu_num
 case $menu_num in
 1)
