@@ -117,7 +117,7 @@ function download_config() {
   judge "Installed successfully exp all account"
   ${IMP} ${local_date}menu "${myhost}menu.sh" && chmod +x ${local_date}menu
   judge "Installed successfully menu ur dashboard vps"
-#  ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
+  ${IMP} ${local_date}speedtest "${myhost}speedtest_cli.py" && chmod +x ${local_date}speedtest
   judge "Installed successfully speedtest"
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
@@ -148,7 +148,7 @@ cat > /home/daily_reboot <<-END
 5
 END
 AUTOREB=$(cat /home/daily_reboot)
-SETT=5
+SETT=11
 if [ $AUTOREB -gt $SETT ]
 then
     TIME_DATE="PM"
@@ -402,7 +402,7 @@ function install_xray() {
   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
   judge "Core Xray New Version installed successfully"
   # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-  source <(curl -sL https://github.com/XTLS/Xray-install/raw/main/install-release.sh) >/dev/null 2>&1
+  curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install >/dev/null 2>&1
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
