@@ -374,3 +374,5 @@ echo ""
 echo -e "     ${Yellow}Press ${Green}Enter${Font}${Yellow} to start...${Font}or ${Yellow}Press${Font} ${Green}Ctrl+C${Font} ${Yellow}to cancel${Font}"
 
 install_bbr 2>&1 | tee ${cur_dir}/install_bbr.log
+sleep 5
+menu
