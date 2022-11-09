@@ -398,7 +398,6 @@ function dependency_install() {
 
 
 }
-wget -c -P /etc/xray/ "https://github.com/XTLS/Xray-core/releases/download/${version}/${xrayCoreCPUVendor}.zip" >/dev/null 2>&1
 function install_xray() {
   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
   judge "Core Xray New Version installed successfully"
