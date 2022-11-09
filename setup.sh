@@ -32,6 +32,7 @@ secs_to_human() {
 }
 
 start=$(date +%s)
+ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 function print_ok() {
   echo -e "${OK} ${Blue} $1 ${Font}"
 }
@@ -45,7 +46,7 @@ function is_root() {
     print_ok "Root user Start installation process"
   else
     print_error "The current user is not the root user, please switch to the root user and run the script again"
-    exit 1
+    # // exit 1
   fi
 
 }
@@ -56,7 +57,7 @@ judge() {
     sleep 1
   else
     print_error "$1 Fail... | thx to ${Yellow}bhoikfostyahya${Font}"
-    exit 1
+    # // exit 1
   fi
 
 }
@@ -279,7 +280,6 @@ EOF
   systemctl restart nginx >/dev/null 2>&1
   systemctl restart xray >/dev/null 2>&1
 clear
-
 echo "               ┌───────────────────────────────────────────────┐"
 echo "───────────────│                                               │───────────────"
 echo "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
@@ -398,12 +398,12 @@ function dependency_install() {
 
 
 }
-
+wget -c -P /etc/xray/ "https://github.com/XTLS/Xray-core/releases/download/${version}/${xrayCoreCPUVendor}.zip" >/dev/null 2>&1
 function install_xray() {
   # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
-  judge "Core Xray Version 1.5.8 installed successfully"
+  judge "Core Xray New Version installed successfully"
   # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-  bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8
+  source <(curl -sL https://github.com/XTLS/Xray-install/raw/main/install-release.sh) >/dev/null 2>&1
   # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
   uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
   # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
