@@ -59,69 +59,6 @@ ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
 sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 
 
-install_ssl(){
-    if [ -f "/usr/bin/apt-get" ];then
-        isDebian=`cat /etc/issue|grep Debian`
-        if [ "$isDebian" != "" ];then
-            apt-get install -y nginx certbot
-            apt install -y nginx certbot
-            sleep 3s
-        else
-            apt-get install -y nginx certbot
-            apt install -y nginx certbot
-            sleep 3s
-        fi
-    else
-        yum install -y nginx certbot
-        sleep 3s
-    fi
-    
-    systemctl stop nginx.service
-    
-    if [ -f "/usr/bin/apt-get" ];then
-        isDebian=`cat /etc/issue|grep Debian`
-        if [ "$isDebian" != "" ];then
-            echo "A" | certbot certonly --renew-by-default --register-unsafely-without-email --standalone -d $domain
-            sleep 3s
-        else
-            echo "A" | certbot certonly --renew-by-default --register-unsafely-without-email --standalone -d $domain
-            sleep 3s
-        fi
-    else
-        echo "Y" | certbot certonly --renew-by-default --register-unsafely-without-email --standalone -d $domain
-        sleep 3s
-    fi
-}
-
-# install webserver
-infosc
-echo -e "[ ${green}OKAY${NC} ] Installing nginx server web + xray + ssh websocket"
-cd
-# // Checking System
-if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-    echo -e "${OK} Your OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    sleep 1
-    sudo add-apt-repository ppa:ondrej/nginx -y
-    apt install nginx -y
-    apt install python3-certbot-nginx -y
-    elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-    echo -e "${OK} Your OS Is ( ${GreenBG}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    sleep 1
-    apt install gnupg2 ca-certificates lsb-release -y
-    echo "deb http://nginx.org/packages/mainline/debian $(lsb_release -cs) nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
-    echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
-    curl -o /tmp/nginx_signing.key https://nginx.org/keys/nginx_signing.key
-    sudo mv /tmp/nginx_signing.key /etc/apt/trusted.gpg.d/nginx_signing.asc
-    sudo apt update
-    apt -y install nginx
-    apt --fix-broken install
-else
-    echo -e "${ERROR} Your OS Is Not Supported ( ${Yellow}$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')${Font} )"
-    exit 1
-fi
-judge "Nginx installed successfully"
-
-
 
 # install badvpn
 cd
@@ -259,26 +196,6 @@ netfilter-persistent reload
 
 
 
-
-cat > /etc/cron.d/re_otm <<-END
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-0 7 * * * root /sbin/reboot
-END
-
-cat > /etc/cron.d/xp_otm <<-END
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-2 0 * * * root /usr/bin/xp
-END
-
-cat > /home/re_otm <<-END
-7
-END
-
-service cron restart >/dev/null 2>&1
-service cron reload >/dev/null 2>&1
-
 # remove unnecessary files
 sleep 1
 echo -e "[ ${green}INFO$NC ] Clearing trash"
@@ -313,8 +230,6 @@ sleep 1
 echo -e "[ ${green}OKAY${NC} ] Restarting vnstat "
 /etc/init.d/squid restart >/dev/null 2>&1
 
-history -c
-echo "unset HISTFILE" >> /etc/profile
 
 
 ${IMP} ${LOCAL_DATE}usernew "${HOSTING_SSH}usernew.sh" && chmod +x ${LOCAL_DATE}usernew
@@ -352,5 +267,4 @@ ${IMP} ${LOCAL_DATE}sshws-true "${HOSTING_SSH}sshws-true.sh" && chmod +x ${LOCAL
 
 
 wget -q ${HOSTING_SSHWS}insshws.sh && chmod +x insshws.sh && ./insshws.sh
-
 
