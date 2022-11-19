@@ -1,0 +1,31 @@
+#!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
+MYIP=$(wget -qO- ipinfo.io/ip);
+MYIP2="s/xxx/$MYIP/g";
+NET=$(ip -o $ANU -4 route show to default | awk '{print $5}');
+source /etc/os-release
+ver=$VERSION_ID
+
+country=ID
+state=Indonesia
+locality=none
+organization=none
+organizationalunit=none
+commonname=none
+email=admin@fightertunnel
+
+echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
+openssl genrsa -out key.pem 2048
+openssl req -new -x509 -key key.pem -out cert.pem -days 1095 \
+-subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname/emailAddress=$email"
+cat key.pem cert.pem >> /etc/stunnel/stunnel.pem
+cd
+echo "Setup ssh"
+sed -i '/Port 22/a Port 500' /etc/ssh/sshd_config
+sed -i '/Port 22/a Port 40000' /etc/ssh/sshd_config
+sed -i '/Port 22/a Port 51443' /etc/ssh/sshd_config
+sed -i '/Port 22/a Port 58080' /etc/ssh/sshd_config
+sed -i '/Port 22/a Port 200' /etc/ssh/sshd_config
+sed -i 's/#Port 22/Port 22/g' /etc/ssh/sshd_config
+/etc/init.d/ssh restart

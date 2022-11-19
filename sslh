@@ -1,0 +1,80 @@
+#!/bin/bash
+cat >/etc/systemd/system/sslh <<END
+[Unit]
+Description=SSLH Server
+Documentation=https://t.me/bhoikfost_yahya
+After=syslog.target network-online.target
+
+[Service]
+User=root
+NoNewPrivileges=true
+ExecStart=/usr/sbin/sslh --foreground --user root --listen 0.0.0.0:2083 --ssl 127.0.0.1:990 --ssh 127.0.0.1:22 --http 127.0.0.1:8880
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+
+END
+
+cat >/etc/systemd/system/ws <<END
+[Unit]
+Description=WebSocket
+Documentation=https://t.me/bhoikfost_yahya
+After=syslog.target network-online.target
+
+[Service]
+User=root
+NoNewPrivileges=true
+ExecStart=/usr/bin/ws -f /etc/xray/tun.conf
+Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=10000
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+
+END
+
+cat >/etc/xray/tun.conf <<END
+# verbose level 0=info, 1=verbose, 2=very verbose
+verbose: 0
+listen:
+
+# // Dropbear
+- target_host: 127.0.0.1
+  target_port: 22
+  listen_port: 8880
+
+# // OpenVPN NonTLS
+- target_host: 127.0.0.1
+  target_port: 1194
+  listen_port: 2082
+
+# // OpenVPN TLS
+- target_host: 127.0.0.1
+  target_port: 1194
+  listen_port: 2087
+
+END
+systemctl daemon-reload >/dev/null 2>&1
+systemctl enable stunnel4 >/dev/null 2>&1
+systemctl enable sslh >/dev/null 2>&1
+systemctl enable ws >/dev/null 2>&1
+systemctl enable dropbear >/dev/null 2>&1
+systemctl enable rc.local >/dev/null 2>&1
+systemctl enable squid3 >/dev/null 2>&1
+systemctl enable xray >/dev/null 2>&1
+systemctl restart stunnel4 >/dev/null 2>&1
+systemctl restart sslh >/dev/null 2>&1
+systemctl restart ws >/dev/null 2>&1
+systemctl restart dropbear >/dev/null 2>&1
+systemctl restart rc.local >/dev/null 2>&1
+systemctl restart squid3 >/dev/null 2>&1
+systemctl restart xray >/dev/null 2>&1
+
+
+
