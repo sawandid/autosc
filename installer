@@ -17,7 +17,7 @@ GreenBG="\033[42;37m"
 RedBG="\033[41;37m"
 gray="\e[1;30m"
 NC='\e[0m'
-WEBSITE="https://wss-multi.yha.my.id"
+WEBSITE="https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/"
 LOGO() {
     echo -e "$Yellow     _______________________________________________________________$NC"
     echo -e "$Yellow  ==| |  || |                                              |  ||  | |==$NC"
