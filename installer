@@ -33,7 +33,7 @@ function LOGO() {
 
 function dependency_install() {
     INS="apt install -y"
-    apt update >/dev/null 2>&1
+    apt update 
     echo "Update configuration"
     
     apt clean all >/dev/null 2>&1
@@ -48,19 +48,19 @@ function dependency_install() {
     ${INS} net-tools openssl chrony >/dev/null 2>&1
     echo "Installed net-tools openssl"
     
-    ${INS} sslh -y >/dev/null 2>&1
+    ${INS} sslh -y 
     echo "Installed successfully sslh-full"
     
-    ${INS} stunnel4 >/dev/null 2>&1
+    ${INS} stunnel4 
     echo "Installed stunnel4"
     
-    ${INS} dropbear >/dev/null 2>&1
+    ${INS} dropbear 
     echo "Installed dropbear"
     
-    ${INS} squid3 >/dev/null 2>&1
+    ${INS} squid3
     echo "Installed squid3"
     
-    apt purge apache2 -y >> /dev/null 2>&1
+    apt purge apache2 -y
     echo "Uninstall apache2"
 }
 
