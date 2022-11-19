@@ -1,0 +1,36 @@
+#!/bin/bash
+# //====================================================
+# //	System Request:Debian 9+/Ubuntu 18.04+/20+
+# //	Author:	bhoikfostyahya
+# //	Dscription: Xray Menu Management
+# //	email: admin@bhoikfostyahya.com
+# //  telegram: https://t.me/bhoikfost_yahya
+# //====================================================
+cd
+echo "Setup Stunnel4"
+cat > /etc/stunnel/stunnel.conf <<-END
+cert = /etc/stunnel/stunnel.pem
+client = no
+socket = a:SO_REUSEADDR=1
+socket = l:TCP_NODELAY=1
+socket = r:TCP_NODELAY=1
+
+[dropbear]
+accept = 222
+connect = 127.0.0.1:22
+
+[dropbear]
+accept = 777
+connect = 127.0.0.1:109
+
+[ws-stunnel]
+accept = 2096
+connect = 700
+
+[openvpn]
+accept = 442
+connect = 127.0.0.1:1194
+
+END
+sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
+/etc/init.d/stunnel4 restart
