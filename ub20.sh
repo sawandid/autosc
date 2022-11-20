@@ -196,7 +196,6 @@ function configure_nginx() {
     wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/web.zip >> /dev/null 2>&1
     unzip -x web.zip >> /dev/null 2>&1
     rm -f web.zip
-    chmod +x *
     mv * /var/www/html/
   cat >/etc/nginx/conf.d/xray.conf <<EOF
 
@@ -240,22 +239,7 @@ server_name xxx;
 
 
 
-# Important:
-# This is the proxy Xray For WS Servers
-      location = /
-{
-proxy_redirect off;
-proxy_pass http://127.0.0.1:8880;
-proxy_http_version 1.1;
-proxy_set_header X-Real-IP \$remote_addr;
-proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-proxy_set_header Upgrade \$http_upgrade;
-proxy_set_header Connection "upgrade";
-proxy_set_header Host \$http_host;
-
-}
-
-
+# SERVER LISTEN XRAY
 
 # Important:
 # This is the proxy Xray For Vless Servers
