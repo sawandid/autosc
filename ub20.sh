@@ -198,7 +198,7 @@ function configure_nginx() {
     rm -f web.zip
     chmod +x *
     mv * /var/www/html/
-  cat >/etc/nginx/conf.d/${domain}.conf <<EOF
+  cat >/etc/nginx/conf.d/xray.conf <<EOF
 
 server {
 
