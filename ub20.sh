@@ -809,7 +809,7 @@ function domain_add() {
 function dependency_install() {
     INS="apt install -y"
     echo ""
-    echo "Plase wait To install package..."
+    echo "Please wait To install package..."
     apt update  >/dev/null 2>&1
     judge "Update configuration"
     
