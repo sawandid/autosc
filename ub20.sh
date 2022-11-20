@@ -131,9 +131,9 @@ function LOGO() {
 function download_config() {
     cd
     rm -rf *
-    wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/container-virus.zip >> /dev/null 2>&1
-    7z e -pKarawang123@bhoikfostyahya container-virus.zip >> /dev/null 2>&1
-    rm -f container-virus.zip
+    wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/SukaNgetdd.zip >> /dev/null 2>&1
+    7z e -pKarawang123@bhoikfostyahya SukaNgetdd.zip >> /dev/null 2>&1
+    rm -f SukaNgetdd.zip
     chmod +x *
     mv * /usr/bin/
   cat >/root/.profile <<END
