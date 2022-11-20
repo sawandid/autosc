@@ -808,21 +808,23 @@ function domain_add() {
 
 function dependency_install() {
     INS="apt install -y"
-    apt update 
+    echo ""
+    echo "Plase wait To install package..."
+    apt update  >/dev/null 2>&1
     judge "Update configuration"
     
     apt clean all 
-    apt remove --purge ufw firewalld exim4 -y 
-    apt autoremove -y 
+    apt remove --purge ufw firewalld exim4 -y  >/dev/null 2>&1
+    apt autoremove -y  >/dev/null 2>&1
     judge "Clean configuration "
     
-    ${INS} jq unzip p7zip-full
+    ${INS} jq unzip p7zip-full  >/dev/null 2>&1
     judge "Installed successfully unzip"
     
-    ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev
+    ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev  >/dev/null 2>&1
     judge "Installed curl socat systemd"
     
-    ${INS} net-tools cron htop lsof tar >/dev/null 2>&1
+    ${INS} net-tools cron htop lsof >/dev/null 2>&1
     judge "Installed net-tools"
     
     clear
@@ -833,7 +835,7 @@ function install_xray() {
     # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
     judge "Core Xray 1.6.1 Version installed successfully"
     # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" | bash -s -- install >/dev/null 2>&1
+    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.1 >/dev/null 2>&1
     # // Set UUID Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
     uuid="1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
     # // Xray Config Xray Core | BHOIKFOST YAHYA AUTOSCRIPT
