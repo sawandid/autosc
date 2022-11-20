@@ -808,24 +808,25 @@ function domain_add() {
 
 function dependency_install() {
     INS="apt install -y"
-    apt update >/dev/null 2>&1
+    apt update 
     judge "Update configuration"
     
-    apt clean all >/dev/null 2>&1
-    apt remove --purge ufw firewalld exim4 -y >/dev/null 2>&1
-    apt autoremove -y >/dev/null 2>&1
-    apt clean -y >/dev/null 2>&1
+    apt clean all 
+    apt remove --purge ufw firewalld exim4 -y 
+    apt autoremove -y 
     judge "Clean configuration "
     
-    ${INS} jq unzip p7zip-full>/dev/null 2>&1
+    ${INS} jq unzip p7zip-full
     judge "Installed successfully unzip"
     
-    ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev >/dev/null 2>&1
+    ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev
     judge "Installed curl socat systemd"
     
     ${INS} net-tools cron htop lsof tar >/dev/null 2>&1
     judge "Installed net-tools"
     
+    clear
+    LOGO
     
 }
 function install_xray() {
