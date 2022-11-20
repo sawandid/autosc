@@ -246,7 +246,7 @@ server_name xxx;
 location = /vless
              {
              proxy_redirect off;
-             proxy_pass http://127.0.0.1:14016;
+             proxy_pass http://127.0.0.1:8081;
              proxy_http_version 1.1;
              proxy_set_header X-Real-IP \$remote_addr;
              proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -262,7 +262,7 @@ location = /vless
       location = /vmess
 {
 proxy_redirect off;
-proxy_pass http://127.0.0.1:14017;
+proxy_pass http://127.0.0.1:8082;
 proxy_http_version 1.1;
 proxy_set_header X-Real-IP \$remote_addr;
 proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -278,7 +278,7 @@ proxy_set_header Host \$http_host;
       location = /trojan-ws
 {
              proxy_redirect off;
-             proxy_pass http://127.0.0.1:14018;
+             proxy_pass http://127.0.0.1:8083;
              proxy_http_version 1.1;
              proxy_set_header X-Real-IP \$remote_addr;
              proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -294,7 +294,7 @@ proxy_set_header Host \$http_host;
       location = /ss-ws
 {
 proxy_redirect off;
-proxy_pass http://127.0.0.1:30300;
+proxy_pass http://127.0.0.1:8084;
 proxy_http_version 1.1;
 proxy_set_header X-Real-IP \$remote_addr;
 proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -313,7 +313,7 @@ proxy_set_header Host \$http_host;
              grpc_set_header X-Real-IP \$remote_addr;
              grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
              grpc_set_header Host \$http_host;
-             grpc_pass grpc://127.0.0.1:14019;
+             grpc_pass grpc://127.0.0.1:8085;
 }
 
 
@@ -326,7 +326,7 @@ proxy_redirect off;
 grpc_set_header X-Real-IP \$remote_addr;
 grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 grpc_set_header Host \$http_host;
-grpc_pass grpc://127.0.0.1:14020;
+grpc_pass grpc://127.0.0.1:8086;
 }
 
 
@@ -339,7 +339,7 @@ grpc_pass grpc://127.0.0.1:14020;
              grpc_set_header X-Real-IP \$remote_addr;
              grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
              grpc_set_header Host \$http_host;
-             grpc_pass grpc://127.0.0.1:14021;
+             grpc_pass grpc://127.0.0.1:8087;
 }
 
 
@@ -352,7 +352,7 @@ proxy_redirect off;
 grpc_set_header X-Real-IP \$remote_addr;
 grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 grpc_set_header Host \$http_host;
-grpc_pass grpc://127.0.0.1:30310;
+grpc_pass grpc://127.0.0.1:8088;
 
 
 
@@ -704,16 +704,16 @@ function dependency_install() {
     ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev >/dev/null 2>&1
     judge "Installed curl socat systemd"
     
-    ${INS} net-tools cron htop lsof tar >/dev/null 2>&1
+    ${INS} net-tools cron python htop lsof tar >/dev/null 2>&1
     judge "Installed net-tools"
     
     
 }
 function install_xray() {
     # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
-    judge "Core Xray 1.6.1 Version installed successfully"
+    judge "Core Xray 1.6.4 Version installed successfully"
     # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
-    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.1 >/dev/null 2>&1
+    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.4 >/dev/null 2>&1
   cat >/etc/xray/config.json <<END
 {
   "log" : {
@@ -724,7 +724,7 @@ function install_xray() {
   "inbounds": [
       {
       "listen": "127.0.0.1",
-      "port": 10085,
+      "port": 8080,
       "protocol": "dokodemo-door",
       "settings": {
         "address": "127.0.0.1"
@@ -733,7 +733,7 @@ function install_xray() {
     },
    {
      "listen": "127.0.0.1",
-     "port": "14016",
+     "port": "8081",
      "protocol": "vless",
       "settings": {
           "decryption":"none",
@@ -753,7 +753,7 @@ function install_xray() {
      },
      {
      "listen": "127.0.0.1",
-     "port": "14017",
+     "port": "8082",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -773,7 +773,7 @@ function install_xray() {
      },
     {
       "listen": "127.0.0.1",
-      "port": "14018",
+      "port": "8083",
       "protocol": "trojan",
       "settings": {
           "decryption":"none",
@@ -794,7 +794,7 @@ function install_xray() {
      },
     {
          "listen": "127.0.0.1",
-        "port": "30300",
+        "port": "8084",
         "protocol": "shadowsocks",
         "settings": {
            "clients": [
@@ -815,7 +815,7 @@ function install_xray() {
      },
       {
         "listen": "127.0.0.1",
-        "port": "14019",
+        "port": "8085",
         "protocol": "vless",
         "settings": {
          "decryption":"none",
@@ -835,7 +835,7 @@ function install_xray() {
      },
      {
       "listen": "127.0.0.1",
-      "port": "14020",
+      "port": "8086",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -855,7 +855,7 @@ function install_xray() {
      },
      {
         "listen": "127.0.0.1",
-        "port": "14021",
+        "port": "8087",
         "protocol": "trojan",
         "settings": {
           "decryption":"none",
@@ -875,7 +875,7 @@ function install_xray() {
    },
    {
     "listen": "127.0.0.1",
-    "port": "30310",
+    "port": "8088",
     "protocol": "shadowsocks",
     "settings": {
         "clients": [
