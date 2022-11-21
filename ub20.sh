@@ -204,6 +204,8 @@ function configure_nginx() {
 server {
              listen 80;
              listen [::]:80;
+             
+             
      location  ~ / {
            # Important:
            # This is the proxy Xray For All Path Servers Vless
