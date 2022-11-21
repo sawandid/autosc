@@ -260,8 +260,10 @@ location = /vless
 
 # Important:
 # This is the proxy Xray For Vmess Servers
-      location = /vmess
-{
+location / {
+if ($http_upgrade != "Upgrade") {
+rewrite /(.*) /vmess break;
+}
 proxy_redirect off;
 proxy_pass http://127.0.0.1:10002;
 proxy_http_version 1.1;
