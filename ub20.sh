@@ -199,20 +199,36 @@ function configure_nginx() {
   cat >/etc/nginx/conf.d/xray.conf <<EOF
 # Listen on port 80 for HTTP connections
 # Note Support All Path Low Security
+
+
 server {
              listen 80;
              listen [::]:80;
-             
-    location  ~ / {
-
+     location  ~ / {
+           # Important:
+           # This is the proxy Xray For All Path Servers Vless
             if ($http_connection = 'Upgrade') {
-           rewrite /(.*) /vmess break;
-           proxy_pass http://localhost:8082;
+           rewrite /(.*) /vless break;
+           proxy_pass http://localhost:8081;
            }
            proxy_http_version 1.1;
            proxy_set_header Upgrade $http_upgrade; 
            proxy_set_header Connection "Upgrade";
            proxy_set_header Host $host;
+    } 
+    
+    
+    location  ~ / {
+# Important:
+# This is the proxy Xray For All Path Servers Vmess
+if ($http_connection = 'Upgrade') {
+rewrite /(.*) /vmess break;
+proxy_pass http://localhost:8082;
+}
+proxy_http_version 1.1;
+proxy_set_header Upgrade $http_upgrade; 
+proxy_set_header Connection "Upgrade";
+proxy_set_header Host $host;
     }
   }
   
@@ -258,22 +274,6 @@ server_name xxx;
 
 
 # SERVER LISTEN XRAY
-
-# Important:
-# This is the proxy Xray For Vless Servers
-location = /vless
-             {
-             proxy_redirect off;
-             proxy_pass http://127.0.0.1:8081;
-             proxy_http_version 1.1;
-             proxy_set_header X-Real-IP \$remote_addr;
-             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-             proxy_set_header Upgrade \$http_upgrade;
-             proxy_set_header Connection "upgrade";
-             proxy_set_header Host \$http_host;
-            }
-
-
 # Important:
 # This is the proxy Xray For Trojan Servers
       location = /trojan-ws
