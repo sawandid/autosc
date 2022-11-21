@@ -196,45 +196,10 @@ function configure_nginx() {
     unzip -x web.zip >> /dev/null 2>&1
     rm -f web.zip
     mv * /var/www/html/
+
+
   cat >/etc/nginx/conf.d/xray.conf <<EOF
-# Listen on port 80 for HTTP connections
-# Note Support All Path Low Security
 
-
-server {
-             listen 80;
-             listen [::]:80;
-             
-             
-     location  ~ / {
-           # Important:
-           # This is the proxy Xray For All Path Servers Vless
-            if ($http_connection = 'Upgrade') {
-           rewrite /(.*) /vless break;
-           proxy_pass http://localhost:8081;
-           }
-           proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade; 
-           proxy_set_header Connection "Upgrade";
-           proxy_set_header Host $host;
-    } 
-    
-    
-    location  ~ / {
-# Important:
-# This is the proxy Xray For All Path Servers Vmess
-if ($http_connection = 'Upgrade') {
-rewrite /(.*) /vmess break;
-proxy_pass http://localhost:8082;
-}
-proxy_http_version 1.1;
-proxy_set_header Upgrade $http_upgrade; 
-proxy_set_header Connection "Upgrade";
-proxy_set_header Host $host;
-    }
-  }
-  
-  
 server {
 
 # Listen on port 80 for HTTP connections
@@ -276,12 +241,45 @@ server_name xxx;
 
 
 # SERVER LISTEN XRAY
+
+# Important:
+# This is the proxy Xray For Vless Servers
+location = /vless
+             {
+             proxy_redirect off;
+             proxy_pass http://127.0.0.1:10001;
+             proxy_http_version 1.1;
+             proxy_set_header X-Real-IP \$remote_addr;
+             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+             proxy_set_header Upgrade \$http_upgrade;
+             proxy_set_header Connection "upgrade";
+             proxy_set_header Host \$http_host;
+            }
+
+
+
+# Important:
+# This is the proxy Xray For Vmess Servers
+      location = /vmess
+{
+proxy_redirect off;
+proxy_pass http://127.0.0.1:10002;
+proxy_http_version 1.1;
+proxy_set_header X-Real-IP \$remote_addr;
+proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+proxy_set_header Upgrade \$http_upgrade;
+proxy_set_header Connection "upgrade";
+proxy_set_header Host \$http_host;
+}
+
+
+
 # Important:
 # This is the proxy Xray For Trojan Servers
       location = /trojan-ws
 {
              proxy_redirect off;
-             proxy_pass http://127.0.0.1:8083;
+             proxy_pass http://127.0.0.1:10003;
              proxy_http_version 1.1;
              proxy_set_header X-Real-IP \$remote_addr;
              proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -297,7 +295,7 @@ server_name xxx;
       location = /ss-ws
 {
 proxy_redirect off;
-proxy_pass http://127.0.0.1:8084;
+proxy_pass http://127.0.0.1:10004;
 proxy_http_version 1.1;
 proxy_set_header X-Real-IP \$remote_addr;
 proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -316,7 +314,7 @@ proxy_set_header Host \$http_host;
              grpc_set_header X-Real-IP \$remote_addr;
              grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
              grpc_set_header Host \$http_host;
-             grpc_pass grpc://127.0.0.1:8085;
+             grpc_pass grpc://127.0.0.1:10005;
 }
 
 
@@ -329,7 +327,7 @@ proxy_redirect off;
 grpc_set_header X-Real-IP \$remote_addr;
 grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 grpc_set_header Host \$http_host;
-grpc_pass grpc://127.0.0.1:8086;
+grpc_pass grpc://127.0.0.1:10006;
 }
 
 
@@ -342,7 +340,7 @@ grpc_pass grpc://127.0.0.1:8086;
              grpc_set_header X-Real-IP \$remote_addr;
              grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
              grpc_set_header Host \$http_host;
-             grpc_pass grpc://127.0.0.1:8087;
+             grpc_pass grpc://127.0.0.1:10007;
 }
 
 
@@ -355,7 +353,7 @@ proxy_redirect off;
 grpc_set_header X-Real-IP \$remote_addr;
 grpc_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 grpc_set_header Host \$http_host;
-grpc_pass grpc://127.0.0.1:8088;
+grpc_pass grpc://127.0.0.1:10008;
 
 
 
@@ -727,7 +725,7 @@ function install_xray() {
   "inbounds": [
       {
       "listen": "127.0.0.1",
-      "port": 8080,
+      "port": 10000,
       "protocol": "dokodemo-door",
       "settings": {
         "address": "127.0.0.1"
@@ -736,7 +734,7 @@ function install_xray() {
     },
    {
      "listen": "127.0.0.1",
-     "port": "8081",
+     "port": "10001",
      "protocol": "vless",
       "settings": {
           "decryption":"none",
@@ -756,7 +754,7 @@ function install_xray() {
      },
      {
      "listen": "127.0.0.1",
-     "port": "8082",
+     "port": "10002",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -776,7 +774,7 @@ function install_xray() {
      },
     {
       "listen": "127.0.0.1",
-      "port": "8083",
+      "port": "10003",
       "protocol": "trojan",
       "settings": {
           "decryption":"none",
@@ -797,7 +795,7 @@ function install_xray() {
      },
     {
          "listen": "127.0.0.1",
-        "port": "8084",
+        "port": "10004",
         "protocol": "shadowsocks",
         "settings": {
            "clients": [
@@ -818,7 +816,7 @@ function install_xray() {
      },
       {
         "listen": "127.0.0.1",
-        "port": "8085",
+        "port": "10005",
         "protocol": "vless",
         "settings": {
          "decryption":"none",
@@ -838,7 +836,7 @@ function install_xray() {
      },
      {
       "listen": "127.0.0.1",
-      "port": "8086",
+      "port": "10006",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -858,7 +856,7 @@ function install_xray() {
      },
      {
         "listen": "127.0.0.1",
-        "port": "8087",
+        "port": "10007",
         "protocol": "trojan",
         "settings": {
           "decryption":"none",
@@ -878,7 +876,7 @@ function install_xray() {
    },
    {
     "listen": "127.0.0.1",
-    "port": "8088",
+    "port": "10008",
     "protocol": "shadowsocks",
     "settings": {
         "clients": [
