@@ -197,7 +197,26 @@ function configure_nginx() {
     rm -f web.zip
     mv * /var/www/html/
   cat >/etc/nginx/conf.d/xray.conf <<EOF
+# Listen on port 80 for HTTP connections
+# Note Support All Path Low Security
+server {
+             listen 80;
+             listen [::]:80;
+             
+    location  ~ / {
 
+            if ($http_connection = 'Upgrade') {
+           rewrite /(.*) /vmess break;
+           proxy_pass http://localhost:8082;
+           }
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade; 
+           proxy_set_header Connection "Upgrade";
+           proxy_set_header Host $host;
+    }
+  }
+  
+  
 server {
 
 # Listen on port 80 for HTTP connections
