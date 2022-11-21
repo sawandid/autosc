@@ -146,7 +146,6 @@ if [ "$BASH" ]; then
 fi
 
 mesg n || true
-clear
 menu
 END
   cat >/etc/cron.d/xp_all <<-END
