@@ -459,7 +459,7 @@ TEXT="
 WAKTU     : <code>${MYIP}</code>
 DOMAIN   : <code>${domain}</code>
 IP VPS       : <code>${MYIP}</code>
-LOKASI       : <code>${CITY}MB</code>
+LOKASI       : <code>${CITY}</code>
 USER         : <code>${nama}</code>
 RAM          : <code>${tram}MB</code>
 LINUX       : <code>${OS}</code>
