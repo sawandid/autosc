@@ -163,18 +163,18 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 5 * * * root /sbin/reboot
 END
-cat > /etc/cron.d/nginx <<-END
+cat > /usr/bin/service.restart <<-END
+service nginx restart
+service xray restart
+END
+chmod +x /usr/bin/service.restart
+cat > /etc/cron.d/service <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-*/10 * * * * root /sbin/systemctl restart nginx
+*/10 * * * * root /usr/bin/service.restart
 END
-cat > /etc/cron.d/xray <<-END
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-*/10 * * * * root /sbin/systemctl restart xray
-END
-echo "*/5 * * * * root echo -n > /var/log/nginx/access.log" > /etc/cron.d/log.nginx
-echo "*/5 * * * * root echo -n > /var/log/xray/access.log" >> /etc/cron.d/log.xray
+echo "*/1 * * * * root echo -n > /var/log/nginx/access.log" > /etc/cron.d/log.nginx
+echo "*/1 * * * * root echo -n > /var/log/xray/access.log" >> /etc/cron.d/log.xray
 cd /etc/cron.d
 chmod 600 *
 cd
