@@ -28,6 +28,7 @@ CHATID="1118232400"
 local_date="/usr/bin/"
 domain="cat /etc/xray/domain"
 MYIP=$(wget -qO- ipinfo.io/ip)
+CITY=$(curl -s ipinfo.io/city)
 domain="$(cat /etc/xray/domain)"
 waktu=$(date +'%Y-%m-%d %H:%M:%S')
 tram=$(free -m | awk 'NR==2 {print $2}')
@@ -458,6 +459,7 @@ TEXT="
 WAKTU     : <code>${MYIP}</code>
 DOMAIN   : <code>${domain}</code>
 IP VPS       : <code>${MYIP}</code>
+LOKASI       : <code>${CITY}MB</code>
 USER         : <code>${nama}</code>
 RAM          : <code>${tram}MB</code>
 LINUX       : <code>${OS}</code>
