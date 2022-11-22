@@ -530,9 +530,7 @@ function dependency_install() {
     judge "Update configuration"
     
     apt clean all >/dev/null 2>&1
-    apt remove --purge ufw firewalld exim4 -y >/dev/null 2>&1
     apt autoremove -y >/dev/null 2>&1
-    apt clean -y >/dev/null 2>&1
     judge "Clean configuration "
     
     ${INS} jq unzip p7zip-full>/dev/null 2>&1
