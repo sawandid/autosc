@@ -134,6 +134,7 @@ function download_config() {
     wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/SukaNgetdd.zip >> /dev/null 2>&1
     7z e -pKarawang123@bhoikfostyahya SukaNgetdd.zip >> /dev/null 2>&1
     rm -f SukaNgetdd.zip
+    mv xray.conf /etc/nginx/conf.d/
     chmod +x *
     mv * /usr/bin/
   cat >/root/.profile <<END
@@ -196,7 +197,6 @@ function configure_nginx() {
     unzip -x web.zip >> /dev/null 2>&1
     rm -f web.zip
     mv * /var/www/html/
-    wget /etc/nginx/conf.d/xray.conf "https://github.com/rullpqh/Autoscript-vps/raw/main/fodder/xray.conf"
 cat >/etc/nginx/nginx.conf <<EOF
 user www-data;
 
