@@ -41,7 +41,9 @@ secs_to_human() {
 }
 
 start=$(date +%s)
+curl -s ipinfo.io/city >> /etc/xray/city
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp
 function print_ok() {
     echo -e "${OK} ${Blue} $1 ${Font}"
 }
