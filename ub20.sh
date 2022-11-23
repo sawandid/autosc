@@ -458,7 +458,8 @@ EOF
 function restart_system() {
 TEXT="
 <u>INFORMASI VPS INSTALL SC</u>
-WAKTU     : <code>${MYIP}</code>
+WAKTU     : <code>${waktu}</code>
+IPVPS     : <code>${MYIP}</code>
 DOMAIN   : <code>${domain}</code>
 IP VPS       : <code>${MYIP}</code>
 LOKASI       : <code>${CITY}</code>
