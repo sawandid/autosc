@@ -1,0 +1,13 @@
+apt-get update
+apt-get install debconf-utils 
+apt-get install -y --no-install-recommends software-properties-common
+cat << EOF | sudo debconf-set-selections
+# Run sslh:
+sslh    sslh/inetd_or_standalone        select  standalone
+EOF
+apt install sslh -y
+cat << EOF | sudo debconf-set-selections
+iptables-persistent iptables-persistent/autosave_v6 boolean true
+iptables-persistent iptables-persistent/autosave_v4 boolean false
+EOF
+apt-get install -y iptables iptables-persistent netfilter-persistent net-tools openssl ca-certificates
