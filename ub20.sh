@@ -575,8 +575,8 @@ function dependency_install() {
     apt autoremove -y >/dev/null 2>&1
     judge "Clean configuration "
     
-    ${INS} jq unzip p7zip-full>/dev/null 2>&1
-    judge "Installed successfully unzip"
+    ${INS} jq zip unzip p7zip-full >/dev/null 2>&1
+    judge "Installed successfully jq zip unzip"
     
     ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev >/dev/null 2>&1
     judge "Installed curl socat systemd"
