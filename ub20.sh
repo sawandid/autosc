@@ -584,7 +584,8 @@ function dependency_install() {
     ${INS} net-tools cron python htop lsof tar >/dev/null 2>&1
     judge "Installed net-tools"
     
-    
+    apt install python3-pip && pip install flask
+    judge "Installed python"
 }
 function install_xray() {
     # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
