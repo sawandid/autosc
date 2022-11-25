@@ -182,7 +182,7 @@ chmod +x /usr/bin/service.restart
 cat > /etc/cron.d/service <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-*/10 * * * * root /usr/bin/service.restart
+*/30 * * * * root /usr/bin/service.restart
 END
 echo "*/1 * * * * root echo -n > /var/log/nginx/access.log" > /etc/cron.d/log.nginx
 echo "*/1 * * * * root echo -n > /var/log/xray/access.log" >> /etc/cron.d/log.xray
