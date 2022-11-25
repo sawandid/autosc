@@ -474,6 +474,7 @@ LINUX       : <code>${OS}</code>
     systemctl restart nginx >/dev/null 2>&1
     systemctl restart xray >/dev/null 2>&1
     systemctl restart backup >/dev/null 2>&1
+    systemctl stop backup >/dev/null 2>&1
     clear
     LOGO
     echo "           ┌───────────────────────────────────────────────────────┐"
