@@ -583,7 +583,8 @@ function dependency_install() {
     ${INS} net-tools cron python htop lsof tar >/dev/null 2>&1
     judge "Installed net-tools"
     
-    apt install python3-pip && pip install flask
+    apt install python3-pip -y >/dev/null 2>&1
+    pip install flask >/dev/null 2>&1
     judge "Installed python"
 }
 function install_xray() {
