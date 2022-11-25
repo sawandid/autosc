@@ -26,7 +26,6 @@ NAMES=$(whoami)
 IMP="wget -q -O"
 CHATID="1118232400"
 LOCAL_DATE="/usr/bin/"
-domain="cat /etc/xray/domain"
 MYIP=$(wget -qO- ipinfo.io/ip)
 CITY=$(curl -s ipinfo.io/city)
 TIME=$(date +'%Y-%m-%d %H:%M:%S')
@@ -70,7 +69,7 @@ judge() {
     
 }
 
-
+domain="cat /etc/xray/domain"
 cloudflare() {
     DOMEN="yha.biz.id"
     sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
