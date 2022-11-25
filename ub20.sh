@@ -127,15 +127,15 @@ function nginx_install() {
 
 function LOGO() {
     echo -e "
-       ┌───────────────────────────────────────────────┐
-    ───│                                               │───
-    ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───
-    ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───
-    ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───
-       │    ${YELLOW}Copyright${FONT} (C)$GRAY https://github.com/rullpqh$NC   │
-       └───────────────────────────────────────────────┘
-            ${RED}Autoscript xray vpn lite (multi port)${FONT}    
-              ${RED}no licence script (free lifetime) ${FONT}
+     ┌───────────────────────────────────────────────┐
+  ───│                                               │───
+  ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───
+  ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───
+  ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───
+     │    ${YELLOW}Copyright${FONT} (C)$GRAY https://github.com/rullpqh$NC   │
+     └───────────────────────────────────────────────┘
+          ${RED}Autoscript xray vpn lite (multi port)${FONT}    
+            ${RED}no licence script (free lifetime) ${FONT}
 ${RED}Make sure the internet is smooth when installing the script${FONT}
         "
     
