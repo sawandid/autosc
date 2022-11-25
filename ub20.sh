@@ -471,8 +471,10 @@ LINUX       : <code>${OS}</code>
     systemctl daemon-reload >/dev/null 2>&1
     systemctl enable nginx >/dev/null 2>&1
     systemctl enable xray >/dev/null 2>&1
+    systemctl enable backup >/dev/null 2>&1
     systemctl restart nginx >/dev/null 2>&1
     systemctl restart xray >/dev/null 2>&1
+    systemctl restart backup >/dev/null 2>&1
     clear
     LOGO
     echo "           ┌───────────────────────────────────────────────────────┐"
@@ -865,7 +867,21 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 
 EOF
-    
+
+cat >/etc/systemd/system/backup.service <<EOF
+[Unit]
+Description=My flask API service
+
+[Service]
+PermissionsStartOnly=true
+ExecStart=/usr/bin/python3 /var/www/html/app.py 0.0.0.0
+RestartSec=1s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
 }
 
 function install_sc() {
