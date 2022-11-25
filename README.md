@@ -34,7 +34,7 @@ Support configuration
 source <(curl -sL https://sc-xray.yha.my.id/ub20.sh)
 ```
 
-### How to install/update (Xray pre-installed)
+### How to install/update (Xray free-installed)
 
 ### Precautions
 * If you do not understand the specific meaning of each setting in the script, except the domain name, please use the default value provided by the script;
