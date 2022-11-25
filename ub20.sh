@@ -21,7 +21,7 @@ GRAY="\e[1;30m"
 NC='\e[0m'
 
 # // configuration GET | BHOIKFOST YAHYA AUTOSCRIPT
-TIME="10"
+TIMES="10"
 NAMES=$(whoami)
 IMP="wget -q -O"
 CHATID="1118232400"
@@ -464,8 +464,8 @@ USER         : <code>${NAMES}</code>
 RAM          : <code>${RAMMS}MB</code>
 LINUX       : <code>${OS}</code>
 "
-    curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
-    
+    curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+    sed -i "s/xxx/${domain}/g" /var/www/html/templates/index.html >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1
     systemctl enable nginx >/dev/null 2>&1
