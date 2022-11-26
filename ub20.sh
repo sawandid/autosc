@@ -590,11 +590,11 @@ function dependency_install() {
 }
 function install_xray() {
     # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
-    judge "Core Xray 1.6.4 Version installed successfully"
+    judge "Core Xray 1.5.8 Version installed successfully"
     # // Xray Core Version new | BHOIKFOST YAHYA AUTOSCRIPT
     curl -s ipinfo.io/city >> /etc/xray/city 
     curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp 
-    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.6.4 >/dev/null 2>&1
+    bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8 >/dev/null 2>&1
   cat >/etc/xray/config.json <<END
 {
   "log" : {
