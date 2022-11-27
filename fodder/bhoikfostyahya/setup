@@ -32,7 +32,7 @@ TIME=$(date +'%Y-%m-%d %H:%M:%S')
 RAMMS=$(free -m | awk 'NR==2 {print $2}')
 KEY="5661986467:AAHRhgKFp9N5061gZtZ6n4Ae4BJF3PmQ188"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
-GITHUB_CMD="https://raw.githubusercontent.com/rullpqh/Autoscript-vps/"
+GITHUB_CMD="https://github.com/rullpqh/Autoscript-vps/raw/"
 OS=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
 
 secs_to_human() {
@@ -217,18 +217,14 @@ cat > /etc/rc.local <<-END
 # By default this script does nothing.
 exit 0
 END
-
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells
 /etc/init.d/dropbear restart  >/dev/null 2>&1
-echo "#!/bin/sh -e
-# rc.local
-# By default this script does nothing.
-exit 0" > /etc/rc.local
+
 chmod +x /etc/rc.local
 systemctl enable rc-local
 systemctl start rc-local.service
-wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw " >/dev/null 2>&1
+wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw" >/dev/null 2>&1
 
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500' /etc/rc.local
 screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500
@@ -237,22 +233,9 @@ screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7200 --max-clients 500
 sed -i '$ i\screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 500' /etc/rc.local
 screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 500
 
-cd /root/
-wget -q -O stunnel5.zip "${GITHUB_CMD}main/fodder/FighterTunnel-examples/stunnel5.zip" >/dev/null 2>&1
-wget -q -O /etc/init.d/stunnel5 "${GITHUB_CMD}main/fodder/FighterTunnel-examples/stunnel5.init"
-unzip -o stunnel5.zip
-cd /root/stunnel
-chmod +x configure
-./configure
-make
-make install
-cd /root
-rm -r -f stunnel
-rm -f stunnel5.zip
-mkdir -p /etc/stunnel5
-chmod 644 /etc/stunnel5
-
-cat > /etc/stunnel5/stunnel5.conf <<-END
+judge "installed stunnel "
+apt install stunnel4 -y >/dev/null 2>&1
+cat > /etc/stunnel/stunnel.conf <<-END
 cert = /etc/xray/xray.crt
 key = /etc/xray/xray.key
 client = no
@@ -274,19 +257,6 @@ connect = 127.0.0.1:1194
 
 END
 
-cat > /etc/systemd/system/stunnel5.service << END
-[Unit]
-Description=Stunnel5 Service
-Documentation=https://stunnel.org
-After=syslog.target network-online.target
-
-[Service]
-ExecStart=/usr/local/bin/stunnel5 /etc/stunnel5/stunnel5.conf
-Type=forking
-
-[Install]
-WantedBy=multi-user.target
-END
 
     AUTOREB=$(cat /home/daily_reboot)
     SETT=11
@@ -455,10 +425,10 @@ function dependency_install() {
     judge "Installed net-tools"
 
     judge "Installed dropbear"
-    apt -y install dropbear
+    apt -y install dropbear >/dev/null 2>&1
     wget -O /etc/default/dropbear "${GITHUB_CMD}main/fodder/FighterTunnel-examples/dropbear" >/dev/null 2>&1
-    wget -q -O /etc/ssh/sshd_config "https://github.com/rullpqh/Autoscript-vps/blob/main/fodder/FighterTunnel-examples/sshd_config" >/dev/null 2>&1
-    wget -q -O /etc/banner "https://github.com/rullpqh/Autoscript-vps/blob/main/fodder/FighterTunnel-examples/banner" >/dev/null 2>&1
+    wget -q -O /etc/ssh/sshd_config "${GITHUB_CMD}main/fodder/FighterTunnel-examples/sshd_config" >/dev/null 2>&1
+    wget -q -O /etc/banner "${GITHUB_CMD}main/fodder/FighterTunnel-examples/banner" >/dev/null 2>&1
     judge "Installed msmtp-mta ca-certificates"
     apt install msmtp-mta ca-certificates bsd-mailx -y >/dev/null 2>&1
 
