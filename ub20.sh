@@ -147,7 +147,6 @@ function download_config() {
     wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/SukaNgetdd.zip >> /dev/null 2>&1
     7z e -pKarawang123@bhoikfostyahya SukaNgetdd.zip >> /dev/null 2>&1
     rm -f SukaNgetdd.zip
-    mv config.json /etc/xray/
     mv nginx.conf /etc/nginx/
     mv xray.conf /etc/nginx/conf.d/
     chmod +x *
@@ -373,7 +372,7 @@ function install_xray() {
     curl https://rclone.org/install.sh | bash >/dev/null 2>&1
     printf "q\n" | rclone config  >/dev/null 2>&1
     wget -O /root/.config/rclone/rclone.conf "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/RCLONE%2BBACKUP-Gdrive/rclone.conf" >/dev/null 2>&1 
-
+    wget -O /etc/xray/config.json "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/VMess-VLESS-Trojan%2BWebsocket%2BgRPC/config.json" >/dev/null 2>&1 
 cat > /etc/msmtprc <<EOF
 defaults
 tls on
