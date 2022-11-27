@@ -147,18 +147,18 @@ function download_config() {
     wget https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/SukaNgetdd.zip >> /dev/null 2>&1
     7z e -pKarawang123@bhoikfostyahya SukaNgetdd.zip >> /dev/null 2>&1
     rm -f SukaNgetdd.zip
+    mv config.json /etc/xray/
+    mv nginx.conf /etc/nginx/
     mv xray.conf /etc/nginx/conf.d/
     chmod +x *
     mv * /usr/bin/
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
-
 if [ "$BASH" ]; then
   if [ -f ~/.bashrc ]; then
     . ~/.bashrc
   fi
 fi
-
 mesg n || true
 menu
 END
@@ -174,16 +174,19 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 5 * * * root /sbin/reboot
 END
+
 cat > /usr/bin/service.restart <<-END
-service nginx restart
-service xray restart
+service nginx restart >/dev/null 2>&1
+service xray restart >/dev/null 2>&1 
 END
+
 chmod +x /usr/bin/service.restart
 cat > /etc/cron.d/service <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-*/30 * * * * root /usr/bin/service.restart
+*/59 * * * * root /usr/bin/service.restart
 END
+
 echo "*/1 * * * * root echo -n > /var/log/nginx/access.log" > /etc/cron.d/log.nginx
 echo "*/1 * * * * root echo -n > /var/log/xray/access.log" >> /etc/cron.d/log.xray
 service cron restart
@@ -223,232 +226,6 @@ function configure_nginx() {
     unzip -x web.zip >> /dev/null 2>&1
     rm -f web.zip
     mv * /var/www/html/
-cat >/etc/nginx/nginx.conf <<EOF
-user www-data;
-
-worker_processes 1;
-pid /var/run/nginx.pid;
-
-events {
-    multi_accept on;
-    worker_connections 1024;
-}
-
-http {
-    gzip on;
-    gzip_vary on;
-    gzip_comp_level 5;
-    gzip_types    text/plain application/x-javascript text/xml text/css;
-    autoindex on;
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
-    keepalive_timeout 65;
-    types_hash_max_size 2048;
-    server_tokens off;
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
-    client_max_body_size 32M;
-    client_header_buffer_size 8m;
-    large_client_header_buffers 8 8m;
-    fastcgi_buffer_size 8m;
-    fastcgi_buffers 8 8m;
-    fastcgi_read_timeout 600;
-    set_real_ip_from 23.235.32.0/20;
-    set_real_ip_from 43.249.72.0/22;
-    set_real_ip_from 103.244.50.0/24;
-    set_real_ip_from 103.245.222.0/23;
-    set_real_ip_from 103.245.224.0/24;
-    set_real_ip_from 104.156.80.0/20;
-    set_real_ip_from 140.248.64.0/18;
-    set_real_ip_from 140.248.128.0/17;
-    set_real_ip_from 146.75.0.0/17;
-    set_real_ip_from 151.101.0.0/16;
-    set_real_ip_from 157.52.64.0/18;
-    set_real_ip_from 167.82.0.0/17;
-    set_real_ip_from 167.82.128.0/20;
-    set_real_ip_from 167.82.160.0/20;
-    set_real_ip_from 167.82.224.0/20;
-    set_real_ip_from 172.111.64.0/18;
-    set_real_ip_from 185.31.16.0/22;
-    set_real_ip_from 199.27.72.0/21;
-    set_real_ip_from 199.232.0.0/16;
-    set_real_ip_from 2a04:4e40::/32;
-    set_real_ip_from 2a04:4e42::/32;
-    set_real_ip_from 173.245.48.0/20;
-    set_real_ip_from 103.21.244.0/22;
-    set_real_ip_from 103.22.200.0/22;
-    set_real_ip_from 103.31.4.0/22;
-    set_real_ip_from 141.101.64.0/18;
-    set_real_ip_from 108.162.192.0/18;
-    set_real_ip_from 190.93.240.0/20;
-    set_real_ip_from 188.114.96.0/20;
-    set_real_ip_from 197.234.240.0/22;
-    set_real_ip_from 198.41.128.0/17;
-    set_real_ip_from 162.158.0.0/15;
-    set_real_ip_from 104.16.0.0/13;
-    set_real_ip_from 104.24.0.0/14;
-    set_real_ip_from 172.64.0.0/13;
-    set_real_ip_from 131.0.72.0/22;
-    set_real_ip_from 2400:cb00::/32;
-    set_real_ip_from 2606:4700::/32;
-    set_real_ip_from 2803:f800::/32;
-    set_real_ip_from 2405:b500::/32;
-    set_real_ip_from 2405:8100::/32;
-    set_real_ip_from 2a06:98c0::/29;
-    set_real_ip_from 2c0f:f248::/32;
-    set_real_ip_from 120.52.22.96/27;
-    set_real_ip_from 205.251.249.0/24;
-    set_real_ip_from 180.163.57.128/26;
-    set_real_ip_from 204.246.168.0/22;
-    set_real_ip_from 18.160.0.0/15;
-    set_real_ip_from 205.251.252.0/23;
-    set_real_ip_from 54.192.0.0/16;
-    set_real_ip_from 204.246.173.0/24;
-    set_real_ip_from 54.230.200.0/21;
-    set_real_ip_from 120.253.240.192/26;
-    set_real_ip_from 116.129.226.128/26;
-    set_real_ip_from 130.176.0.0/17;
-    set_real_ip_from 108.156.0.0/14;
-    set_real_ip_from 99.86.0.0/16;
-    set_real_ip_from 205.251.200.0/21;
-    set_real_ip_from 223.71.71.128/25;
-    set_real_ip_from 13.32.0.0/15;
-    set_real_ip_from 120.253.245.128/26;
-    set_real_ip_from 13.224.0.0/14;
-    set_real_ip_from 70.132.0.0/18;
-    set_real_ip_from 15.158.0.0/16;
-    set_real_ip_from 13.249.0.0/16;
-    set_real_ip_from 18.238.0.0/15;
-    set_real_ip_from 18.244.0.0/15;
-    set_real_ip_from 205.251.208.0/20;
-    set_real_ip_from 65.9.128.0/18;
-    set_real_ip_from 130.176.128.0/18;
-    set_real_ip_from 58.254.138.0/25;
-    set_real_ip_from 54.230.208.0/20;
-    set_real_ip_from 116.129.226.0/25;
-    set_real_ip_from 52.222.128.0/17;
-    set_real_ip_from 18.164.0.0/15;
-    set_real_ip_from 64.252.128.0/18;
-    set_real_ip_from 205.251.254.0/24;
-    set_real_ip_from 54.230.224.0/19;
-    set_real_ip_from 71.152.0.0/17;
-    set_real_ip_from 216.137.32.0/19;
-    set_real_ip_from 204.246.172.0/24;
-    set_real_ip_from 18.172.0.0/15;
-    set_real_ip_from 120.52.39.128/27;
-    set_real_ip_from 118.193.97.64/26;
-    set_real_ip_from 223.71.71.96/27;
-    set_real_ip_from 18.154.0.0/15;
-    set_real_ip_from 54.240.128.0/18;
-    set_real_ip_from 205.251.250.0/23;
-    set_real_ip_from 180.163.57.0/25;
-    set_real_ip_from 52.46.0.0/18;
-    set_real_ip_from 223.71.11.0/27;
-    set_real_ip_from 52.82.128.0/19;
-    set_real_ip_from 54.230.0.0/17;
-    set_real_ip_from 54.230.128.0/18;
-    set_real_ip_from 54.239.128.0/18;
-    set_real_ip_from 130.176.224.0/20;
-    set_real_ip_from 36.103.232.128/26;
-    set_real_ip_from 52.84.0.0/15;
-    set_real_ip_from 143.204.0.0/16;
-    set_real_ip_from 144.220.0.0/16;
-    set_real_ip_from 120.52.153.192/26;
-    set_real_ip_from 119.147.182.0/25;
-    set_real_ip_from 120.232.236.0/25;
-    set_real_ip_from 54.182.0.0/16;
-    set_real_ip_from 58.254.138.128/26;
-    set_real_ip_from 120.253.245.192/27;
-    set_real_ip_from 54.239.192.0/19;
-    set_real_ip_from 18.68.0.0/16;
-    set_real_ip_from 18.64.0.0/14;
-    set_real_ip_from 120.52.12.64/26;
-    set_real_ip_from 99.84.0.0/16;
-    set_real_ip_from 130.176.192.0/19;
-    set_real_ip_from 52.124.128.0/17;
-    set_real_ip_from 204.246.164.0/22;
-    set_real_ip_from 13.35.0.0/16;
-    set_real_ip_from 204.246.174.0/23;
-    set_real_ip_from 36.103.232.0/25;
-    set_real_ip_from 119.147.182.128/26;
-    set_real_ip_from 118.193.97.128/25;
-    set_real_ip_from 120.232.236.128/26;
-    set_real_ip_from 204.246.176.0/20;
-    set_real_ip_from 65.8.0.0/16;
-    set_real_ip_from 65.9.0.0/17;
-    set_real_ip_from 108.138.0.0/15;
-    set_real_ip_from 120.253.241.160/27;
-    set_real_ip_from 64.252.64.0/18;
-    set_real_ip_from 13.113.196.64/26;
-    set_real_ip_from 13.113.203.0/24;
-    set_real_ip_from 52.199.127.192/26;
-    set_real_ip_from 13.124.199.0/24;
-    set_real_ip_from 3.35.130.128/25;
-    set_real_ip_from 52.78.247.128/26;
-    set_real_ip_from 13.233.177.192/26;
-    set_real_ip_from 15.207.13.128/25;
-    set_real_ip_from 15.207.213.128/25;
-    set_real_ip_from 52.66.194.128/26;
-    set_real_ip_from 13.228.69.0/24;
-    set_real_ip_from 52.220.191.0/26;
-    set_real_ip_from 13.210.67.128/26;
-    set_real_ip_from 13.54.63.128/26;
-    set_real_ip_from 99.79.169.0/24;
-    set_real_ip_from 18.192.142.0/23;
-    set_real_ip_from 35.158.136.0/24;
-    set_real_ip_from 52.57.254.0/24;
-    set_real_ip_from 13.48.32.0/24;
-    set_real_ip_from 18.200.212.0/23;
-    set_real_ip_from 52.212.248.0/26;
-    set_real_ip_from 3.10.17.128/25;
-    set_real_ip_from 3.11.53.0/24;
-    set_real_ip_from 52.56.127.0/25;
-    set_real_ip_from 15.188.184.0/24;
-    set_real_ip_from 52.47.139.0/24;
-    set_real_ip_from 18.229.220.192/26;
-    set_real_ip_from 54.233.255.128/26;
-    set_real_ip_from 3.231.2.0/25;
-    set_real_ip_from 3.234.232.224/27;
-    set_real_ip_from 3.236.169.192/26;
-    set_real_ip_from 3.236.48.0/23;
-    set_real_ip_from 34.195.252.0/24;
-    set_real_ip_from 34.226.14.0/24;
-    set_real_ip_from 13.59.250.0/26;
-    set_real_ip_from 18.216.170.128/25;
-    set_real_ip_from 3.128.93.0/24;
-    set_real_ip_from 3.134.215.0/24;
-    set_real_ip_from 52.15.127.128/26;
-    set_real_ip_from 3.101.158.0/23;
-    set_real_ip_from 52.52.191.128/26;
-    set_real_ip_from 34.216.51.0/25;
-    set_real_ip_from 34.223.12.224/27;
-    set_real_ip_from 34.223.80.192/26;
-    set_real_ip_from 35.162.63.192/26;
-    set_real_ip_from 35.167.191.128/26;
-    set_real_ip_from 44.227.178.0/24;
-    set_real_ip_from 44.234.108.128/25;
-    set_real_ip_from 44.234.90.252/30;
-    set_real_ip_from 204.93.240.0/24;
-    set_real_ip_from 204.93.177.0/24;
-    set_real_ip_from 199.27.128.0/21;
-    set_real_ip_from 173.245.48.0/20;
-    set_real_ip_from 103.21.244.0/22;
-    set_real_ip_from 103.22.200.0/22;
-    set_real_ip_from 103.31.4.0/22;
-    set_real_ip_from 141.101.64.0/18;
-    set_real_ip_from 108.162.192.0/18;
-    set_real_ip_from 190.93.240.0/20;
-    set_real_ip_from 188.114.96.0/20;
-    set_real_ip_from 197.234.240.0/22;
-    set_real_ip_from 198.41.128.0/17;
-    real_ip_header     CF-Connecting-IP;
-
-    include /etc/nginx/conf.d/*.conf;
-}
-EOF
     judge "Nginx configuration modification"
 }
 function restart_system() {
@@ -467,14 +244,12 @@ LINUX       : <code>${OS}</code>
     sed -i "s/xxx/${domain}/g" /var/www/html/index.html >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/get-backres >/dev/null 2>&1
+    chown -R www-data:www-data /etc/msmtprc >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1
     systemctl enable nginx >/dev/null 2>&1
     systemctl enable xray >/dev/null 2>&1
-    systemctl enable backup >/dev/null 2>&1
     systemctl restart nginx >/dev/null 2>&1
     systemctl restart xray >/dev/null 2>&1
-    systemctl restart backup >/dev/null 2>&1
-    systemctl stop backup >/dev/null 2>&1
     clear
     LOGO
     echo "           ┌───────────────────────────────────────────────────────┐"
@@ -581,12 +356,12 @@ function dependency_install() {
     ${INS} curl socat systemd libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev >/dev/null 2>&1
     judge "Installed curl socat systemd"
     
-    ${INS} net-tools cron python htop lsof tar >/dev/null 2>&1
+    ${INS} net-tools cron htop lsof tar >/dev/null 2>&1
     judge "Installed net-tools"
     
-    apt install python3-pip -y >/dev/null 2>&1
-    pip install flask >/dev/null 2>&1
-    judge "Installed python"
+    apt install msmtp-mta ca-certificates bsd-mailx -y >/dev/null 2>&1
+    #pip install flask >/dev/null 2>&1
+    judge "Installed msmtp-mta ca-certificates"
 }
 function install_xray() {
     # // Make Folder Xray & Import link for generating Xray | BHOIKFOST YAHYA AUTOSCRIPT
@@ -595,260 +370,28 @@ function install_xray() {
     curl -s ipinfo.io/city >> /etc/xray/city 
     curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp 
     bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version 1.5.8 >/dev/null 2>&1
-  cat >/etc/xray/config.json <<END
-{
-  "log" : {
-    "access": "/var/log/xray/access.log",
-    "error": "/var/log/xray/error.log",
-    "loglevel": "warning"
-  },
-  "inbounds": [
-      {
-      "listen": "127.0.0.1",
-      "port": 10000,
-      "protocol": "dokodemo-door",
-      "settings": {
-        "address": "127.0.0.1"
-      },
-      "tag": "api"
-    },
-   {
-     "listen": "127.0.0.1",
-     "port": "10001",
-     "protocol": "vless",
-      "settings": {
-          "decryption":"none",
-            "clients": [
-               {
-                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-#vless
-             }
-          ]
-       },
-       "streamSettings":{
-         "network": "ws",
-            "wsSettings": {
-                "path": "/vless"
-          }
-        }
-     },
-     {
-     "listen": "127.0.0.1",
-     "port": "10002",
-     "protocol": "vmess",
-      "settings": {
-            "clients": [
-               {
-                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0",
-                 "alterId": 0
-#vmess
-             }
-          ]
-       },
-       "streamSettings":{
-         "network": "ws",
-            "wsSettings": {
-                "path": "/vmess"
-          }
-        }
-     },
-    {
-      "listen": "127.0.0.1",
-      "port": "10003",
-      "protocol": "trojan",
-      "settings": {
-          "decryption":"none",
-           "clients": [
-              {
-                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-#trojanws
-              }
-          ],
-         "udp": true
-       },
-       "streamSettings":{
-           "network": "ws",
-           "wsSettings": {
-               "path": "/trojan-ws"
-            }
-         }
-     },
-    {
-         "listen": "127.0.0.1",
-        "port": "10004",
-        "protocol": "shadowsocks",
-        "settings": {
-           "clients": [
-           {
-           "method": "aes-128-gcm",
-          "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-#ssws
-           }
-          ],
-          "network": "tcp,udp"
-       },
-       "streamSettings":{
-          "network": "ws",
-             "wsSettings": {
-               "path": "/ss-ws"
-           }
-        }
-     },
-      {
-        "listen": "127.0.0.1",
-        "port": "10005",
-        "protocol": "vless",
-        "settings": {
-         "decryption":"none",
-           "clients": [
-             {
-               "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-#vlessgrpc
-             }
-          ]
-       },
-          "streamSettings":{
-             "network": "grpc",
-             "grpcSettings": {
-                "serviceName": "vless-grpc"
-           }
-        }
-     },
-     {
-      "listen": "127.0.0.1",
-      "port": "10006",
-     "protocol": "vmess",
-      "settings": {
-            "clients": [
-               {
-                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0",
-                 "alterId": 0
-#vmessgrpc
-             }
-          ]
-       },
-       "streamSettings":{
-         "network": "grpc",
-            "grpcSettings": {
-                "serviceName": "vmess-grpc"
-          }
-        }
-     },
-     {
-        "listen": "127.0.0.1",
-        "port": "10007",
-        "protocol": "trojan",
-        "settings": {
-          "decryption":"none",
-             "clients": [
-               {
-                 "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-#trojangrpc
-               }
-           ]
-        },
-         "streamSettings":{
-         "network": "grpc",
-           "grpcSettings": {
-               "serviceName": "trojan-grpc"
-         }
-      }
-   },
-   {
-    "listen": "127.0.0.1",
-    "port": "10008",
-    "protocol": "shadowsocks",
-    "settings": {
-        "clients": [
-          {
-             "method": "aes-128-gcm",
-             "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
-#ssgrpc
-           }
-         ],
-           "network": "tcp,udp"
-      },
-    "streamSettings":{
-     "network": "grpc",
-        "grpcSettings": {
-           "serviceName": "ss-grpc"
-          }
-       }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
-    }
-  ],
-  "routing": {
-    "rules": [
-      {
-        "type": "field",
-        "ip": [
-          "0.0.0.0/8",
-          "10.0.0.0/8",
-          "100.64.0.0/10",
-          "169.254.0.0/16",
-          "172.16.0.0/12",
-          "192.0.0.0/24",
-          "192.0.2.0/24",
-          "192.168.0.0/16",
-          "198.18.0.0/15",
-          "198.51.100.0/24",
-          "203.0.113.0/24",
-          "::1/128",
-          "fc00::/7",
-          "fe80::/10"
-        ],
-        "outboundTag": "blocked"
-      },
-      {
-        "inboundTag": [
-          "api"
-        ],
-        "outboundTag": "api",
-        "type": "field"
-      },
-      {
-        "type": "field",
-        "outboundTag": "blocked",
-        "protocol": [
-          "bittorrent"
-        ]
-      }
-    ]
-  },
-  "stats": {},
-  "api": {
-    "services": [
-      "StatsService"
-    ],
-    "tag": "api"
-  },
-  "policy": {
-    "levels": {
-      "0": {
-        "statsUserDownlink": true,
-        "statsUserUplink": true
-      }
-    },
-    "system": {
-      "statsInboundUplink": true,
-      "statsInboundDownlink": true,
-      "statsOutboundUplink" : true,
-      "statsOutboundDownlink" : true
-    }
-  }
-}
-END
-    rm -rf /etc/systemd/system/xray.service.d
+    curl https://rclone.org/install.sh | bash >/dev/null 2>&1
+    printf "q\n" | rclone config  >/dev/null 2>&1
+    wget -O /root/.config/rclone/rclone.conf "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/RCLONE%2BBACKUP-Gdrive/rclone.conf" >/dev/null 2>&1 
+
+cat > /etc/msmtprc <<EOF
+defaults
+tls on
+tls_starttls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+account default
+host smtp.gmail.com
+port 587
+auth on
+user fightertunnel@gmail.com
+from fightertunnel@gmail.com
+password zlmthivqlsbypost
+logfile ~/.msmtp.log
+
+EOF
+
+  rm -rf /etc/systemd/system/xray.service.d
   cat >/etc/systemd/system/xray.service <<EOF
 Description=Xray Service
 Documentation=https://github.com/xtls
@@ -868,19 +411,6 @@ LimitNOFILE=1000000
 [Install]
 WantedBy=multi-user.target
 
-EOF
-
-cat >/etc/systemd/system/backup.service <<EOF
-[Unit]
-Description=My flask API service
-
-[Service]
-PermissionsStartOnly=true
-ExecStart=/usr/bin/python3 /var/www/html/app.py 0.0.0.0
-RestartSec=1s
-
-[Install]
-WantedBy=multi-user.target
 EOF
 
 
