@@ -72,7 +72,7 @@ judge() {
 
 domain="cat /etc/xray/domain"
 cloudflare() {
-    DOMEN="fightertunnel.xyz
+    DOMEN="fightertunnel.xyz"
     sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
     domain="cloud-${sub}.fightertunnel.xyz"
     echo -e "${domain}" >/etc/xray/domain
