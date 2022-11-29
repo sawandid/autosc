@@ -7,6 +7,7 @@ CMD=$(ip -o $CMD -4 route show to default | awk '{print $5}');
 
 
 function ovpn_install() {
+    rm -rf /etc/openvpn
     mkdir -p /etc/openvpn
     wget -O /etc/openvpn/vpn.zip "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/fodder/openvpn/vpn.zip"
     unzip -d /etc/openvpn/ /etc/openvpn/vpn.zip
