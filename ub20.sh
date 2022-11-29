@@ -546,6 +546,9 @@ function install_sc_cf() {
 # // Prevent the default bin directory of some system xray from missing | BHOIKFOST YAHYA AUTOSCRIPT
 clear
 LOGO
+echo -e "${RED}JANGAN INSTALL SCRIPT INI MENGGUNAKAN KONEKSI VPN!!!${FONT}"
+echo -e "${YELLOW}CONTOH SSH WS SILAHKAN DI BAWA BUG.MU/FIGHTERTUNNEL${FONT}"
+echo -e ""
 echo -e "1).${Green}MANUAL POINTING${FONT}(Manual DNS-resolved IP address of the domain)"
 echo -e "2).${Green}AUTO POINTING${FONT}(Auto DNS-resolved IP address of the domain)"
 read -p "between auto pointing / manual pointing what do you choose[ 1 - 2 ] : " menu_num
