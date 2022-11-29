@@ -270,6 +270,7 @@ wget -q -O /etc/squid/squid.conf "${GITHUB_CMD}main/fodder/FighterTunnel-example
 
 function acme() {
     judge "installed successfully SSL certificate generation script"
+    rm -rf .acme.sh
     mkdir /root/.acme.sh  >/dev/null 2>&1
     curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh >/dev/null 2>&1
     chmod +x /root/.acme.sh/acme.sh >/dev/null 2>&1
