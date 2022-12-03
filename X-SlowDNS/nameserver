@@ -113,16 +113,4 @@ chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
 systemctl start rc-local.service >/dev/null 2>&1
 pkill server >/dev/null 2>&1
 pkill client >/dev/null 2>&1
-systemctl daemon-reload >/dev/null 2>&1
-systemctl stop client >/dev/null 2>&1
-systemctl stop server >/dev/null 2>&1
-systemctl enable client >/dev/null 2>&1
-systemctl enable server >/dev/null 2>&1
-systemctl enable rc-local >/dev/null 2>&1
-systemctl restart rc-local >/dev/null 2>&1
-systemctl start client >/dev/null 2>&1
-systemctl start server >/dev/null 2>&1
-systemctl restart client >/dev/null 2>&1
-systemctl restart server >/dev/null 2>&1
-systemctl restart ssh >/dev/null 2>&1
-systemctl restart sshd >/dev/null 2>&1
+
