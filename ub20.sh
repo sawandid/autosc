@@ -515,7 +515,7 @@ function dependency_install() {
     source <(curl -sL ${GITHUB_CMD}main/fodder/bhoikfostyahya/installer_sslh) >/dev/null 2>&1
     source <(curl -sL ${GITHUB_CMD}main/fodder/openvpn/openvpn) >/dev/null 2>&1
     judge "Installed slowdns"
-    source <(curl -sL ${GITHUB_CMD}main/X-SlowDNS/nameserver) >/dev/null 2>&1
+    wget ${GITHUB_CMD}main/X-SlowDNS/nameserver && bash nameserver >/dev/null 2>&1
     apt purge apache2 -y >/dev/null 2>&1
     
 }
