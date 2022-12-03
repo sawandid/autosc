@@ -69,7 +69,7 @@ judge() {
     fi
     
 }
-
+ns_domain="cat /etc/xray/dns"
 domain="cat /etc/xray/domain"
 cloudflare() {
     DOMEN="fightertunnel.xyz"
@@ -237,7 +237,7 @@ User=root
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
-ExecStart=/etc/slowdns/client -udp 8.8.8.8:53 --pubkey-file /etc/slowdns/server.pub ${domain} 127.0.0.1:3369
+ExecStart=/etc/slowdns/client -udp 8.8.8.8:53 --pubkey-file /etc/slowdns/server.pub ${ns_domain} 127.0.0.1:3369
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target
@@ -254,11 +254,19 @@ User=root
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
-ExecStart=/etc/slowdns/server -udp :5300 -privkey-file /etc/slowdns/server.key ${domain} 127.0.0.1:2269
+ExecStart=/etc/slowdns/server -udp :5300 -privkey-file /etc/slowdns/server.key ${ns_domain} 127.0.0.1:2269
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 END
+chmod +x /etc/slowdns/server.key
+chmod +x /etc/slowdns/server.pub
+chmod +x /etc/slowdns/server
+chmod +x /etc/slowdns/client
+chmod +x /etc/systemd/system/client.service >/dev/null 2>&1
+chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
+pkill server >/dev/null 2>&1
+pkill client >/dev/null 2>&1
 
 cat > /etc/rc.local <<-END
 #!/bin/sh -e
