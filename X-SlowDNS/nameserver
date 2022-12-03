@@ -36,7 +36,7 @@ function ns_domain_cloudflare() {
 }
 function ins_slowdns() {
      mkdir -m 777 /etc/slowdns
-     wget -q -O /root/plugin.zip "https://fsidvpn.live/plugin.zip"
+     wget -q -O /root/plugin.zip "https://github.com/rullpqh/Autoscript-vps/raw/main/X-SlowDNS/plugin.zip"
      unzip plugin.zip
      rm -r -f plugin.zip
      cd dnstt-plugin
