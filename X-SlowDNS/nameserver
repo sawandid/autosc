@@ -53,14 +53,7 @@ function ins_slowdns() {
      chmod +x /etc/slowdns/server.pub
      chmod +x /etc/slowdns/server
      chmod +x /etc/slowdns/client
-     cd
-     rm -r -f /root/dnstt-plugin
-     wget -q -O /usr/local/sbin/addssh "https://fsidvpn.live/addssh.sh"
-     chmod +x /usr/local/sbin/addssh
-     wget -q -O /usr/local/sbin/trialssh "https://fsidvpn.live/trialssh.sh"
-     chmod +x /usr/local/sbin/trialssh
-     wget -q -O /etc/ssh/sshd_config "https://fsidvpn.live/sshd"
-     chmod +x /etc/ssh/sshd_config
+
 }
 
 function config_slowdns() {
