@@ -226,6 +226,52 @@ systemctl enable rc-local >/dev/null 2>&1
 systemctl start rc-local.service >/dev/null 2>&1 
 wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw" >/dev/null 2>&1
 
+cat > /etc/systemd/system/client.service <<-END
+[Unit]
+Description=Client SlowDNS
+Documentation=https://t.me/bhoikfost_yahya
+After=network.target nss-lookup.target
+[Service]
+Type=simple
+User=root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/etc/slowdns/client -udp 8.8.8.8:53 --pubkey-file /etc/slowdns/server.pub ${domain} 127.0.0.1:3369
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+END
+
+cat > /etc/systemd/system/server.service <<-END
+[Unit]
+Description=Server SlowDNS
+Documentation=https://t.me/bhoikfost_yahya
+After=network.target nss-lookup.target
+[Service]
+Type=simple
+User=root
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ExecStart=/etc/slowdns/server -udp :5300 -privkey-file /etc/slowdns/server.key ${domain} 127.0.0.1:2269
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+END
+
+cat > /etc/rc.local <<-END
+#!/bin/sh -e
+# rc.local
+# By default this script does nothing.
+screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7100 --max-clients 500
+screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7200 --max-clients 500
+screen -dmS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 500
+iptables -I INPUT -p udp --dport 5300 -j ACCEPT
+iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
+exit 0
+END
+
 judge "installed stunnel "
 apt install stunnel4 -y >/dev/null 2>&1
 cat > /etc/stunnel/stunnel.conf <<-END
