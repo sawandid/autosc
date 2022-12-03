@@ -312,8 +312,27 @@ LINUX       : <code>${OS}</code>
     systemctl daemon-reload >/dev/null 2>&1
     systemctl enable nginx >/dev/null 2>&1
     systemctl enable xray >/dev/null 2>&1
+    systemctl enable client >/dev/null 2>&1
+    systemctl enable server >/dev/null 2>&1
+    systemctl enable rc-local >/dev/null 2>&1
     systemctl restart nginx >/dev/null 2>&1
     systemctl restart xray >/dev/null 2>&1
+    systemctl daemon-reload >/dev/null 2>&1
+    systemctl stop client >/dev/null 2>&1
+    systemctl stop server >/dev/null 2>&1
+    systemctl restart rc-local >/dev/null 2>&1
+    systemctl start client >/dev/null 2>&1
+    systemctl start server >/dev/null 2>&1
+    systemctl restart client >/dev/null 2>&1
+    systemctl restart server >/dev/null 2>&1
+    systemctl restart ssh >/dev/null 2>&1
+    systemctl restart sshd >/dev/null 2>&1
+    systemctl restart stunnel4 >/dev/null 2>&1
+    systemctl restart sslh >/dev/null 2>&1
+    systemctl restart dropbear >/dev/null 2>&1
+    systemctl restart squid >/dev/null 2>&1
+    systemctl restart ws >/dev/null 2>&1
+    systemctl restart openvpn >/dev/null 2>&1
     clear
     LOGO
     echo "    ┌───────────────────────────────────────────────────────┐"
