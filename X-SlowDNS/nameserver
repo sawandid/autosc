@@ -110,7 +110,6 @@ config_slowdns >/dev/null 2>&1
 chmod +x /etc/rc.local >/dev/null 2>&1
 chmod +x /etc/systemd/system/client.service >/dev/null 2>&1
 chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
-systemctl start rc-local.service >/dev/null 2>&1
 pkill server >/dev/null 2>&1
 pkill client >/dev/null 2>&1
 
