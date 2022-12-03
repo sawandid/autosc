@@ -211,19 +211,8 @@ SysVStartPriority=99
 WantedBy=multi-user.target
 END
 
-cat > /etc/rc.local <<-END
-#!/bin/sh -e
-# rc.local
-# By default this script does nothing.
-exit 0
-END
 echo "/bin/false" >> /etc/shells
-echo "/usr/sbin/nologin" >> /etc/shells
-/etc/init.d/dropbear restart  >/dev/null 2>&1
-
-chmod +x /etc/rc.local >/dev/null 2>&1 
-systemctl enable rc-local >/dev/null 2>&1 
-systemctl start rc-local.service >/dev/null 2>&1 
+echo "/usr/sbin/nologin" >> /etc/shells 
 wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw" >/dev/null 2>&1
 
 cat > /etc/systemd/system/client.service <<-END
@@ -279,8 +268,9 @@ iptables -I INPUT -p udp --dport 5300 -j ACCEPT
 iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
 exit 0
 END
+chmod +x /etc/rc.local
 
-judge "installed stunnel "
+judge "installed stunnel"
 apt install stunnel4 -y >/dev/null 2>&1
 cat > /etc/stunnel/stunnel.conf <<-END
 cert = /etc/xray/xray.crt
