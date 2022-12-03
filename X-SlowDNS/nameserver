@@ -67,7 +67,7 @@ function config_slowdns() {
      cat >/etc/systemd/system/client.service <<END
 [Unit]
 Description=Client SlowDNS
-Documentation=https://fsidvpn.live
+Documentation=https://t.me/bhoikfost_yahya
 After=network.target nss-lookup.target
 [Service]
 Type=simple
@@ -84,7 +84,7 @@ END
      cat >/etc/systemd/system/server.service <<END
 [Unit]
 Description=Server SlowDNS
-Documentation=https://fsidvpn.live
+Documentation=https://t.me/bhoikfost_yahya
 After=network.target nss-lookup.target
 [Service]
 Type=simple
