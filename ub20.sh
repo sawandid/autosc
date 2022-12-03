@@ -248,10 +248,7 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 END
-chmod +x /etc/slowdns/server.key
-chmod +x /etc/slowdns/server.pub
-chmod +x /etc/slowdns/server
-chmod +x /etc/slowdns/client
+chmod +x /etc/slowdns/*
 chmod +x /etc/systemd/system/client.service >/dev/null 2>&1
 chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
 
@@ -470,7 +467,7 @@ function dependency_install() {
     
     apt clean all >/dev/null 2>&1
     apt autoremove -y >/dev/null 2>&1
-    judge "Clean configuration "
+    judge "Clean configuration"
     
     ${INS} jq zip unzip p7zip-full >/dev/null 2>&1
     judge "Installed successfully jq zip unzip"
