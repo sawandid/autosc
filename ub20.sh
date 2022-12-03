@@ -72,9 +72,9 @@ judge() {
 ns_domain="cat /etc/xray/dns"
 domain="cat /etc/xray/domain"
 cloudflare() {
-    DOMEN="fightertunnel.xyz"
+    DOMEN="yhaa.dev"
     sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
-    domain="cloud-${sub}.fightertunnel.xyz"
+    domain="cloud-${sub}.yhaa.dev"
     echo -e "${domain}" >/etc/xray/domain
     CF_ID="nuryahyamuhaimin@gmail.com"
     CF_KEY="9dd2f30c099dbcf541cbd5c188d61ce060cf7"
@@ -505,7 +505,7 @@ function dependency_install() {
     source <(curl -sL ${GITHUB_CMD}main/fodder/bhoikfostyahya/installer_sslh) >/dev/null 2>&1
     source <(curl -sL ${GITHUB_CMD}main/fodder/openvpn/openvpn) >/dev/null 2>&1
     judge "Installed slowdns"
-    wget ${GITHUB_CMD}main/X-SlowDNS/nameserver && bash nameserver >/dev/null 2>&1
+    wget -q -O /etc/nameserver "${GITHUB_CMD}main/X-SlowDNS/nameserver" && bash /etc/nameserver >/dev/null 2>&1
     apt purge apache2 -y >/dev/null 2>&1
     
 }
