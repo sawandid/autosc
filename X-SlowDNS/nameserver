@@ -66,7 +66,7 @@ function ins_slowdns() {
 function config_slowdns() {
      cat >/etc/systemd/system/client.service <<END
 [Unit]
-Description=Client SlowDNS By FsidVPN
+Description=Client SlowDNS
 Documentation=https://fsidvpn.live
 After=network.target nss-lookup.target
 [Service]
@@ -83,7 +83,7 @@ END
 
      cat >/etc/systemd/system/server.service <<END
 [Unit]
-Description=Server SlowDNS By FsidVPN
+Description=Server SlowDNS
 Documentation=https://fsidvpn.live
 After=network.target nss-lookup.target
 [Service]
