@@ -153,7 +153,6 @@ function download_config() {
     chmod +x *
     mv * /usr/bin/
 
-
   cat >/root/.profile <<END
 # ~/.profile: executed by Bourne-compatible login shells.
 if [ "$BASH" ]; then
@@ -164,6 +163,7 @@ fi
 mesg n || true
 menu
 END
+
   cat >/etc/cron.d/xp_all <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
@@ -215,7 +215,7 @@ echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells 
 wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw" >/dev/null 2>&1
 
-cat > /etc/systemd/system/client.service <<-END
+cat > /etc/systemd/system/dns-client.service <<-END
 [Unit]
 Description=Client SlowDNS
 Documentation=https://t.me/bhoikfost_yahya
@@ -232,7 +232,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 END
 
-cat > /etc/systemd/system/server.service <<-END
+cat > /etc/systemd/system/dns-server.service <<-END
 [Unit]
 Description=Server SlowDNS
 Documentation=https://t.me/bhoikfost_yahya
@@ -254,8 +254,6 @@ chmod +x /etc/slowdns/server
 chmod +x /etc/slowdns/client
 chmod +x /etc/systemd/system/client.service >/dev/null 2>&1
 chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
-pkill server >/dev/null 2>&1
-pkill client >/dev/null 2>&1
 
 cat > /etc/rc.local <<-END
 #!/bin/sh -e
@@ -356,17 +354,14 @@ LINUX       : <code>${OS}</code>
     systemctl daemon-reload >/dev/null 2>&1
     systemctl enable nginx >/dev/null 2>&1
     systemctl enable xray >/dev/null 2>&1
-    systemctl enable client >/dev/null 2>&1
-    systemctl enable server >/dev/null 2>&1
+    systemctl enable dns-client >/dev/null 2>&1
+    systemctl enable dns-server >/dev/null 2>&1
     systemctl enable rc-local >/dev/null 2>&1
     systemctl restart nginx >/dev/null 2>&1
     systemctl restart xray >/dev/null 2>&1
-    systemctl daemon-reload >/dev/null 2>&1
-    systemctl stop client >/dev/null 2>&1
-    systemctl stop server >/dev/null 2>&1
     systemctl restart rc-local >/dev/null 2>&1
-    systemctl start client >/dev/null 2>&1
-    systemctl start server >/dev/null 2>&1
+    systemctl start dns-client >/dev/null 2>&1
+    systemctl start dns-server >/dev/null 2>&1
     systemctl restart client >/dev/null 2>&1
     systemctl restart server >/dev/null 2>&1
     systemctl restart ssh >/dev/null 2>&1
