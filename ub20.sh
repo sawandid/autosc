@@ -215,43 +215,6 @@ echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells 
 wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw" >/dev/null 2>&1
 
-cat > /etc/systemd/system/dns-client.service <<-END
-[Unit]
-Description=Client SlowDNS
-Documentation=https://t.me/bhoikfost_yahya
-After=network.target nss-lookup.target
-[Service]
-Type=simple
-User=root
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
-ExecStart=/etc/slowdns/client -udp 8.8.8.8:53 --pubkey-file /etc/slowdns/server.pub ${ns_domain} 127.0.0.1:3369
-Restart=on-failure
-[Install]
-WantedBy=multi-user.target
-END
-
-cat > /etc/systemd/system/dns-server.service <<-END
-[Unit]
-Description=Server SlowDNS
-Documentation=https://t.me/bhoikfost_yahya
-After=network.target nss-lookup.target
-[Service]
-Type=simple
-User=root
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
-ExecStart=/etc/slowdns/server -udp :5300 -privkey-file /etc/slowdns/server.key ${ns_domain} 127.0.0.1:2269
-Restart=on-failure
-[Install]
-WantedBy=multi-user.target
-END
-chmod +x /etc/slowdns/*
-chmod +x /etc/systemd/system/client.service >/dev/null 2>&1
-chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
-
 cat > /etc/rc.local <<-END
 #!/bin/sh -e
 # rc.local
@@ -362,7 +325,6 @@ LINUX       : <code>${OS}</code>
     systemctl restart client >/dev/null 2>&1
     systemctl restart server >/dev/null 2>&1
     systemctl restart ssh >/dev/null 2>&1
-    systemctl restart sshd >/dev/null 2>&1
     systemctl restart stunnel4 >/dev/null 2>&1
     systemctl restart sslh >/dev/null 2>&1
     systemctl restart dropbear >/dev/null 2>&1
