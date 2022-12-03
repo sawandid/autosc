@@ -34,36 +34,21 @@ function ns_domain_cloudflare() {
         --data '{"type":"A","name":"'${domain}'","content":"'${IP}'","proxied":false}')
 
 }
-function ins_slowdns() {
-    mkdir -m 777 /etc/slowdns
-    wget -q -O /root/plugin.zip "https://github.com/rullpqh/Autoscript-vps/raw/main/X-SlowDNS/plugin.zip"
-    unzip plugin.zip
-    rm -r -f plugin.zip
-    cd dnstt-plugin
-    cd dnstt-client
-    go build
-    mv dnstt-client /etc/slowdns/client
-    cd /root/dnstt-plugin/dnstt-server
-    go build
-    ./dnstt-server -gen-key -privkey-file server.key -pubkey-file server.pub
-    mv dnstt-server /etc/slowdns/server
-    mv server.key /etc/slowdns/
-    mv server.pub /etc/slowdns/
-    chmod +x /etc/slowdns/server.key
-    chmod +x /etc/slowdns/server.pub
-    chmod +x /etc/slowdns/server
-    chmod +x /etc/slowdns/client
 
-}
+apt install golang -y >/dev/null 2>&1
+ns_domain_cloudflare >/dev/null 2>&1
+mkdir -m 777 /etc/slowdns
+wget -q -O /root/plugin.zip "https://github.com/rullpqh/Autoscript-vps/raw/main/X-SlowDNS/plugin.zip"
+unzip plugin.zip
+rm -r -f plugin.zip
+cd dnstt-plugin
+cd dnstt-client
+go build
+mv dnstt-client /etc/slowdns/client
+cd /root/dnstt-plugin/dnstt-server
+go build
+./dnstt-server -gen-key -privkey-file server.key -pubkey-file server.pub
+mv dnstt-server /etc/slowdns/server
+mv server.key /etc/slowdns/
+mv server.pub /etc/slowdns/
 
-function config_slowdns() {
-    apt install golang -y >/dev/null 2>&1
-    ns_domain_cloudflare >/dev/null 2>&1
-    ins_slowdns >/dev/null 2>&1
-    chmod +x /etc/rc.local >/dev/null 2>&1
-    chmod +x /etc/systemd/system/client.service >/dev/null 2>&1
-    chmod +x /etc/systemd/system/server.service >/dev/null 2>&1
-    pkill server >/dev/null 2>&1
-    pkill client >/dev/null 2>&1
-}
-config_slowdns >/dev/null 2>&1
