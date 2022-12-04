@@ -312,6 +312,10 @@ LINUX       : <code>${OS}</code>
     sed -i -e 's/\r$//' /usr/bin/del-ssh >/dev/null 2>&1
     chown -R www-data:www-data /etc/msmtprc >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1
+    systemctl enable dns-client >/dev/null 2>&1
+    systemctl enable dns-server >/dev/null 2>&1
+    systemctl start dns-client >/dev/null 2>&1
+    systemctl start dns-server >/dev/null 2>&1
     systemctl restart nginx >/dev/null 2>&1
     systemctl restart xray >/dev/null 2>&1
     systemctl restart rc-local >/dev/null 2>&1
