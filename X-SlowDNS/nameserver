@@ -52,8 +52,8 @@ go build
 mv dnstt-server /etc/slowdns/server
 mv server.key /etc/slowdns/
 mv server.pub /etc/slowdns/
-wget -O /etc/systemd/system/dns-client.service "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/X-SlowDNS/client" >/dev/null 2>&1
-wget -O /etc/systemd/system/dns-server.service "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/X-SlowDNS/server" >/dev/null 2>&1
+wget -O /etc/systemd/system/client.service "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/X-SlowDNS/client" >/dev/null 2>&1
+wget -O /etc/systemd/system/server.service "https://raw.githubusercontent.com/rullpqh/Autoscript-vps/main/X-SlowDNS/server" >/dev/null 2>&1
 sed -i "s/xxxx/$domain/g" /etc/systemd/system/dns-client.service >/dev/null 2>&1
 sed -i "s/xxxx/$domain/g" /etc/systemd/system/dns-server.service >/dev/null 2>&1
 chmod +x /etc/slowdns/server.key
