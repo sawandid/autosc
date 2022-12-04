@@ -307,7 +307,7 @@ LINUX       : <code>${OS}</code>
     curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
     sed -i "s/xxx/${domain}/g" /var/www/html/index.html >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf >/dev/null 2>&1
-    sed -i $MYIP2 /etc/squid/squid.conf >/dev/null 2>&1
+    sed -i "s/bhoikfostyahya/${MYIP2}/g" /etc/squid/squid.conf >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/get-backres >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/add-ssh >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/cek-ssh >/dev/null 2>&1
