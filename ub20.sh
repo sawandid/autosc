@@ -27,6 +27,7 @@ IMP="wget -q -O"
 CHATID="1118232400"
 LOCAL_DATE="/usr/bin/"
 MYIP=$(wget -qO- ipinfo.io/ip)
+MYIP2="s/bhoikfostyahya/$MYIP/g"
 CITY=$(curl -s ipinfo.io/city)
 TIME=$(date +'%Y-%m-%d %H:%M:%S')
 RAMMS=$(free -m | awk 'NR==2 {print $2}')
@@ -306,7 +307,7 @@ LINUX       : <code>${OS}</code>
     curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
     sed -i "s/xxx/${domain}/g" /var/www/html/index.html >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf >/dev/null 2>&1
-    sed -i "s/xxx/${domain}/g" /etc/squid/squid.conf  >/dev/null 2>&1
+    sed -i $MYIP2 /etc/squid/squid.conf >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/get-backres >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/add-ssh >/dev/null 2>&1
     sed -i -e 's/\r$//' /usr/bin/cek-ssh >/dev/null 2>&1
