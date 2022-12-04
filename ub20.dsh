@@ -239,16 +239,16 @@ socket = l:TCP_NODELAY=1
 socket = r:TCP_NODELAY=1
 
 [dropbear-ssl]
-accept = 990
-connect = 127.0.0.1:2083
-
-[openssh-ssl]
-accept = 777
-connect = 127.0.0.1:22
+accept = 441
+connect = 127.0.0.1:10011
 
 [openvpn-ssl]
-accept = 1196
-connect = 127.0.0.1:1194
+accept = 442
+connect = 127.0.0.1:10012
+
+[openssh-ssl]
+accept = 444
+connect = 127.0.0.1:22
 
 END
 apt install squid -y >/dev/null 2>&1
