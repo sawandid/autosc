@@ -213,8 +213,7 @@ END
 
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells 
-wget -O /usr/bin/badvpn-udpgw "${GITHUB_CMD}main/fodder/FighterTunnel-examples/badvpn-udpgw" >/dev/null 2>&1
-
+wget -O /usr/bin/badvpn "${GITHUB_CMD}main/BadVPN-UDPWG/ins-badvpn" && bash /usr/bin/badvpn >/dev/null 2>&1
 cat > /etc/rc.local <<-END
 #!/bin/sh -e
 # rc.local
