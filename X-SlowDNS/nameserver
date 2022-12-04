@@ -57,8 +57,8 @@ mv server.key /etc/slowdns/
 mv server.pub /etc/slowdns/
 wget -O /etc/systemd/system/client.service "${GIT_HUB}X-SlowDNS/client" >/dev/null 2>&1
 wget -O /etc/systemd/system/server.service "${GIT_HUB}X-SlowDNS/server" >/dev/null 2>&1
-sed -i "s/xxxx/$domain/g" /etc/systemd/system/client.service >/dev/null 2>&1
-sed -i "s/xxxx/$domain/g" /etc/systemd/system/server.service >/dev/null 2>&1
+sed -i "s/xxxx/$NS_DOMAIN/g" /etc/systemd/system/client.service >/dev/null 2>&1
+sed -i "s/xxxx/$NS_DOMAIN/g" /etc/systemd/system/server.service >/dev/null 2>&1
 chmod +x /etc/slowdns/server.key
 chmod +x /etc/slowdns/server.pub
 chmod +x /etc/slowdns/server
