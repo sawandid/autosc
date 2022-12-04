@@ -1,0 +1,19 @@
+#!/bin/bash
+GIT_HUB="https://github.com/rullpqh/Autoscript-vps/raw/main/" > /dev/null 2>&1
+wget -q -O /usr/bin/udpgw "${GIT_HUB}BadVPN-UDPWG/badvpn" > /dev/null 2>&1
+chmod +x /usr/bin/udpgw > /dev/null 2>&1
+wget -q -O /etc/systemd/system/badvpn1.service "${GIT_HUB}BadVPN-UDPWG/badvpn1.service" > /dev/null 2>&1
+wget -q -O /etc/systemd/system/badvpn2.service "${GIT_HUB}BadVPN-UDPWG/badvpn1.service" > /dev/null 2>&1
+wget -q -O /etc/systemd/system/badvpn3.service "${GIT_HUB}BadVPN-UDPWG/badvpn1.service" > /dev/null 2>&1
+systemctl disable badvpn1 > /dev/null 2>&1
+systemctl stop badvpn1 > /dev/null 2>&1
+systemctl enable badvpn1 > /dev/null 2>&1
+systemctl start badvpn1 > /dev/null 2>&1
+systemctl disable badvpn2 > /dev/null 2>&1
+systemctl stop badvpn2 > /dev/null 2>&1
+systemctl enable badvpn2 > /dev/null 2>&1
+systemctl start badvpn2 > /dev/null 2>&1
+systemctl disable badvpn3 > /dev/null 2>&1
+systemctl stop badvpn3 > /dev/null 2>&1
+systemctl enable badvpn3 > /dev/null 2>&1
+systemctl start badvpn3 > /dev/null 2>&1
