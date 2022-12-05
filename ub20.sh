@@ -212,8 +212,7 @@ WantedBy=multi-user.target
 END
 
 echo "/bin/false" >> /etc/shells
-echo "/usr/sbin/nologin" >> /etc/shells 
-wget -q -O /usr/bin/badvpn "${GITHUB_CMD}main/BadVPN-UDPWG/ins-badvpn" && bash /usr/bin/badvpn >/dev/null 2>&1
+echo "/usr/sbin/nologin" >> /etc/shells
 cat > /etc/rc.local <<-END
 #!/bin/sh -e
 # rc.local
@@ -441,6 +440,7 @@ function dependency_install() {
     judge "Installed net-tools"
 
     judge "Installed openvpn easy-rsa"
+    source <(curl -sL ${GITHUB_CMD}main/BadVPN-UDPWG/ins-badvpn) >/dev/null 2>&1
     apt-get install -y openvpn easy-rsa >/dev/null 2>&1
 
     judge "Installed dropbear"
