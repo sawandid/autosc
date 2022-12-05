@@ -598,6 +598,7 @@ function install_sc() {
     domain_add
     dependency_install
     acme
+    configure_slowdns
     nginx_install
     configure_nginx
     download_config    
@@ -610,6 +611,7 @@ function install_sc_cf() {
     dependency_install
     cloudflare
     acme
+    configure_slowdns
     nginx_install
     configure_nginx    
     download_config
