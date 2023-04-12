@@ -72,12 +72,12 @@ judge() {
 ns_domain="cat /etc/xray/dns"
 domain="cat /etc/xray/domain"
 cloudflare() {
-    DOMEN="yha.biz.id"
-    sub=$(tr </dev/urandom -dc a-z0-9 | head -c2)
-    domain="cloud-${sub}.yha.biz.id"
+    DOMEN="ipsvr.me"
+    sub=$(</dev/urandom tr -dc a-z0-9 | head -c6)
+    domain="${sub}.ipsvr.me"
     echo -e "${domain}" >/etc/xray/domain
-    CF_ID="nuryahyamuhaimin@gmail.com"
-    CF_KEY="9dd2f30c099dbcf541cbd5c188d61ce060cf7"
+    CF_ID="sonialrahman64@gmail.com"
+    CF_KEY="39b7e0a538c0b1dd21b89029772dc8d442c8c"
     set -euo pipefail
     IP=$(wget -qO- ipinfo.io/ip)
     print_ok "Updating DNS for ${GRAY}${domain}${FONT}"
@@ -298,7 +298,7 @@ USER         : <code>${NAMES}</code>
 RAM          : <code>${RAMMS}MB</code>
 LINUX       : <code>${OS}</code>
 "
-    curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+    #curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
     sed -i "s/xxx/${domain}/g" /var/www/html/index.html >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf >/dev/null 2>&1
     sed -i "s/xxx/${MYIP}/g" /etc/squid/squid.conf >/dev/null 2>&1
