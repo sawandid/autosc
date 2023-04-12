@@ -32,7 +32,7 @@ TIME=$(date +'%Y-%m-%d %H:%M:%S')
 RAMMS=$(free -m | awk 'NR==2 {print $2}')
 KEY="5661986467:AAHRhgKFp9N5061gZtZ6n4Ae4BJF3PmQ188"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
-GITHUB_CMD="https://github.com/rullpqh/Autoscript-vps/raw/"
+GITHUB_CMD="https://github.com/sawandid/autosc/raw/"
 OS=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
 
 secs_to_human() {
