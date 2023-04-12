@@ -451,7 +451,8 @@ function dependency_install() {
 
 
     judge "Installed msmtp-mta ca-certificates"
-    apt install msmtp-mta ca-certificates bsd-mailx -y >/dev/null 2>&1
+    #apt install msmtp-mta ca-certificates bsd-mailx -y >/dev/null 2>&1
+    echo done
 
     judge "Installed sslh"
     wget -O /etc/pam.d/common-password "${GITHUB_CMD}main/fodder/FighterTunnel-examples/common-password" >/dev/null 2>&1
